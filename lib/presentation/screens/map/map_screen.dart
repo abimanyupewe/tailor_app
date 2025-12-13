@@ -19,14 +19,15 @@ class MapScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Obx(
-            () => FlutterMap(
+          Obx(() {
+            if (mapController.currentLocation.value == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            return FlutterMap(
               mapController: mapController.mapController,
-              options: const MapOptions(
-                initialCenter: LatLng(
-                  -6.200000,
-                  106.816666,
-                ), // Jakarta coordinates
+              options: MapOptions(
+                initialCenter: mapController.currentLocation.value!,
                 initialZoom: 13.0,
               ),
               children: [
@@ -68,8 +69,8 @@ class MapScreen extends StatelessWidget {
                   }).toList(),
                 ),
               ],
-            ),
-          ),
+            );
+          }),
           Positioned(
             top: 50,
             left: 20,

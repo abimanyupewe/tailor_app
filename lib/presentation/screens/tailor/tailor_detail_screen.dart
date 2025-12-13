@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/data/models/tailor_model.dart';
-import 'package:tailor_app/presentation/theme/app_theme.dart';
 
 class TailorDetailScreen extends StatelessWidget {
   final Tailor tailor;
