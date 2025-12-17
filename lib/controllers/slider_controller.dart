@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:tailor_app/data/dataDummy.dart';
-import 'package:tailor_app/data/models/slider_model.dart';
+import 'package:tailor_app/data/dummy_data.dart';
+import 'package:tailor_app/models/slider_model.dart';
 
 class SliderController extends GetxController {
   final RxList<SliderModel> sliders = <SliderModel>[].obs;
@@ -20,6 +20,3 @@ class SliderController extends GetxController {
     isLoading.value = false;
   }
 }
-
-
-

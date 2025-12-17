@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tailor_app/presentation/widgets/category_hori.dart';
+import 'package:tailor_app/widgets/category_hori.dart';
 
 class AllCategoryPage extends StatelessWidget {
   final List<Map<String, String>> categoryData;

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:tailor_app/data/models/tailor_model.dart';
-import 'package:tailor_app/data/repositories/tailor_repository.dart';
+import 'package:tailor_app/models/tailor_model.dart';
+import 'package:tailor_app/services/tailor_repository.dart';
 
 class TailorController extends GetxController {
   final RxList<Tailor> tailors = <Tailor>[].obs;

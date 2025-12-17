@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
-import 'package:tailor_app/presentation/controllers/navigation_controller.dart';
-import 'package:tailor_app/presentation/screens/home/home_screen.dart';
-import 'package:tailor_app/presentation/screens/map/map_screen.dart';
+import 'package:tailor_app/controllers/navigation_controller.dart';
+import 'package:tailor_app/screens/home/home_screen.dart';
+import 'package:tailor_app/screens/map/map_screen.dart';
+import 'package:tailor_app/screens/order/order_screen.dart';
+import 'package:tailor_app/screens/profile/profile_screen.dart';
 
 class MainWrapper extends StatelessWidget {
   const MainWrapper({super.key});
@@ -20,8 +22,8 @@ class MainWrapper extends StatelessWidget {
           children: const [
             HomeScreen(),
             MapScreen(),
-            Center(child: Text('Orders')), // Placeholder
-            Center(child: Text('Profile')), // Placeholder
+            OrderScreen(),
+            ProfileScreen(),
           ],
         ),
       ),
@@ -30,7 +32,7 @@ class MainWrapper extends StatelessWidget {
           height: 80,
           elevation: 0,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          indicatorColor: AppColors.primary.withOpacity(0.2),
+          indicatorColor: AppColors.primary.withValues(alpha: 0.2),
           selectedIndex: controller.selectedIndex.value,
           onDestinationSelected: (index) => controller.changeIndex(index),
           destinations: const [

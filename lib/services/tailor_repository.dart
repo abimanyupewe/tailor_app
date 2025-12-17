@@ -1,4 +1,4 @@
-import 'package:tailor_app/data/models/tailor_model.dart';
+import 'package:tailor_app/models/tailor_model.dart';
 
 class TailorRepository {
   static List<Tailor> getTailors() {

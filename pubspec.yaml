@@ -32,14 +32,15 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
-  google_fonts: ^6.3.2
-  iconsax: ^0.0.8
-  get: ^4.6.6
+  flutter_dotenv: ^6.0.0
   flutter_map: ^7.0.2
-  latlong2: ^0.9.1
-  geolocator: ^13.0.1
   flutter_map_location_marker: ^9.1.0
+  geolocator: ^13.0.1
+  get: ^4.6.6
+  google_fonts: ^6.3.2
   http: ^1.2.2
+  iconsax: ^0.0.8
+  latlong2: ^0.9.1
 
 dev_dependencies:
   flutter_lints: ^5.0.0
@@ -60,6 +61,7 @@ flutter:
     - assets/images/
     - assets/images/banner/
     - assets/images/category/
+    - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
   # For details regarding adding assets from package dependencies, see

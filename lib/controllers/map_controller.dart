@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:tailor_app/data/repositories/map_repository.dart';
+import 'package:tailor_app/services/map_repository.dart';
 
 class MapControllerX extends GetxController {
   final MapRepository _repository = MapRepository();

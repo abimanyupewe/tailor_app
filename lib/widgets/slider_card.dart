@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tailor_app/data/models/slider_model.dart';
+import 'package:tailor_app/models/slider_model.dart';
 
 class SliderCard extends StatelessWidget {
   final SliderModel data;

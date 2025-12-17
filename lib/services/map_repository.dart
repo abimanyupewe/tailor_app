@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:latlong2/latlong.dart';
 
 class MapRepository {
   Future<Position> getCurrentLocation() async {
@@ -28,7 +27,7 @@ class MapRepository {
     }
 
     return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
     );
   }
 

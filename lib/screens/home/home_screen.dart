@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/core/constants/image_string.dart';
-import 'package:tailor_app/data/dataDummy.dart';
-import 'package:tailor_app/presentation/controllers/slider_controller.dart';
+import 'package:tailor_app/data/dummy_data.dart';
+import 'package:tailor_app/controllers/slider_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:tailor_app/presentation/controllers/tailor_controller.dart';
-import 'package:tailor_app/presentation/widgets/category_hori.dart';
-import 'package:tailor_app/presentation/widgets/sliderCard.dart';
+import 'package:tailor_app/controllers/tailor_controller.dart';
+import 'package:tailor_app/widgets/category_hori.dart';
+import 'package:tailor_app/widgets/slider_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:tailor_app/presentation/widgets/tailorCard.dart';
+import 'package:tailor_app/widgets/tailor_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -113,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
                               onPressed: () {
-                                print("Tertap search");
+                                // Search action
                               },
                               icon: Icon(
                                 Iconsax.search_normal,

@@ -4,9 +4,9 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:tailor_app/presentation/controllers/map_controller.dart';
-import 'package:tailor_app/presentation/controllers/tailor_controller.dart';
-import 'package:tailor_app/presentation/screens/tailor/tailor_detail_screen.dart';
+import 'package:tailor_app/controllers/map_controller.dart';
+import 'package:tailor_app/controllers/tailor_controller.dart';
+import 'package:tailor_app/screens/tailor/tailor_detail_screen.dart';
 
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key});
@@ -117,7 +117,7 @@ class MapScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 10,
                                 offset: const Offset(0, 5),
                               ),

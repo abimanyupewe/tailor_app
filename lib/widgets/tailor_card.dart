@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tailor_app/data/models/tailor_model.dart';
-import 'package:tailor_app/presentation/screens/tailor/tailor_detail_screen.dart';
+import 'package:tailor_app/models/tailor_model.dart';
+import 'package:tailor_app/screens/tailor/tailor_detail_screen.dart';
 
 class TailorCard extends StatelessWidget {
   final Tailor data;

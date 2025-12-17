@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tailor_app/presentation/screens/main_wrapper.dart';
+import 'package:tailor_app/screens/main_wrapper.dart';
 
 class AppRoutes {
   AppRoutes._();
