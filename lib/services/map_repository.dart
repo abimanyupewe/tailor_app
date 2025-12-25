@@ -55,4 +55,40 @@ class MapRepository {
       throw Exception('Network error: $e');
     }
   }
+
+  Future<String> getAddressFromCoordinates(double lat, double lon) async {
+    final url = Uri.https('nominatim.openstreetmap.org', '/reverse', {
+      'lat': lat.toString(),
+      'lon': lon.toString(),
+      'format': 'json',
+      'addressdetails': '1',
+    });
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'User-Agent': 'tailor_app/1.0', 'Accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final address = data['address'];
+        if (address != null) {
+          return address['road'] ??
+              address['pedestrian'] ??
+              address['street'] ??
+              address['suburb'] ??
+              address['village'] ??
+              data['display_name']?.toString().split(',').first ??
+              'Unknown Location';
+        }
+        return data['display_name']?.toString().split(',').first ??
+            'Unknown Location';
+      } else {
+        throw Exception('Failed to load address');
+      }
+    } catch (e) {
+      throw Exception('Network error: $e');
+    }
+  }
 }

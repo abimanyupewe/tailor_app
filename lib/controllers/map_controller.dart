@@ -10,6 +10,13 @@ class MapControllerX extends GetxController {
   final mapController = MapController();
   final searchController = TextEditingController();
 
+  @override
+  void onClose() {
+    _debounceTimer?.cancel();
+    searchController.dispose();
+    super.onClose();
+  }
+
   final Rx<LatLng?> currentLocation = Rx<LatLng?>(null);
   final RxList<Map<String, dynamic>> searchResults =
       <Map<String, dynamic>>[].obs;
@@ -19,26 +26,37 @@ class MapControllerX extends GetxController {
 
   Timer? _debounceTimer;
 
+  final RxString currentAddress = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
     _initializeLocation();
   }
 
-  @override
-  void onClose() {
-    _debounceTimer?.cancel();
-    searchController.dispose();
-    super.onClose();
+  // Expose method to manually update address
+  Future<void> updateAddress(double lat, double lon) async {
+    try {
+      final address = await _repository.getAddressFromCoordinates(lat, lon);
+      currentAddress.value = address;
+    } catch (_) {
+      currentAddress.value = 'Location not found';
+    }
   }
 
   Future<void> _initializeLocation() async {
     try {
       final position = await _repository.getCurrentLocation();
-      currentLocation.value = LatLng(position.latitude, position.longitude);
+      final lat = position.latitude;
+      final lon = position.longitude;
+
+      currentLocation.value = LatLng(lat, lon);
+      await updateAddress(lat, lon);
+
       // mapController.move(currentLocation.value!, 15); // Optional: Auto-center
     } catch (e) {
-      Get.snackbar('Location Error', e.toString());
+      // Don't show snackbar on init to avoid spamming if permission denied initially
+      print('Location Init Error: $e');
     }
   }
 

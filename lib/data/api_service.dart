@@ -2,19 +2,36 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService extends GetxService {
   late final String baseUrl;
   String? _token;
 
+  bool get isAuthenticated => _token != null;
+
   @override
   void onInit() {
     super.onInit();
     baseUrl = dotenv.env['URL_API'] ?? 'http://127.0.0.1:8000';
+    _loadToken();
   }
 
-  void setToken(String token) {
+  Future<void> _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    _token = prefs.getString('auth_token');
+  }
+
+  Future<void> setToken(String token) async {
     _token = token;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
+  }
+
+  Future<void> logout() async {
+    _token = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
   }
 
   Map<String, String> get _headers {
@@ -23,7 +40,7 @@ class ApiService extends GetxService {
       'Accept': 'application/json',
     };
     if (_token != null) {
-      headers['Authorization'] = 'Bearer $_token';
+      headers['Authorization'] = 'Token $_token';
     }
     return headers;
   }
@@ -32,14 +49,37 @@ class ApiService extends GetxService {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return json.decode(response.body);
     } else {
-      throw Exception('Error ${response.statusCode}: ${response.body}');
+      String errorMessage = 'Error ${response.statusCode}';
+      try {
+        final errorBody = json.decode(response.body);
+        if (errorBody is Map) {
+          if (errorBody.containsKey('non_field_errors')) {
+            errorMessage = (errorBody['non_field_errors'] as List).join('\n');
+          } else if (errorBody.containsKey('detail')) {
+            errorMessage = errorBody['detail'];
+          } else if (errorBody.containsKey('message')) {
+            errorMessage = errorBody['message'];
+          } else {
+            // Extract first value from map if no specific key
+            errorMessage = errorBody.values.first.toString();
+          }
+        } else {
+          errorMessage = errorBody.toString();
+        }
+      } catch (_) {
+        // If not JSON (e.g. HTML 404), truncate it
+        errorMessage = response.body.length > 100
+            ? 'Server Error (${response.statusCode}): ${response.body.substring(0, 100)}...'
+            : 'Server Error (${response.statusCode}): ${response.body}';
+      }
+      throw Exception(errorMessage);
     }
   }
 
   // --- Authentication ---
   Future<dynamic> registerCustomer(Map<String, dynamic> data) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/users/auth/register/'),
+      Uri.parse('$baseUrl/api/users/auth/register/'),
       headers: _headers,
       body: json.encode(data),
     );
@@ -48,22 +88,33 @@ class ApiService extends GetxService {
 
   Future<dynamic> registerTailor(Map<String, dynamic> data) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/users/auth/register-tailor/'),
+      Uri.parse('$baseUrl/api/users/auth/register-tailor/'),
       headers: _headers,
       body: json.encode(data),
     );
     return _handleResponse(response);
   }
 
-  Future<dynamic> login(String email, String password) async {
+  Future<dynamic> login(String username, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/users/auth/login/'),
+      Uri.parse('$baseUrl/api/users/auth/login/'),
       headers: _headers,
-      body: json.encode({'email': email, 'password': password}),
+      body: json.encode({'username': username, 'password': password}),
     );
     final data = await _handleResponse(response);
+
+    // Check for various token keys
+    String? token;
     if (data['access'] != null) {
-      setToken(data['access']);
+      token = data['access'];
+    } else if (data['token'] != null) {
+      token = data['token'];
+    } else if (data['key'] != null) {
+      token = data['key'];
+    }
+
+    if (token != null) {
+      await setToken(token);
     }
     return data;
   }
@@ -71,7 +122,7 @@ class ApiService extends GetxService {
   // --- User Profile ---
   Future<dynamic> getProfile() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/users/profile/me/'),
+      Uri.parse('$baseUrl/api/users/profile/me/'),
       headers: _headers,
     );
     return _handleResponse(response);
@@ -79,7 +130,7 @@ class ApiService extends GetxService {
 
   Future<dynamic> updateProfile(Map<String, dynamic> data) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/users/profile/me/'),
+      Uri.parse('$baseUrl/api/users/profile/me/'),
       headers: _headers,
       body: json.encode(data),
     );

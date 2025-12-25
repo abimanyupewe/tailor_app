@@ -7,9 +7,12 @@ import 'package:tailor_app/controllers/slider_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/tailor_controller.dart';
+import 'package:tailor_app/controllers/profile_controller.dart';
+import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/widgets/category_hori.dart';
 import 'package:tailor_app/widgets/slider_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:tailor_app/controllers/map_controller.dart';
 import 'package:tailor_app/widgets/tailor_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,14 +20,33 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profileController = Get.find<ProfileController>();
+    final apiService = Get.find<ApiService>();
     final sliderController = Get.find<SliderController>();
     final tailorController = Get.find<TailorController>();
+    // Initialize MapController to fetch realtime location
+    final mapController = Get.put(MapControllerX());
     final categoryData = DataCategory().data;
 
     return Scaffold(
-      body: Obx(
-        () =>
-            sliderController.isLoading.value || tailorController.isLoading.value
+      body: Obx(() {
+        final userData = profileController.user.value;
+        final userObj = userData?['user'];
+        final avatarUrl = userObj?['avatar'];
+        final username = userObj?['username'] ?? 'User';
+
+        // Priority: 1. Profile Address, 2. Realtime GPS Address, 3. Fallback
+        String displayAddress = userData?['address'] ?? '';
+        if (displayAddress.isEmpty || displayAddress == 'Location not set') {
+          if (mapController.currentAddress.value.isNotEmpty) {
+            displayAddress = mapController.currentAddress.value;
+          } else {
+            displayAddress = 'Finding location...';
+          }
+        }
+
+        return sliderController.isLoading.value ||
+                tailorController.isLoading.value
             ? const Center(child: CircularProgressIndicator())
             : Padding(
                 padding: const EdgeInsets.all(20),
@@ -40,11 +62,28 @@ class HomeScreen extends StatelessWidget {
                               children: [
                                 CircleAvatar(
                                   radius: 25,
-                                  backgroundImage: NetworkImage(
-                                    'https://randomuser.me/api/portraits/men/1.jpg',
-                                  ),
+                                  backgroundColor: Colors.grey.shade300,
+                                  backgroundImage:
+                                      (avatarUrl != null &&
+                                          avatarUrl.toString().isNotEmpty)
+                                      ? NetworkImage(
+                                          avatarUrl.toString().startsWith(
+                                                'http',
+                                              )
+                                              ? avatarUrl
+                                              : '${apiService.baseUrl}$avatarUrl',
+                                        )
+                                      : null,
+                                  child:
+                                      (avatarUrl == null ||
+                                          avatarUrl.toString().isEmpty)
+                                      ? const Icon(
+                                          Icons.person,
+                                          color: Colors.white,
+                                        )
+                                      : null,
                                 ),
-                                SizedBox(width: 15),
+                                const SizedBox(width: 15),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -60,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                                             ),
                                           ),
                                           TextSpan(
-                                            text: 'John Doe',
+                                            text: username,
                                             style: GoogleFonts.plusJakartaSans(
                                               color: AppColors.primary,
                                               fontSize: 16,
@@ -72,17 +111,22 @@ class HomeScreen extends StatelessWidget {
                                     ),
                                     Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Iconsax.location5,
                                           size: 14,
                                           color: AppColors.primary,
                                         ),
-                                        SizedBox(width: 4),
-                                        Text(
-                                          'Soekarno hatta street',
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
+                                        const SizedBox(width: 4),
+                                        SizedBox(
+                                          width: 200,
+                                          child: Text(
+                                            displayAddress,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -280,8 +324,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-      ),
+              );
+      }),
     );
   }
 }
