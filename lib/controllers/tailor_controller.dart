@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:tailor_app/models/tailor_model.dart';
-import 'package:tailor_app/services/tailor_repository.dart';
+import 'package:tailor_app/data/api_service.dart';
 
 class TailorController extends GetxController {
   final RxList<Tailor> tailors = <Tailor>[].obs;
@@ -14,9 +14,22 @@ class TailorController extends GetxController {
 
   Future<void> loadInitial() async {
     isLoading.value = true;
-    await Future<void>.delayed(const Duration(milliseconds: 300));
-    final data = TailorRepository.getTailors();
-    tailors.assignAll(data);
-    isLoading.value = false;
+    try {
+      final apiService = Get.find<ApiService>();
+      final List<dynamic> response = await apiService.getTailors();
+
+      if (response.isNotEmpty) {
+        final List<Tailor> data = response
+            .map((json) => Tailor.fromJson(json))
+            .toList();
+        tailors.assignAll(data);
+      } else {
+        tailors.clear();
+      }
+    } catch (e) {
+      print("Error loading tailors: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

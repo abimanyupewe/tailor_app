@@ -152,7 +152,7 @@ class ApiService extends GetxService {
   // --- Tailor Features ---
   Future<dynamic> getMyLocation() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/tailor/manage/location/my_location/'),
+      Uri.parse('$baseUrl/api/tailor/manage/location/my_location/'),
       headers: _headers,
     );
     return _handleResponse(response);
@@ -160,7 +160,7 @@ class ApiService extends GetxService {
 
   Future<dynamic> setMyLocation(double lat, double lon, String address) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/tailor/manage/location/my_location/'),
+      Uri.parse('$baseUrl/api/tailor/manage/location/my_location/'),
       headers: _headers,
       body: json.encode({
         'latitude': lat,
@@ -173,7 +173,7 @@ class ApiService extends GetxService {
 
   Future<dynamic> getMyServices() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/tailor/manage/services/'),
+      Uri.parse('$baseUrl/api/tailor/manage/services/'),
       headers: _headers,
     );
     return _handleResponse(response);
@@ -181,7 +181,7 @@ class ApiService extends GetxService {
 
   Future<dynamic> addService(Map<String, dynamic> data) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/tailor/manage/services/'),
+      Uri.parse('$baseUrl/api/tailor/manage/services/'),
       headers: _headers,
       body: json.encode(data),
     );
@@ -191,7 +191,7 @@ class ApiService extends GetxService {
   Future<dynamic> addPost(Map<String, dynamic> data) async {
     // Note: Use MultipartRequest for file uploads if needed, assuming JSON for now as per prompt "POST"
     final response = await http.post(
-      Uri.parse('$baseUrl/tailor/manage/posts/'),
+      Uri.parse('$baseUrl/api/tailor/manage/posts/'),
       headers: _headers,
       body: json.encode(data),
     );
@@ -211,16 +211,19 @@ class ApiService extends GetxService {
     if (search != null) query += 'search=$search&';
 
     final response = await http.get(
-      Uri.parse('$baseUrl/tailor/list/$query'),
+      Uri.parse('$baseUrl/api/tailor/list/$query'),
       headers: _headers,
     );
     final data = await _handleResponse(response);
+    if (data is Map && data.containsKey('results')) {
+      return List<dynamic>.from(data['results']);
+    }
     return List<dynamic>.from(data);
   }
 
   Future<dynamic> getTailorDetail(String id) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/tailor/list/$id/'),
+      Uri.parse('$baseUrl/api/tailor/list/$id/'),
       headers: _headers,
     );
     return _handleResponse(response);
@@ -229,7 +232,7 @@ class ApiService extends GetxService {
   // --- Orders ---
   Future<dynamic> getOrders() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/orders/'),
+      Uri.parse('$baseUrl/api/orders/'),
       headers: _headers,
     );
     return _handleResponse(response);
@@ -237,7 +240,7 @@ class ApiService extends GetxService {
 
   Future<dynamic> createOrder(Map<String, dynamic> data) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/orders/'),
+      Uri.parse('$baseUrl/api/orders/'),
       headers: _headers,
       body: json.encode(data),
     );
@@ -246,7 +249,7 @@ class ApiService extends GetxService {
 
   Future<dynamic> updateOrderStatus(String id, String status) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/orders/$id/status/'),
+      Uri.parse('$baseUrl/api/orders/$id/status/'),
       headers: _headers,
       body: json.encode({'status': status}),
     );

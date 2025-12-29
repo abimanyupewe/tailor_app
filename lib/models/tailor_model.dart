@@ -11,6 +11,42 @@ class Tailor {
   final List<Service> services;
   final List<Review> reviews;
 
+  factory Tailor.fromJson(Map<String, dynamic> json) {
+    return Tailor(
+      id: json['id']?.toString() ?? json['user']?['id']?.toString() ?? '',
+      name: json['shop_name'] ?? 'Unknown Shop',
+      address: json['location']?['address'] ?? 'No Address',
+      rating: double.tryParse(json['rating']?.toString() ?? '0.0') ?? 0.0,
+      reviewCount: int.tryParse(json['review_count']?.toString() ?? '0') ?? 0,
+      imageUrl: json['shop_image'] ?? json['user']?['avatar'] ?? '',
+      latitude: json['location']?['latitude'] != null
+          ? double.tryParse(json['location']['latitude'].toString()) ?? 0.0
+          : 0.0,
+      longitude: json['location']?['longitude'] != null
+          ? double.tryParse(json['location']['longitude'].toString()) ?? 0.0
+          : 0.0,
+      distance: double.tryParse(json['distance']?.toString() ?? '0.0') ?? 0.0,
+      services:
+          (json['services'] as List<dynamic>?)
+              ?.map((s) => Service.fromJson(s as Map<String, dynamic>))
+              .toList() ??
+          [],
+      reviews:
+          (json['reviews'] as List<dynamic>?)
+              ?.map((r) => Review.fromJson(r as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
+
+  String get formattedDistance {
+    if (distance < 1.0) {
+      return '${(distance * 1000).toInt()} m';
+    } else {
+      return '${distance.toStringAsFixed(1)} km';
+    }
+  }
+
   Tailor({
     required this.id,
     required this.name,
@@ -27,11 +63,32 @@ class Tailor {
 }
 
 class Service {
+  final int id;
   final String name;
   final double price;
   final String description;
 
-  Service({required this.name, required this.price, required this.description});
+  Service({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.description,
+  });
+
+  factory Service.fromJson(Map<String, dynamic> json) {
+    return Service(
+      id: int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      name: json['name'] ?? 'Unknown Service',
+      price:
+          double.tryParse(
+            json['price']?.toString() ??
+                json['base_price']?.toString() ??
+                '0.0',
+          ) ??
+          0.0,
+      description: json['description'] ?? '',
+    );
+  }
 }
 
 class Review {
@@ -46,4 +103,17 @@ class Review {
     required this.comment,
     required this.date,
   });
+
+  factory Review.fromJson(Map<String, dynamic> json) {
+    return Review(
+      userName: json['user'] != null && json['user']['username'] != null
+          ? json['user']['username']
+          : 'Anonymous',
+      rating: double.tryParse(json['rating']?.toString() ?? '0.0') ?? 0.0,
+      comment: json['comment'] ?? '',
+      date: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at']) ?? DateTime.now()
+          : DateTime.now(),
+    );
+  }
 }

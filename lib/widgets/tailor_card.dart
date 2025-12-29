@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/screens/tailor/tailor_detail_screen.dart';
+import 'package:tailor_app/data/api_service.dart';
 
 class TailorCard extends StatelessWidget {
   final Tailor data;
@@ -27,17 +28,43 @@ class TailorCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  data.imageUrl,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.grey,
-                    child: const Icon(Icons.error),
-                  ),
+                child: Builder(
+                  builder: (context) {
+                    final apiService = Get.find<ApiService>();
+                    final imageUrl = data.imageUrl;
+
+                    if (imageUrl.isEmpty) {
+                      return Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.grey,
+                        child: const Icon(
+                          Icons.broken_image,
+                          color: Colors.white,
+                        ),
+                      );
+                    }
+
+                    final fullUrl = imageUrl.startsWith('http')
+                        ? imageUrl
+                        : '${apiService.baseUrl}$imageUrl';
+
+                    return Image.network(
+                      fullUrl,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.grey,
+                        child: const Icon(
+                          Icons.broken_image,
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
               Expanded(
@@ -93,7 +120,7 @@ class TailorCard extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "${data.distance} km",
+                            data.formattedDistance,
                             style: const TextStyle(fontWeight: FontWeight.w500),
                           ),
                         ],

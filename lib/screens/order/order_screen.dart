@@ -1,82 +1,183 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tailor_app/data/api_service.dart';
+import 'package:tailor_app/controllers/order_controller.dart';
+import 'package:tailor_app/models/tailor_model.dart';
 
 class OrderScreen extends StatelessWidget {
-  const OrderScreen({super.key});
+  final Tailor tailor;
+  const OrderScreen({super.key, required this.tailor});
 
   @override
   Widget build(BuildContext context) {
-    final apiService = Get.find<ApiService>();
+    final controller = Get.put(OrderController(tailor));
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order List (Debug Users)'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              // Simple way to refresh: force rebuild if needed or just navigation
-              // For now, setState isn't available in Stateless, so we rely on hot reload or re-entering page
-              // A real implementation would use a Controller with RxList
-              (context as Element).markNeedsBuild();
-            },
+        title: Text("Order from ${tailor.name}"),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Obx(() {
+              if (controller.items.isEmpty) {
+                return const Center(child: Text("No services available"));
+              }
+              return ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: controller.items.length,
+                separatorBuilder: (_, __) => const Divider(),
+                itemBuilder: (context, index) {
+                  final item = controller.items[index];
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.service.name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(
+                                  "Rp ${item.service.price.toStringAsFixed(0)}",
+                                  style: const TextStyle(color: Colors.green),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Quantity Controls
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () => controller.decrement(item),
+                                icon: const Icon(Icons.remove_circle_outline),
+                                color: Colors.grey,
+                              ),
+                              Obx(
+                                () => Text(
+                                  "${item.quantity.value}",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () => controller.increment(item),
+                                icon: const Icon(Icons.add_circle_outline),
+                                color: Colors.deepPurple,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      // Notes field (visible if quantity > 0)
+                      Obx(() {
+                        if (item.quantity.value > 0) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8.0, left: 8.0),
+                            child: TextField(
+                              decoration: const InputDecoration(
+                                hintText: "Notes (e.g. Size L, color red)",
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                                contentPadding: EdgeInsets.all(8),
+                              ),
+                              onChanged: (val) => item.notes.value = val,
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      }),
+                    ],
+                  );
+                },
+              );
+            }),
+          ),
+          // Bottom Bar
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, -5),
+                ),
+              ],
+            ),
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Total:",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Obx(
+                        () => Text(
+                          "Rp ${controller.totalPrice.toStringAsFixed(0)}",
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepPurple,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: Obx(() {
+                      final count = controller.totalItems;
+                      return ElevatedButton(
+                        onPressed: controller.isLoading.value || count == 0
+                            ? null
+                            : () => controller.createOrder(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: controller.isLoading.value
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : Text(
+                                "Checkout ($count items)",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
-      ),
-      body: FutureBuilder(
-        future: apiService.getUsers(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text('No data found'));
-          }
-
-          List users = [];
-          if (snapshot.data is List) {
-            users = snapshot.data as List;
-          } else if (snapshot.data is Map &&
-              (snapshot.data as Map).containsKey('results')) {
-            // Handle Django pagination or wrapped response
-            users = (snapshot.data as Map)['results'];
-          } else {
-            return Center(
-              child: Text(
-                'Unexpected data format: ${snapshot.data.runtimeType}',
-              ),
-            );
-          }
-
-          if (users.isEmpty) {
-            return const Center(child: Text('User list is empty'));
-          }
-
-          return ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              final user = users[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    child: Text(
-                      (user['email'] != null &&
-                              user['email'].toString().isNotEmpty)
-                          ? user['email'][0].toUpperCase()
-                          : '?',
-                    ),
-                  ),
-                  title: Text(user['email'] ?? 'No Email'),
-                  subtitle: Text('Role: ${user['role'] ?? 'Unknown'}'),
-                  trailing: Text(user['id'].toString()),
-                ),
-              );
-            },
-          );
-        },
       ),
     );
   }

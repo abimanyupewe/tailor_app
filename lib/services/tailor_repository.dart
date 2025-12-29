@@ -15,11 +15,13 @@ class TailorRepository {
         distance: 0.5,
         services: [
           Service(
+            id: 1,
             name: 'Permak Jeans',
             price: 25000,
             description: 'Potong, kecilkan pinggang',
           ),
           Service(
+            id: 2,
             name: 'Jahit Kemeja',
             price: 150000,
             description: 'Jahit kemeja pria/wanita custom',
@@ -46,6 +48,7 @@ class TailorRepository {
         distance: 1.2,
         services: [
           Service(
+            id: 3,
             name: 'Jahit Kebaya',
             price: 300000,
             description: 'Kebaya wisuda/pesta',
@@ -65,6 +68,7 @@ class TailorRepository {
         distance: 2.5,
         services: [
           Service(
+            id: 4,
             name: 'Permak Kilat',
             price: 35000,
             description: '1 jam jadi',

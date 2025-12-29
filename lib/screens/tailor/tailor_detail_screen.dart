@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/models/tailor_model.dart';
+import 'package:tailor_app/screens/order/order_screen.dart';
 
 class TailorDetailScreen extends StatelessWidget {
   final Tailor tailor;
@@ -163,8 +164,7 @@ class TailorDetailScreen extends StatelessWidget {
           height: 50,
           child: ElevatedButton(
             onPressed: () {
-              // TODO: Navigate to Order Screen
-              Get.snackbar("Order", "Navigate to Order Screen");
+              Get.to(() => OrderScreen(tailor: tailor));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor:

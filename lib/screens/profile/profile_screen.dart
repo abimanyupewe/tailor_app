@@ -4,6 +4,7 @@ import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/routes/app_routes.dart';
 import 'package:tailor_app/controllers/profile_controller.dart';
+import 'package:tailor_app/screens/order/order_list_screen.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
@@ -13,7 +14,26 @@ class ProfileScreen extends GetView<ProfileController> {
     final apiService = Get.find<ApiService>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
+      backgroundColor: Colors.grey.shade50,
+      appBar: AppBar(
+        title: const Text(
+          'Profile',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.primary,
+        actions: [
+          IconButton(
+            onPressed: () {
+              // TODO: Navigate to settings
+              print("Navigate to Settings");
+            },
+            icon: const Icon(Icons.settings_outlined),
+          ),
+        ],
+      ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -39,8 +59,6 @@ class ProfileScreen extends GetView<ProfileController> {
                   onPressed: controller.getUserProfile,
                   child: const Text('Retry'),
                 ),
-                const SizedBox(height: 16),
-                // Allow logout even if failed to load profile
                 TextButton(
                   onPressed: () async {
                     await Get.find<ApiService>().logout();
@@ -53,14 +71,13 @@ class ProfileScreen extends GetView<ProfileController> {
           );
         }
 
-        // Data structure: {user: {username: ..., role: ...}, ...}
+        // Data structure extraction
         final userObj = userData['user'] ?? {};
         final username = userObj['username'] ?? 'User';
         final email = userObj['email'];
         final avatarUrl = userObj['avatar'];
         final role = userObj['role'] ?? 'Unknown';
 
-        // Extract Name and Address
         final firstName = userObj['first_name'];
         final lastName = userObj['last_name'];
         String fullName = username;
@@ -68,138 +85,255 @@ class ProfileScreen extends GetView<ProfileController> {
           fullName = '$firstName ${lastName ?? ''}'.trim();
         }
         final address = userData['address'];
+        final phoneNumber = userData['phone_number'];
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 20),
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.grey.shade300,
-                backgroundImage:
-                    (avatarUrl != null && avatarUrl.toString().isNotEmpty)
-                    ? NetworkImage(
-                        avatarUrl.toString().startsWith('http')
-                            ? avatarUrl
-                            : '${apiService.baseUrl}$avatarUrl',
-                      )
-                    : null,
-                child: (avatarUrl == null || avatarUrl.toString().isEmpty)
-                    ? const Icon(Icons.person, size: 60, color: Colors.white)
-                    : null,
-              ),
-              const SizedBox(height: 24),
-              // Full Name
-              Text(
-                fullName,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Username (if different from full name, optional, but we show username as subtitle or just email)
-              if (fullName != username)
-                Text(
-                  '@$username',
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-              const SizedBox(height: 8),
-
-              if (email != null && email.toString().isNotEmpty)
-                Text(
-                  email,
-                  style: const TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-              const SizedBox(height: 8),
-
-              // Phone Number
-              if (userData['phone_number'] != null &&
-                  userData['phone_number'].toString().isNotEmpty)
-                Text(
-                  userData['phone_number'],
-                  style: const TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-              const SizedBox(height: 16),
-
-              // Address
-              if (address != null && address.toString().isNotEmpty)
-                Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        address,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.black87,
+              // Profile Header Section
+              Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.primary, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
                         ),
+                      ],
+                    ),
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.grey.shade200,
+                      backgroundImage:
+                          (avatarUrl != null && avatarUrl.toString().isNotEmpty)
+                          ? NetworkImage(
+                              avatarUrl.toString().startsWith('http')
+                                  ? avatarUrl
+                                  : '${apiService.baseUrl}$avatarUrl',
+                            )
+                          : null,
+                      child: (avatarUrl == null || avatarUrl.toString().isEmpty)
+                          ? const Icon(
+                              Icons.person,
+                              size: 70,
+                              color: Colors.grey,
+                            )
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    fullName,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  if (fullName != username)
+                    Text(
+                      '@$username',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      role.toString().toUpperCase(),
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+
+              // Personal Info Section
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    if (email != null && email.toString().isNotEmpty)
+                      _buildProfileItem(Icons.email_outlined, 'Email', email),
+                    if (phoneNumber != null &&
+                        phoneNumber.toString().isNotEmpty) ...[
+                      const Divider(height: 1, indent: 56),
+                      _buildProfileItem(
+                        Icons.phone_outlined,
+                        'Phone',
+                        phoneNumber,
                       ),
                     ],
-                  ),
+                    if (address != null && address.toString().isNotEmpty) ...[
+                      const Divider(height: 1, indent: 56),
+                      _buildProfileItem(
+                        Icons.location_on_outlined,
+                        'Address',
+                        address,
+                      ),
+                    ],
+                  ],
                 ),
+              ),
 
+              const SizedBox(height: 32),
+
+              // Actions Section
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
-                child: Text(
-                  'Role: $role',
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => const OrderListScreen());
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.shopping_bag_outlined,
+                              color: AppColors.primary,
+                              size: 22,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          const Expanded(
+                            child: Text(
+                              "Orderan Saya",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: ElevatedButton.icon(
                   onPressed: () async {
                     await apiService.logout();
                     Get.offAllNamed(AppRoutes.login);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.red.shade50,
+                    foregroundColor: Colors.red,
                     padding: const EdgeInsets.symmetric(vertical: 16),
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
+                  icon: const Icon(Icons.logout),
+                  label: const Text(
                     'Logout',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildProfileItem(IconData icon, String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: AppColors.primary, size: 22),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

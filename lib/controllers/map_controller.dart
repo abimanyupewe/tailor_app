@@ -3,12 +3,91 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/services/map_repository.dart';
 
 class MapControllerX extends GetxController {
   final MapRepository _repository = MapRepository();
   final mapController = MapController();
   final searchController = TextEditingController();
+  final DraggableScrollableController sheetController =
+      DraggableScrollableController();
+
+  final Rx<Tailor?> selectedTailor = Rx<Tailor?>(null);
+  final RxBool isRoutingMode = false.obs;
+  final RxList<LatLng> routePoints = <LatLng>[].obs;
+
+  void selectTailor(Tailor tailor) {
+    selectedTailor.value = tailor;
+    isRoutingMode.value = false;
+    routePoints.clear();
+    // Animate sheet to open state if needed, or just let UI react
+    if (sheetController.isAttached) {
+      sheetController.animateTo(
+        0.45, // Open to 30% or desired height
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+    // Center map on tailor
+    mapController.move(LatLng(tailor.latitude, tailor.longitude), 15);
+  }
+
+  void clearSelection() {
+    selectedTailor.value = null;
+    isRoutingMode.value = false;
+    routePoints.clear();
+    if (sheetController.isAttached) {
+      sheetController.animateTo(
+        0.3, // Collapse to min size
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  Future<void> toggleRouting() async {
+    isRoutingMode.value = !isRoutingMode.value;
+
+    if (isRoutingMode.value) {
+      if (currentLocation.value != null && selectedTailor.value != null) {
+        // Fetch route
+        try {
+          final points = await _repository.getRoute(
+            currentLocation.value!.latitude,
+            currentLocation.value!.longitude,
+            selectedTailor.value!.latitude,
+            selectedTailor.value!.longitude,
+          );
+
+          if (points.isNotEmpty) {
+            routePoints.assignAll(
+              points.map((p) => LatLng(p[0], p[1])).toList(),
+            );
+          }
+        } catch (e) {
+          Get.snackbar("Error", "Failed to load route");
+          isRoutingMode.value = false;
+        }
+
+        // Fit bounds
+        mapController.fitCamera(
+          CameraFit.coordinates(
+            coordinates: [
+              currentLocation.value!,
+              LatLng(
+                selectedTailor.value!.latitude,
+                selectedTailor.value!.longitude,
+              ),
+            ],
+            padding: const EdgeInsets.all(80),
+          ),
+        );
+      }
+    } else {
+      routePoints.clear();
+    }
+  }
 
   @override
   void onClose() {
