@@ -132,9 +132,7 @@ class TailorDetailSheet extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
             child: Image.network(
-              selected.imageUrl.startsWith('http')
-                  ? selected.imageUrl
-                  : '${Get.find<tailor_app.ApiService>().baseUrl}${selected.imageUrl}',
+              Get.find<tailor_app.ApiService>().getImageUrl(selected.imageUrl),
               width: 80,
               height: 80,
               fit: BoxFit.cover,

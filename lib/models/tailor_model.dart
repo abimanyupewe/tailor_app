@@ -10,6 +10,8 @@ class Tailor {
   final double distance; // Mock distance in km
   final List<Service> services;
   final List<Review> reviews;
+  final String phoneNumber;
+  final List<String> posts;
 
   factory Tailor.fromJson(Map<String, dynamic> json) {
     return Tailor(
@@ -36,6 +38,13 @@ class Tailor {
               ?.map((r) => Review.fromJson(r as Map<String, dynamic>))
               .toList() ??
           [],
+      phoneNumber: json['user']?['phone_number'] ?? '-',
+      posts: [
+        'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?auto=format&fit=crop&q=80&w=400',
+        'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=400',
+        'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=400',
+        'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&q=80&w=400',
+      ], // Mock some posts
     );
   }
 
@@ -59,6 +68,8 @@ class Tailor {
     required this.distance,
     required this.services,
     required this.reviews,
+    required this.phoneNumber,
+    required this.posts,
   });
 }
 

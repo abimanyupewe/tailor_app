@@ -76,6 +76,7 @@ class OrderController extends GetxController {
 
       if (response != null && response['snap_token'] != null) {
         final snapToken = response['snap_token'];
+        final orderId = response['id'].toString();
 
         // Navigate to Payment WebView
         final result = await Get.to(
@@ -83,10 +84,16 @@ class OrderController extends GetxController {
         );
 
         if (result == 'success') {
+          try {
+            // Notify backend that payment is successful
+            await apiService.updateOrderStatus(orderId, 'PAID');
+            print("Order status updated to PAID");
+          } catch (e) {
+            print("Failed to auto-update status: $e");
+          }
+
           Get.snackbar("Success", "Payment Successful!");
-          Get.offNamedUntil('/', (route) => false); // Reset to home or orders?
-          // For now just close
-          Get.back();
+          Get.offNamedUntil('/', (route) => false);
         } else {
           // Payment cancelled or failed, but order created.
           Get.snackbar("Order Placed", "Payment pending. Check My Orders.");

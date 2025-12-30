@@ -93,9 +93,7 @@ class MapView extends StatelessWidget {
                         ),
                         child: ClipOval(
                           child: Image.network(
-                            tailor.imageUrl.startsWith('http')
-                                ? tailor.imageUrl
-                                : '${Get.find<ApiService>().baseUrl}${tailor.imageUrl}',
+                            Get.find<ApiService>().getImageUrl(tailor.imageUrl),
                             width: 36,
                             height: 36,
                             fit: BoxFit.cover,

@@ -45,9 +45,7 @@ class TailorCard extends StatelessWidget {
                       );
                     }
 
-                    final fullUrl = imageUrl.startsWith('http')
-                        ? imageUrl
-                        : '${apiService.baseUrl}$imageUrl';
+                    final fullUrl = apiService.getImageUrl(imageUrl);
 
                     return Image.network(
                       fullUrl,

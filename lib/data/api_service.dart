@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -15,6 +16,19 @@ class ApiService extends GetxService {
     super.onInit();
     baseUrl = dotenv.env['URL_API'] ?? 'http://127.0.0.1:8000';
     _loadToken();
+  }
+
+  String getImageUrl(String? path) {
+    if (path == null || path.isEmpty) return '';
+    if (path.startsWith('http')) {
+      if (Platform.isAndroid) {
+        return path
+            .replaceAll('localhost', '10.0.2.2')
+            .replaceAll('127.0.0.1', '10.0.2.2');
+      }
+      return path;
+    }
+    return '$baseUrl$path';
   }
 
   Future<void> _loadToken() async {
@@ -134,6 +148,29 @@ class ApiService extends GetxService {
       headers: _headers,
       body: json.encode(data),
     );
+    return _handleResponse(response);
+  }
+
+  Future<dynamic> updateProfileMultipart({
+    required Map<String, String> data,
+    File? imageFile,
+  }) async {
+    var request = http.MultipartRequest(
+      'PUT',
+      Uri.parse('$baseUrl/api/users/profile/me/'),
+    );
+
+    request.headers.addAll(_headers);
+    request.fields.addAll(data);
+
+    if (imageFile != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath('avatar', imageFile.path),
+      );
+    }
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
     return _handleResponse(response);
   }
 
