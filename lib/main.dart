@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/bindings/initial_binding.dart';
 import 'package:tailor_app/routes/app_routes.dart';
+import 'package:tailor_app/screens/onboarding/onboarding_screen.dart';
 
 import 'package:tailor_app/theme/app_theme.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       initialBinding: InitialBinding(),
       initialRoute: AppRoutes.initial,
       onGenerateRoute: AppRoutes.onGenerateRoute,
+      // home: const OnboardingScreen(),
       // home: const MainWrapper(),
     );
   }

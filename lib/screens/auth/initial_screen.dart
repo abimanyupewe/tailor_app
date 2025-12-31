@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/routes/app_routes.dart';
 import 'package:tailor_app/controllers/profile_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class InitialScreen extends StatefulWidget {
   const InitialScreen({super.key});
@@ -31,6 +32,15 @@ class _InitialScreenState extends State<InitialScreen> {
 
     // To be safe, let's wait a bit more or check apiService state.
     // For now, simple check:
+
+    // Check First Time User
+    final prefs = await SharedPreferences.getInstance();
+    final isFirstTime = prefs.getBool('is_first_time') ?? true;
+
+    if (isFirstTime) {
+      Get.offAllNamed(AppRoutes.onboarding);
+      return;
+    }
 
     if (apiService.isAuthenticated) {
       // Pre-load profile data
