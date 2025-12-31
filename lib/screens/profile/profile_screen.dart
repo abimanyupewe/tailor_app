@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/routes/app_routes.dart';
 import 'package:tailor_app/controllers/profile_controller.dart';
-import 'package:tailor_app/screens/order/order_list_screen.dart';
 import 'package:tailor_app/screens/profile/edit_profile_screen.dart';
+import 'package:tailor_app/screens/profile/personal_info_screen.dart';
+import 'package:tailor_app/screens/profile/settings_screen.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
@@ -15,380 +17,208 @@ class ProfileScreen extends GetView<ProfileController> {
     final apiService = Get.find<ApiService>();
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
         title: const Text(
-          'Profile',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          'Account',
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
         ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
-        foregroundColor: AppColors.primary,
-        actions: [
-          IconButton(
-            onPressed: () {
-              // TODO: Navigate to settings
-              print("Navigate to Settings");
-            },
-            icon: const Icon(Icons.settings_outlined),
-          ),
-        ],
+        foregroundColor: Colors.white,
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(color: Colors.white));
         }
 
         final userData = controller.user.value;
         if (userData == null) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, size: 48, color: Colors.orange),
-                const SizedBox(height: 16),
-                Text(
-                  controller.errorMessage.value.isNotEmpty
-                      ? controller.errorMessage.value
-                      : 'Failed to load profile',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.red),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: controller.getUserProfile,
-                  child: const Text('Retry'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    await Get.find<ApiService>().logout();
-                    Get.offAllNamed(AppRoutes.login);
-                  },
-                  child: const Text('Logout'),
-                ),
-              ],
-            ),
-          );
+          return const Center(
+              child: Text("Error loading profile",
+                  style: TextStyle(color: Colors.white)));
         }
 
-        // Data structure extraction
         final userObj = userData['user'] ?? {};
         final username = userObj['username'] ?? 'User';
         final email = userObj['email'];
         final avatarUrl = userObj['avatar'];
-        final role = userObj['role'] ?? 'Unknown';
-
         final firstName = userObj['first_name'];
         final lastName = userObj['last_name'];
         String fullName = username;
         if (firstName != null && firstName.toString().isNotEmpty) {
           fullName = '$firstName ${lastName ?? ''}'.trim();
         }
-        final address = userData['address'];
-        final phoneNumber = userData['phone_number'];
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-          child: Column(
-            children: [
-              // Profile Header Section
-              Column(
+
+        return Column(
+          children: [
+            const SizedBox(height: 20),
+            // HEADER SECTION (On Primary Color)
+            Center(
+              child: Column(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.primary, width: 2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
+                  Stack(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: Colors.white.withOpacity(0.5), width: 1),
                         ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors.grey.shade200,
-                      backgroundImage:
-                          (avatarUrl != null && avatarUrl.toString().isNotEmpty)
-                          ? NetworkImage(
-                              avatarUrl.toString().startsWith('http')
-                                  ? avatarUrl
-                                  : '${apiService.baseUrl}$avatarUrl',
-                            )
-                          : null,
-                      child: (avatarUrl == null || avatarUrl.toString().isEmpty)
-                          ? const Icon(
-                              Icons.person,
-                              size: 70,
-                              color: Colors.grey,
-                            )
-                          : null,
-                    ),
+                        child: CircleAvatar(
+                          radius: 45, // Slightly smaller
+                          backgroundColor: Colors.grey.shade200,
+                          backgroundImage: (avatarUrl != null &&
+                                  avatarUrl.toString().isNotEmpty)
+                              ? NetworkImage(
+                                  avatarUrl.toString().startsWith('http')
+                                      ? avatarUrl
+                                      : '${apiService.baseUrl}$avatarUrl',
+                                )
+                              : null,
+                          child:
+                              (avatarUrl == null || avatarUrl.toString().isEmpty)
+                                  ? Icon(Icons.person,
+                                      size: 40, color: Colors.grey.shade400)
+                                  : null,
+                        ),
+                      ),
+                      // Camera/Edit Icon
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () => Get.to(() => const EditProfileScreen()),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color:
+                                  Colors.white.withOpacity(0.2), // Glass effect
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 1),
+                            ),
+                            child: const Icon(Iconsax.camera,
+                                color: Colors.white, size: 14),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Text(
                     fullName,
                     style: const TextStyle(
-                      fontSize: 26,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
+                      color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  if (fullName != username)
-                    Text(
-                      '@$username',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
+                  if (email != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        email,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
                       ),
                     ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      role.toString().toUpperCase(),
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              const SizedBox(height: 32),
+            ),
 
-              // Personal Info Section
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    if (email != null && email.toString().isNotEmpty)
-                      _buildProfileItem(Icons.email_outlined, 'Email', email),
-                    if (phoneNumber != null &&
-                        phoneNumber.toString().isNotEmpty) ...[
-                      const Divider(height: 1, indent: 56),
-                      _buildProfileItem(
-                        Icons.phone_outlined,
-                        'Phone',
-                        phoneNumber,
-                      ),
-                    ],
-                    if (address != null && address.toString().isNotEmpty) ...[
-                      const Divider(height: 1, indent: 56),
-                      _buildProfileItem(
-                        Icons.location_on_outlined,
-                        'Address',
-                        address,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
+            const SizedBox(height: 30),
 
-              const SizedBox(height: 32),
-
-              // Actions Section
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          Get.to(() => const EditProfileScreen());
-                        },
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Icon(
-                                  Icons.edit_outlined,
-                                  color: AppColors.primary,
-                                  size: 22,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              const Expanded(
-                                child: Text(
-                                  "Edit Profile",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              const Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Divider(height: 1, indent: 60),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          Get.to(() => const OrderListScreen());
-                        },
-                        borderRadius: BorderRadius.vertical(
-                          bottom: Radius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.05),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Icon(
-                                  Icons.shopping_bag_outlined,
-                                  color: AppColors.primary,
-                                  size: 22,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              const Expanded(
-                                child: Text(
-                                  "Orderan Saya",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              const Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
+            // WHITE CONTENT SHEET
+            Expanded(
+              child: Container(
                 width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    await apiService.logout();
-                    Get.offAllNamed(AppRoutes.login);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade50,
-                    foregroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  icon: const Icon(Icons.logout),
-                  label: const Text(
-                    'Logout',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                ),
+                child: SingleChildScrollView(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildMenuItem(
+                        icon: Iconsax.user,
+                        title: 'Informasi Pribadi',
+                        onTap: () => Get.to(() => const PersonalInfoScreen()),
+                      ),
+                      
+                      const SizedBox(height: 8),
+                      _buildMenuItem(
+                        icon: Iconsax.setting_2,
+                        title: 'Settings',
+                        onTap: () => Get.to(() => const SettingsScreen()),
+                      ),
+                      _buildMenuItem(
+                        icon: Iconsax.logout,
+                        title: 'Logout',
+                        isDestructive: true,
+                        onTap: () async {
+                          await apiService.logout();
+                          Get.offAllNamed(AppRoutes.login);
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            ),
+          ],
         );
       }),
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: AppColors.primary, size: 22),
+
+
+  Widget _buildMenuItem({
+    required IconData icon,
+    required String title,
+    VoidCallback? onTap,
+    bool isDestructive = false,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF9F9F9), // Light grey bg for items
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: ListTile(
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10), // Rounded icon bg
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
+          child: Icon(
+            icon,
+            color: isDestructive ? Colors.red : Colors.black87,
+            size: 20,
           ),
-        ],
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            color: isDestructive ? Colors.red : Colors.black87,
+          ),
+        ),
+        minLeadingWidth: 0,
       ),
     );
   }

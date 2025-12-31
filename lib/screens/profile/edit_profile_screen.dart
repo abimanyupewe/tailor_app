@@ -24,9 +24,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final user = controller.user.value?['user'] ?? {};
-    final address = controller.user.value?['address'] ?? '';
-    final phone = controller.user.value?['phone_number'] ?? '';
+    final userData = controller.user.value ?? {};
+    final user = userData['user'] ?? {};
+
+    // Check both locations for address and phone
+    final address = userData['address'] ?? user['address'] ?? '';
+    final phone = userData['phone_number'] ?? user['phone_number'] ?? '';
 
     _firstNameController = TextEditingController(
       text: user['first_name'] ?? '',
