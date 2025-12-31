@@ -36,13 +36,17 @@ class HomeScreen extends StatelessWidget {
         final username = userObj?['username'] ?? 'User';
 
         // Priority: 1. Profile Address, 2. Realtime GPS Address, 3. Fallback
-        String displayAddress = userData?['address'] ?? '';
-        if (displayAddress.isEmpty || displayAddress == 'Location not set') {
-          if (mapController.currentAddress.value.isNotEmpty) {
-            displayAddress = mapController.currentAddress.value;
-          } else {
-            displayAddress = 'Finding location...';
-          }
+        // Priority: 1. Realtime GPS Address (Home should reflect current loc), 2. Fallback
+        String displayAddress = 'Finding location...';
+
+        // Use Obx observation of mapController
+        if (mapController.currentAddress.value.isNotEmpty &&
+            mapController.currentAddress.value != 'Location not found') {
+          displayAddress = mapController.currentAddress.value;
+        } else if (userData?['address'] != null &&
+            userData!['address'].toString().isNotEmpty) {
+          // Fallback to profile address if GPS fails/loading
+          displayAddress = userData['address'];
         }
 
         return sliderController.isLoading.value ||

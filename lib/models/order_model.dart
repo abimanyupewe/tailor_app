@@ -3,6 +3,7 @@ import 'package:tailor_app/models/tailor_model.dart';
 class Order {
   final int id;
   final String status;
+  final String paymentStatus;
   final double totalPrice;
   final List<OrderItem> items;
   final DateTime createdAt;
@@ -13,6 +14,7 @@ class Order {
   Order({
     required this.id,
     required this.status,
+    required this.paymentStatus,
     required this.totalPrice,
     required this.items,
     required this.createdAt,
@@ -24,6 +26,7 @@ class Order {
           ? json['id']
           : int.tryParse(json['id']?.toString() ?? '0') ?? 0,
       status: json['status'] ?? 'UNKNOWN',
+      paymentStatus: json['payment_status'] ?? 'Unpaid',
       totalPrice:
           double.tryParse(json['total_price']?.toString() ?? '0') ?? 0.0,
       items:

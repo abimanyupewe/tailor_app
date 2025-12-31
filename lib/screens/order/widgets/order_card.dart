@@ -143,6 +143,29 @@ class OrderCard extends StatelessWidget {
                 // Footer: Status Badge
                 Row(
                   children: [
+                    // Payment Status Badge (if Paid)
+                    if (order.paymentStatus.toUpperCase() == 'PAID')
+                      Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          "PAID",
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+
+                    // Order Progress Status Badge
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -162,7 +185,10 @@ class OrderCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            order.status.toUpperCase(),
+                            order.status.toUpperCase() == 'PENDING' &&
+                                    order.paymentStatus.toUpperCase() == 'PAID'
+                                ? "PENDING APPROVAL"
+                                : order.status.toUpperCase(),
                             style: TextStyle(
                               color: _getStatusColor(order.status),
                               fontWeight: FontWeight.bold,

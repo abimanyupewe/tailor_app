@@ -43,7 +43,8 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
             // Handle redirect or callbacks from Midtrans
             // Likely Midtrans redirects to valid_url?status_code=xxx...
             if (request.url.contains('status_code=200') ||
-                request.url.contains('transaction_status=settlement')) {
+                request.url.contains('transaction_status=settlement') ||
+                request.url.contains('transaction_status=capture')) {
               Get.back(result: 'success');
               return NavigationDecision.prevent;
             }

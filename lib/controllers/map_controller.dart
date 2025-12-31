@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:tailor_app/models/tailor_model.dart';
+import 'package:tailor_app/screens/map/widgets/arrival_dialog.dart';
 import 'package:tailor_app/services/map_repository.dart';
 
 class MapControllerX extends GetxController {
@@ -16,6 +18,8 @@ class MapControllerX extends GetxController {
   final Rx<Tailor?> selectedTailor = Rx<Tailor?>(null);
   final RxBool isRoutingMode = false.obs;
   final RxList<LatLng> routePoints = <LatLng>[].obs;
+
+  StreamSubscription<Position>? _positionStreamSubscription;
 
   void selectTailor(Tailor tailor) {
     selectedTailor.value = tailor;
@@ -91,6 +95,7 @@ class MapControllerX extends GetxController {
 
   @override
   void onClose() {
+    _positionStreamSubscription?.cancel();
     _debounceTimer?.cancel();
     searchController.dispose();
     super.onClose();
@@ -111,6 +116,59 @@ class MapControllerX extends GetxController {
   void onInit() {
     super.onInit();
     _initializeLocation();
+    _startPositionStream();
+  }
+
+  void _startPositionStream() {
+    // Listen to location updates
+    const locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 10,
+    );
+
+    _positionStreamSubscription =
+        Geolocator.getPositionStream(
+          locationSettings: locationSettings,
+        ).listen((Position position) {
+          final lat = position.latitude;
+          final lon = position.longitude;
+          currentLocation.value = LatLng(lat, lon);
+
+          // We only update address once on init (via _initializeLocation) to save API calls
+          // but we could update it here if needed.
+
+          _checkArrival();
+        });
+  }
+
+  void _checkArrival() {
+    if (!isRoutingMode.value ||
+        selectedTailor.value == null ||
+        currentLocation.value == null)
+      return;
+
+    final distance = const Distance().as(
+      LengthUnit.Meter,
+      currentLocation.value!,
+      LatLng(selectedTailor.value!.latitude, selectedTailor.value!.longitude),
+    );
+
+    if (distance < 50) {
+      // 50 meters threshold
+      isRoutingMode.value = false;
+      routePoints.clear();
+
+      Get.dialog(
+        ArrivalDialog(
+          tailorName: selectedTailor.value!.name,
+          onReview: () {
+            // Placeholder: Navigate to detail/review page if needed
+            // For now, we remain on map.
+            // Ideally trigger open detail sheet on review tab
+          },
+        ),
+      );
+    }
   }
 
   // Expose method to manually update address
