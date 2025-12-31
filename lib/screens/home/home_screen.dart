@@ -14,6 +14,8 @@ import 'package:tailor_app/widgets/slider_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
 import 'package:tailor_app/widgets/tailor_card.dart';
+import 'package:tailor_app/screens/category/all_categories_screen.dart';
+import 'package:tailor_app/screens/search/search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -145,35 +147,42 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(
-                              left: 20,
-                              top: 15,
-                              bottom: 15,
-                            ),
-                            hintText: "Search for tailors or services",
-                            hintStyle: TextStyle(color: AppColors.primary),
-                            suffixIcon: IconButton(
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all<Color>(
-                                  AppColors.primary,
+                        GestureDetector(
+                          onTap: () => Get.to(() => const SearchScreen()),
+                          child: AbsorbPointer(
+                            child: TextField(
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.only(
+                                  left: 20,
+                                  top: 15,
+                                  bottom: 15,
                                 ),
-                              ),
-                              onPressed: () {
-                                // Search action
-                              },
-                              icon: Icon(
-                                Iconsax.search_normal,
-                                color: Colors.white,
+                                hintText: "Search for tailors or services",
+                                hintStyle: const TextStyle(
+                                  color: AppColors.primary,
+                                ),
+                                suffixIcon: IconButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        WidgetStateProperty.all<Color>(
+                                          AppColors.primary,
+                                        ),
+                                  ),
+                                  onPressed: () {}, // Empty but required
+                                  icon: const Icon(
+                                    Iconsax.search_normal,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                  borderSide: BorderSide.none,
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
                               ),
                             ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
                           ),
                         ),
                         CarouselSlider(
@@ -205,17 +214,25 @@ class HomeScreen extends StatelessWidget {
                           itemBuilder: (context, index) {
                             if (index < 3) {
                               final category = categoryData[index];
-                              return CategoryHori(
-                                category: {
-                                  'name': category['name'] ?? 'Unknown',
-                                  'iconUrl': category['iconUrl'] ?? '',
-                                  'color': category['color'] ?? Colors.grey,
-                                },
+                              return GestureDetector(
+                                onTap: () => Get.to(
+                                  () => SearchScreen(
+                                    initialCategory: category['name'],
+                                  ),
+                                ),
+                                child: CategoryHori(
+                                  category: {
+                                    'name': category['name'] ?? 'Unknown',
+                                    'iconUrl': category['iconUrl'] ?? '',
+                                    'color': category['color'] ?? Colors.grey,
+                                  },
+                                ),
                               );
                             } else {
                               // Slot ke-4 = "Lihat Semua"
                               return GestureDetector(
-                                onTap: () {},
+                                onTap: () =>
+                                    Get.to(() => const AllCategoriesScreen()),
                                 child: Column(
                                   children: [
                                     Container(
