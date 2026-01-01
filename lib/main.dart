@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
       initialBinding: InitialBinding(),
       initialRoute: AppRoutes.initial,
       onGenerateRoute: AppRoutes.onGenerateRoute,
-      // home: const OnboardingScreen(),
       // home: const MainWrapper(),
     );
   }
