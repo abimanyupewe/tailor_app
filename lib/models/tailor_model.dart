@@ -10,12 +10,14 @@ class Tailor {
   final double distance; // Mock distance in km
   final List<Service> services;
   final List<Review> reviews;
+  final String? userId;
   final String phoneNumber;
   final List<String> posts;
 
   factory Tailor.fromJson(Map<String, dynamic> json) {
     return Tailor(
       id: json['id']?.toString() ?? json['user']?['id']?.toString() ?? '',
+      userId: json['user']?['id']?.toString(), // Can be null
       name: json['shop_name'] ?? 'Unknown Shop',
       address: json['location']?['address'] ?? 'No Address',
       rating: double.tryParse(json['rating']?.toString() ?? '0.0') ?? 0.0,
@@ -58,6 +60,7 @@ class Tailor {
 
   Tailor({
     required this.id,
+    this.userId,
     required this.name,
     required this.address,
     required this.rating,
@@ -118,12 +121,12 @@ class Review {
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       userName: json['user'] != null && json['user']['username'] != null
-          ? json['user']['username']
+          ? json['user']['username'].toString()
           : 'Anonymous',
       rating: double.tryParse(json['rating']?.toString() ?? '0.0') ?? 0.0,
       comment: json['comment'] ?? '',
       date: json['created_at'] != null
-          ? DateTime.tryParse(json['created_at']) ?? DateTime.now()
+          ? DateTime.tryParse(json['created_at'].toString()) ?? DateTime.now()
           : DateTime.now(),
     );
   }

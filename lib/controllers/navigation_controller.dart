@@ -6,7 +6,7 @@ class NavigationController extends GetxController {
 
   void changeIndex(int index) {
     selectedIndex.value = index;
-    if (index == 3) {
+    if (index == 4) {
       // Refresh profile when tapping the profile tab
       try {
         Get.find<ProfileController>().getUserProfile();

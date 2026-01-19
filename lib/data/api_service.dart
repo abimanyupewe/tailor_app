@@ -310,4 +310,61 @@ class ApiService extends GetxService {
     );
     return _handleResponse(response);
   }
+
+  // --- Chat ---
+  Future<dynamic> getChatRooms() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/chat/rooms/'),
+      headers: _headers,
+    );
+    // DEBUG LOG
+    print(
+      "ApiService: getChatRooms response: ${response.statusCode} - ${response.body}",
+    );
+    return _handleResponse(response);
+  }
+
+  Future<dynamic> getChatMessages(String roomId) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/chat/rooms/$roomId/messages/'),
+      headers: _headers,
+    );
+    // DEBUG LOG
+    print(
+      "ApiService: getChatMessages response: ${response.statusCode} - ${response.body}",
+    );
+    return _handleResponse(response);
+  }
+
+  Future<dynamic> sendMessage(String roomId, String message) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/chat/rooms/$roomId/messages/'),
+      headers: _headers,
+      body: json.encode({'text': message}),
+    );
+    return _handleResponse(response);
+  }
+
+  Future<dynamic> startChat(String tailorId) async {
+    final url = '$baseUrl/api/chat/start/$tailorId/';
+    print('ApiService: Starting chat with URL: $url');
+    try {
+      final response = await http.post(Uri.parse(url), headers: _headers);
+      print('ApiService: Start chat response status: ${response.statusCode}');
+      print('ApiService: Start chat response body: ${response.body}');
+      return _handleResponse(response);
+    } catch (e) {
+      print('ApiService: Error starting chat: $e');
+      rethrow;
+    }
+  }
+
+  // --- Sliders ---
+  Future<dynamic> getSliders() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/sliders/'),
+      headers: _headers,
+    );
+    return _handleResponse(response);
+  }
 }

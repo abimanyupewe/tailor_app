@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
-import 'package:tailor_app/data/dummy_data.dart';
+import 'package:tailor_app/core/constants/app_data.dart';
 import 'package:tailor_app/screens/search/search_screen.dart';
 import 'package:tailor_app/widgets/category_hori.dart'; // Reusing or creating new item widget if needed
 
@@ -11,7 +11,7 @@ class AllCategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Determine source of data. Assuming DataCategory().data works as per Home
-    final categoryData = DataCategory().data;
+    final categoryData = AppData.categories;
 
     return Scaffold(
       backgroundColor: Colors.white,

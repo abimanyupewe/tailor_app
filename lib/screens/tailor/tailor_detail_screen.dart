@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/data/api_service.dart';
+import 'package:tailor_app/controllers/chat_controller.dart';
 import 'package:tailor_app/screens/order/order_screen.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/screens/tailor/widgets/tailor_tabs.dart';
@@ -135,28 +136,58 @@ class TailorDetailScreen extends StatelessWidget {
               ),
             ],
           ),
-          child: SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                Get.to(() => OrderScreen(tailor: tailor));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
+          child: Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                margin: const EdgeInsets.only(right: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.primary),
                   borderRadius: BorderRadius.circular(12),
                 ),
-              ),
-              child: const Text(
-                "Book Now",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                child: IconButton(
+                  onPressed: () {
+                    final chatController = Get.put(ChatController());
+                    // Reverting to use userId because 'id' (Tailor ID) was rejected by backend.
+                    // The initial 404 was due to missing endpoint, not wrong ID.
+                    final targetId =
+                        (tailor.userId != null && tailor.userId!.isNotEmpty)
+                        ? tailor.userId!
+                        : tailor.id;
+                    print(
+                      "Starting chat with TargetID: $targetId (TailorID: ${tailor.id}, UserID: ${tailor.userId})",
+                    );
+                    chatController.startChatWithTailor(targetId);
+                  },
+                  icon: const Icon(Iconsax.message, color: AppColors.primary),
                 ),
               ),
-            ),
+              Expanded(
+                child: SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.to(() => OrderScreen(tailor: tailor));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Book Now",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tailor_app/screens/auth/initial_screen.dart';
 import 'package:tailor_app/screens/auth/login_screen.dart';
 import 'package:tailor_app/screens/auth/register_screen.dart';
+import 'package:tailor_app/screens/chat/chat_detail_screen.dart';
+import 'package:tailor_app/screens/chat/chat_list_screen.dart';
 import 'package:tailor_app/screens/main_wrapper.dart';
 import 'package:tailor_app/screens/onboarding/onboarding_screen.dart';
 
@@ -26,6 +28,16 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
       case onboarding:
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+      case '/chat':
+        return MaterialPageRoute(
+          builder: (_) => const ChatListScreen(),
+          settings: settings,
+        );
+      case '/chat/detail':
+        return MaterialPageRoute(
+          builder: (_) => const ChatDetailScreen(),
+          settings: settings,
+        );
       default:
         return MaterialPageRoute(
           builder: (_) =>

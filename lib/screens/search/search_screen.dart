@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/tailor_controller.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
-import 'package:tailor_app/data/dummy_data.dart';
+import 'package:tailor_app/core/constants/app_data.dart';
 import 'package:tailor_app/widgets/tailor_card.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -32,7 +32,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     // Initialize Category List from Data
-    final rawCats = DataCategory().data;
+    final rawCats = AppData.categories;
     for (var cat in rawCats) {
       _categories.add(cat['name']);
     }
