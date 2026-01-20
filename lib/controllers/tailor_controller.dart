@@ -10,10 +10,10 @@ class TailorController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadInitial();
+    getAllTailors();
   }
 
-  Future<void> loadInitial() async {
+  Future<void> getAllTailors() async {
     isLoading.value = true;
     try {
       final apiService = Get.find<ApiService>();

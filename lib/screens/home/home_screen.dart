@@ -54,9 +54,19 @@ class HomeScreen extends StatelessWidget {
         return sliderController.isLoading.value ||
                 tailorController.isLoading.value
             ? const Center(child: CircularProgressIndicator())
-            : Padding(
-                padding: const EdgeInsets.all(20),
+            : RefreshIndicator(
+                color: Colors.white,
+                backgroundColor: AppColors.primary,
+                onRefresh: () async {
+                  await Future.wait([
+                    profileController.getUserProfile(),
+                    sliderController.getSliders(),
+                    tailorController.getAllTailors(),
+                  ]);
+                },
                 child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(20),
                   children: [
                     Wrap(
                       runSpacing: 15,

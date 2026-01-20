@@ -50,10 +50,18 @@ class PersonalInfoScreen extends GetView<ProfileController> {
         final address = userData['address'] ?? userObj['address'];
         final phoneNumber = userData['phone_number'] ?? userObj['phone_number'];
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        return RefreshIndicator(
+          onRefresh: () async {
+            await controller.getUserProfile();
+          },
+          color: Colors.white,
+          backgroundColor: AppColors.primary,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 20.0,
+            ),
             children: [
               _buildInfoTile(Iconsax.user, "Username", username ?? "-"),
               const Divider(height: 30),
@@ -65,7 +73,7 @@ class PersonalInfoScreen extends GetView<ProfileController> {
               const Divider(height: 30),
               _buildInfoTile(Iconsax.location, "Address", address ?? "-"),
 
-              const Spacer(),
+              const SizedBox(height: 40),
 
               SizedBox(
                 width: double.infinity,

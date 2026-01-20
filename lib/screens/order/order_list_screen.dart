@@ -60,6 +60,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
           ),
         ),
         body: RefreshIndicator(
+          color: Colors.white,
+          backgroundColor: const Color(0xFF6C63FF),
           onRefresh: _refreshOrders,
           child: FutureBuilder(
             future: _ordersFuture,

@@ -9,10 +9,10 @@ class SliderController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadInitial();
+    getSliders();
   }
 
-  Future<void> loadInitial() async {
+  Future<void> getSliders() async {
     isLoading.value = true;
     try {
       /*

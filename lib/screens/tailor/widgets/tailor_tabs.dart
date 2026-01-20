@@ -20,6 +20,7 @@ class ServiceTab extends StatelessWidget {
       return const Center(child: Text("No services available"));
     }
     return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16),
       itemCount: tailor.services.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
@@ -83,6 +84,7 @@ class PostTab extends StatelessWidget {
       );
     }
     return GridView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(2),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
@@ -146,6 +148,7 @@ class ReviewTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final reviewList = reviews ?? tailor.reviews;
     return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -283,6 +286,7 @@ class ContactTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

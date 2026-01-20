@@ -34,149 +34,158 @@ class TailorDetailScreen extends StatelessWidget {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              Obx(() {
-                final currentTailor = controller.tailor.value;
-                final imageUrl = _getValidImageUrl(currentTailor.imageUrl);
-
-                return SliverAppBar(
-                  expandedHeight: 250,
-                  pinned: true,
-                  leading: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                      shadows: [Shadow(color: Colors.black, blurRadius: 10)],
-                    ),
-                    onPressed: () => Get.back(),
-                  ),
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: imageUrl.isNotEmpty
-                        ? Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                                  color: Colors.grey,
-                                  child: const Center(child: Icon(Icons.error)),
-                                ),
-                          )
-                        : Container(
-                            color: Colors.grey,
-                            child: const Center(
-                              child: Icon(Icons.image_not_supported),
-                            ),
-                          ),
-                  ),
-                );
-              }),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Obx(() {
-                    final currentTailor = controller.tailor.value;
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                currentTailor.name,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                const Icon(Icons.star, color: Colors.amber),
-                                const SizedBox(width: 4),
-                                Builder(
-                                  builder: (context) {
-                                    final reviews = controller.reviews;
-                                    final count = reviews.length;
-                                    double average = 0.0;
-                                    if (count > 0) {
-                                      average =
-                                          reviews
-                                              .map((r) => r.rating)
-                                              .reduce((a, b) => a + b) /
-                                          count;
-                                    }
-                                    return Text(
-                                      "${average.toStringAsFixed(1)} ($count)",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(
-                              Iconsax.location,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                currentTailor.address,
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  }),
-                ),
-              ),
-              SliverPersistentHeader(
-                delegate: _SliverAppBarDelegate(
-                  const TabBar(
-                    labelColor: AppColors.primary,
-                    unselectedLabelColor: Colors.grey,
-                    indicatorColor: AppColors.primary,
-                    indicatorWeight: 3,
-                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                    tabs: [
-                      Tab(text: "Service"),
-                      Tab(text: "Post"),
-                      Tab(text: "Rating"),
-                      Tab(text: "Contact"),
-                    ],
-                  ),
-                ),
-                pinned: true,
-              ),
-            ];
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await controller.refreshTailor();
           },
-          body: Obx(() {
-            final currentTailor = controller.tailor.value;
-            return TabBarView(
-              children: [
-                ServiceTab(tailor: currentTailor),
-                PostTab(tailor: currentTailor),
-                ReviewTab(
-                  tailor: currentTailor,
-                  reviews: controller.reviews,
-                  onReviewSuccess: () => controller.refreshTailor(),
+          color: Colors.white,
+          backgroundColor: AppColors.primary,
+          child: NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                Obx(() {
+                  final currentTailor = controller.tailor.value;
+                  final imageUrl = _getValidImageUrl(currentTailor.imageUrl);
+
+                  return SliverAppBar(
+                    expandedHeight: 250,
+                    pinned: true,
+                    leading: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        shadows: [Shadow(color: Colors.black, blurRadius: 10)],
+                      ),
+                      onPressed: () => Get.back(),
+                    ),
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: imageUrl.isNotEmpty
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                    color: Colors.grey,
+                                    child: const Center(
+                                      child: Icon(Icons.error),
+                                    ),
+                                  ),
+                            )
+                          : Container(
+                              color: Colors.grey,
+                              child: const Center(
+                                child: Icon(Icons.image_not_supported),
+                              ),
+                            ),
+                    ),
+                  );
+                }),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Obx(() {
+                      final currentTailor = controller.tailor.value;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  currentTailor.name,
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(Icons.star, color: Colors.amber),
+                                  const SizedBox(width: 4),
+                                  Builder(
+                                    builder: (context) {
+                                      final reviews = controller.reviews;
+                                      final count = reviews.length;
+                                      double average = 0.0;
+                                      if (count > 0) {
+                                        average =
+                                            reviews
+                                                .map((r) => r.rating)
+                                                .reduce((a, b) => a + b) /
+                                            count;
+                                      }
+                                      return Text(
+                                        "${average.toStringAsFixed(1)} ($count)",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              const Icon(
+                                Iconsax.location,
+                                size: 16,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  currentTailor.address,
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
                 ),
-                ContactTab(tailor: currentTailor),
-              ],
-            );
-          }),
+                SliverPersistentHeader(
+                  delegate: _SliverAppBarDelegate(
+                    const TabBar(
+                      labelColor: AppColors.primary,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: AppColors.primary,
+                      indicatorWeight: 3,
+                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                      tabs: [
+                        Tab(text: "Service"),
+                        Tab(text: "Post"),
+                        Tab(text: "Rating"),
+                        Tab(text: "Contact"),
+                      ],
+                    ),
+                  ),
+                  pinned: true,
+                ),
+              ];
+            },
+            body: Obx(() {
+              final currentTailor = controller.tailor.value;
+              return TabBarView(
+                children: [
+                  ServiceTab(tailor: currentTailor),
+                  PostTab(tailor: currentTailor),
+                  ReviewTab(
+                    tailor: currentTailor,
+                    reviews: controller.reviews,
+                    onReviewSuccess: () => controller.refreshTailor(),
+                  ),
+                  ContactTab(tailor: currentTailor),
+                ],
+              );
+            }),
+          ),
         ),
         bottomNavigationBar: Container(
           padding: const EdgeInsets.all(20),
