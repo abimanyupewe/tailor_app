@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/screens/order/payment_webview_screen.dart';
+import 'package:tailor_app/controllers/profile_controller.dart';
+import 'package:flutter/material.dart';
 
 class OrderItem {
   final Service service;
@@ -56,6 +58,48 @@ class OrderController extends GetxController {
     isLoading.value = true;
     try {
       final apiService = Get.find<ApiService>();
+
+      // VALIDATION: Check if user has a valid email for Midtrans
+      // Try to find ProfileController to check data
+      try {
+        if (Get.isRegistered<ProfileController>()) {
+          final profileC = Get.find<ProfileController>();
+          final user = profileC.user.value;
+          // Structure based on earlier observation: user['user']['email']
+          final email = user?['user']?['email']?.toString() ?? '';
+
+          final bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+          ).hasMatch(email);
+
+          if (email.isEmpty || !emailValid) {
+            isLoading.value = false;
+            Get.snackbar(
+              "Email Tidak Valid",
+              "Midtrans memerlukan email yang valid untuk pembayaran. Mohon update profil Anda.",
+              backgroundColor: Get.theme.colorScheme.error,
+              colorText: Get.theme.colorScheme.onError,
+              duration: const Duration(seconds: 5),
+              mainButton: TextButton(
+                onPressed: () {
+                  // Navigate to profile or edit profile
+                  // Assuming using nested navigation or main tab
+                  // For now just close snackbar, users know where profile is
+                  Get.back();
+                  // Or if we know the route: Get.toNamed('/profile/edit');
+                },
+                child: const Text(
+                  "Update Profile",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            );
+            return;
+          }
+        }
+      } catch (e) {
+        print("Warning: Could not validate email via ProfileController: $e");
+      }
 
       // Construct payload
       final payload = {

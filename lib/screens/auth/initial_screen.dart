@@ -62,8 +62,6 @@ class _InitialScreenState extends State<InitialScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(),
-            SizedBox(height: 20),
-            Text('Checking authentication...'),
           ],
         ),
       ),

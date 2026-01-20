@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 class OrderCard extends StatelessWidget {
   final Order order;
   final VoidCallback? onTap;
-
   const OrderCard({super.key, required this.order, this.onTap});
 
   Color _getStatusColor(String status) {

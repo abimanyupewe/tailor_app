@@ -58,6 +58,7 @@ class ProfileController extends GetxController {
     required String lastName,
     required String phoneNumber,
     required String address,
+    required String email,
   }) async {
     try {
       isSaving.value = true;
@@ -67,6 +68,7 @@ class ProfileController extends GetxController {
         'last_name': lastName,
         'phone_number': phoneNumber,
         'address': address,
+        'email': email,
       };
 
       await _apiService.updateProfileMultipart(

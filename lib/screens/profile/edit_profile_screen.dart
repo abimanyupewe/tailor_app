@@ -20,6 +20,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _lastNameController;
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
+  late TextEditingController _emailController;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     // Check both locations for address and phone
     final address = userData['address'] ?? user['address'] ?? '';
     final phone = userData['phone_number'] ?? user['phone_number'] ?? '';
+    final email = user['email'] ?? '';
 
     _firstNameController = TextEditingController(
       text: user['first_name'] ?? '',
@@ -37,6 +39,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _lastNameController = TextEditingController(text: user['last_name'] ?? '');
     _phoneController = TextEditingController(text: phone);
     _addressController = TextEditingController(text: address);
+    _emailController = TextEditingController(text: email);
   }
 
   @override
@@ -45,6 +48,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _lastNameController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -90,6 +94,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         lastName: _lastNameController.text,
                         phoneNumber: _phoneController.text,
                         address: _addressController.text,
+                        email: _emailController.text,
                       );
                     },
                     child: const Text(
@@ -200,6 +205,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               controller: _phoneController,
               icon: Iconsax.mobile,
               keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: 20),
+            _buildTextField(
+              label: "Email",
+              controller: _emailController,
+              icon: Iconsax.sms,
+              keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 20),
             _buildTextField(

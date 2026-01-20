@@ -33,7 +33,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         backgroundColor: Colors.grey[50],
         appBar: AppBar(
@@ -49,6 +49,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
             unselectedLabelColor: Colors.grey,
             indicatorColor: Color(0xFF6C63FF),
             tabs: [
+              Tab(text: "Payment"),
               Tab(text: "In Progress"),
               Tab(text: "History"),
             ],
@@ -98,30 +99,29 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 );
               }
 
-              // Split Active vs History
-              final activeOrders = allOrders
-                  .where(
-                    (o) => ![
-                      'COMPLETED',
-                      'CANCELLED',
-                      'REJECTED',
-                    ].contains(o.status.toUpperCase()),
-                  )
-                  .toList();
+              // 1. Payment (Pending Payment)
+              final paymentOrders = allOrders.where((o) {
+                return o.paymentStatus.toUpperCase() != 'PAID' &&
+                    o.status.toUpperCase() != 'CANCELLED';
+              }).toList();
 
-              final historyOrders = allOrders
-                  .where(
-                    (o) => [
-                      'COMPLETED',
-                      'CANCELLED',
-                      'REJECTED',
-                    ].contains(o.status.toUpperCase()),
-                  )
-                  .toList();
+              // 2. In Progress (Paid & Not Completed/Cancelled)
+              final inProgressOrders = allOrders.where((o) {
+                final s = o.status.toUpperCase();
+                return o.paymentStatus.toUpperCase() == 'PAID' &&
+                    !['COMPLETED', 'CANCELLED', 'REJECTED'].contains(s);
+              }).toList();
+
+              // 3. History (Completed/Cancelled/Rejected)
+              final historyOrders = allOrders.where((o) {
+                final s = o.status.toUpperCase();
+                return ['COMPLETED', 'CANCELLED', 'REJECTED'].contains(s);
+              }).toList();
 
               return TabBarView(
                 children: [
-                  _buildOrderList(activeOrders, "No active orders"),
+                  _buildOrderList(paymentOrders, "No pending payments"),
+                  _buildOrderList(inProgressOrders, "No orders in progress"),
                   _buildOrderList(historyOrders, "No order history"),
                 ],
               );
@@ -160,7 +160,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
       itemCount: orders.length,
       padding: const EdgeInsets.all(20),
       itemBuilder: (context, index) {
-        return OrderCard(order: orders[index]);
+        final order = orders[index];
+        return OrderCard(order: order);
       },
     );
   }

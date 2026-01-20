@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/core/constants/image_string.dart';
-import 'package:tailor_app/core/constants/app_data.dart';
+import 'package:tailor_app/data/dummy_data.dart';
 import 'package:tailor_app/controllers/slider_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
@@ -28,7 +28,7 @@ class HomeScreen extends StatelessWidget {
     final tailorController = Get.find<TailorController>();
     // Initialize MapController to fetch realtime location
     final mapController = Get.put(MapControllerX());
-    final categoryData = AppData.categories;
+    final categoryData = DataCategory().data;
 
     return Scaffold(
       body: Obx(() {
