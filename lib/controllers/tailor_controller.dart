@@ -4,6 +4,7 @@ import 'package:tailor_app/data/api_service.dart';
 
 class TailorController extends GetxController {
   final RxList<Tailor> tailors = <Tailor>[].obs;
+  final RxList<Tailor> popularTailors = <Tailor>[].obs;
   final RxBool isLoading = false.obs;
 
   @override
@@ -25,6 +26,21 @@ class TailorController extends GetxController {
         tailors.assignAll(data);
       } else {
         tailors.clear();
+      }
+
+      // Fetch popular tailors (ordered by order_count desc)
+      try {
+        final List<dynamic> popResponse = await apiService.getTailors(
+          ordering: '-order_count',
+        );
+        if (popResponse.isNotEmpty) {
+          final List<Tailor> popData = popResponse
+              .map((json) => Tailor.fromJson(json))
+              .toList();
+          popularTailors.assignAll(popData);
+        }
+      } catch (e) {
+        print("Error loading popular tailors: $e");
       }
     } catch (e) {
       print("Error loading tailors: $e");

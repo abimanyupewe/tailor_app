@@ -241,11 +241,13 @@ class ApiService extends GetxService {
     double? lon,
     double? radius,
     String? search,
+    String? ordering,
   }) async {
     String query = '?';
     if (lat != null && lon != null) query += 'lat=$lat&lon=$lon&';
     if (radius != null) query += 'radius=$radius&';
     if (search != null) query += 'search=$search&';
+    if (ordering != null) query += 'ordering=$ordering&';
 
     final response = await http.get(
       Uri.parse('$baseUrl/api/tailor/list/$query'),

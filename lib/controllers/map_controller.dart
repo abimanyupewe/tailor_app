@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/screens/map/widgets/arrival_dialog.dart';
 import 'package:tailor_app/services/map_repository.dart';
@@ -197,6 +198,8 @@ class MapControllerX extends GetxController {
     }
   }
 
+  final ApiService _apiService = Get.find<ApiService>();
+
   void onSearchChanged(String query) {
     searchText.value = query;
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
@@ -210,8 +213,61 @@ class MapControllerX extends GetxController {
     _debounceTimer = Timer(const Duration(milliseconds: 800), () async {
       isSearching.value = true;
       try {
-        final results = await _repository.searchLocation(query);
-        searchResults.assignAll(results);
+        final List<Map<String, dynamic>> combinedResults = [];
+
+        // 1. Search Tailors from DB
+        try {
+          // We can add a 'search' parameter to getTailors in ApiService if backend supports it
+          // Or fetch all nearby and filter client side if backend search isn't ready.
+          // Assuming ApiService.getTailors supports search query param as per my exploration plan earlier (though getTailors implementation I saw accepted search param)
+          final tailors = await _apiService.getTailors(search: query);
+
+          for (var item in tailors) {
+            // Backend returns list of tailor objects (dynamic/json)
+            // We need to parse valid location
+            final location = item['location'];
+            if (location != null &&
+                location['latitude'] != null &&
+                location['longitude'] != null) {
+              final lat =
+                  double.tryParse(location['latitude'].toString()) ?? 0.0;
+              final lon =
+                  double.tryParse(location['longitude'].toString()) ?? 0.0;
+
+              if (lat != 0.0 && lon != 0.0) {
+                combinedResults.add({
+                  'display_name':
+                      item['shop_name'] ??
+                      item['user']?['username'] ??
+                      'Tailor',
+                  'lat': lat.toString(),
+                  'lon': lon.toString(),
+                  'type': 'TAILOR', // Custom type to identify
+                  'data': item, // Store full object to select
+                });
+              }
+            }
+          }
+        } catch (e) {
+          print("Tailor search error: $e");
+        }
+
+        // 2. Search Locations (Nominatim) - Optional fallback or mixed
+        // User asked "jika tailor yang belum memiliki lokasi jangan ditampilkan" - implying focus on tailors.
+        // But map search usually expects addresses too. I'll append address results AFTER tailors.
+        try {
+          final locations = await _repository.searchLocation(query);
+          // Add type LOCATION to these
+          for (var loc in locations) {
+            final mutableLoc = Map<String, dynamic>.from(loc);
+            mutableLoc['type'] = 'LOCATION';
+            combinedResults.add(mutableLoc);
+          }
+        } catch (e) {
+          print("Location search error: $e");
+        }
+
+        searchResults.assignAll(combinedResults);
         showSuggestions.value = true;
       } catch (e) {
         Get.snackbar('Search Error', e.toString());

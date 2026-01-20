@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
+import 'package:tailor_app/models/tailor_model.dart';
 
 class SearchInputWidget extends StatelessWidget {
   const SearchInputWidget({super.key});
@@ -65,19 +66,44 @@ class SearchInputWidget extends StatelessWidget {
                     itemCount: mapController.searchResults.length,
                     itemBuilder: (context, index) {
                       final result = mapController.searchResults[index];
+                      final isTailor = result['type'] == 'TAILOR';
+
                       return ListTile(
-                        leading: const Icon(Iconsax.location),
+                        leading: Icon(
+                          isTailor ? Iconsax.shop : Iconsax.location,
+                          color: isTailor ? Colors.deepPurple : Colors.grey,
+                        ),
                         title: Text(
                           result['display_name'] ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
+                        subtitle: isTailor
+                            ? const Text(
+                                "Tailor Shop",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              )
+                            : null,
                         onTap: () {
-                          mapController.selectLocation(
-                            double.parse(result['lat']),
-                            double.parse(result['lon']),
-                            result['display_name'] ?? '',
-                          );
+                          if (isTailor) {
+                            // Convert back to Tailor object
+                            final tailor = Tailor.fromJson(result['data']);
+                            mapController.selectTailor(tailor);
+                            // Clear search
+                            mapController.searchController.clear();
+                            mapController.searchText.value = '';
+                            mapController.searchResults.clear();
+                            mapController.showSuggestions.value = false;
+                          } else {
+                            mapController.selectLocation(
+                              double.parse(result['lat']),
+                              double.parse(result['lon']),
+                              result['display_name'] ?? '',
+                            );
+                          }
                         },
                       );
                     },

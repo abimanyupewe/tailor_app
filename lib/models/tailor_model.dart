@@ -12,7 +12,7 @@ class Tailor {
   final List<Review> reviews;
   final String? userId;
   final String phoneNumber;
-  final List<String> posts;
+  final List<Post> posts;
 
   factory Tailor.fromJson(Map<String, dynamic> json) {
     return Tailor(
@@ -41,12 +41,11 @@ class Tailor {
               .toList() ??
           [],
       phoneNumber: json['user']?['phone_number'] ?? '-',
-      posts: [
-        'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?auto=format&fit=crop&q=80&w=400',
-        'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&q=80&w=400',
-        'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=400',
-        'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&q=80&w=400',
-      ], // Mock some posts
+      posts:
+          (json['posts'] as List<dynamic>?)
+              ?.map((p) => Post.fromJson(p as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 
@@ -128,6 +127,22 @@ class Review {
       date: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString()) ?? DateTime.now()
           : DateTime.now(),
+    );
+  }
+}
+
+class Post {
+  final int id;
+  final String image;
+  final String caption;
+
+  Post({required this.id, required this.image, required this.caption});
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      id: int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      image: json['image'] ?? '',
+      caption: json['caption'] ?? '',
     );
   }
 }

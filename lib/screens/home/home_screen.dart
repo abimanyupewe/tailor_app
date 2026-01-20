@@ -310,18 +310,17 @@ class HomeScreen extends StatelessWidget {
                         ),
                         SizedBox(
                           height: 120,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            physics: BouncingScrollPhysics(),
-                            itemCount: tailorController.tailors
-                                .where((t) => t.reviewCount > 50)
-                                .length,
-                            itemBuilder: (context, index) {
-                              final popularTailors = tailorController.tailors
-                                  .where((t) => t.reviewCount > 50)
-                                  .toList();
-                              return TailorCard(data: popularTailors[index]);
-                            },
+                          child: Obx(
+                            () => ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: tailorController.popularTailors.length,
+                              itemBuilder: (context, index) {
+                                return TailorCard(
+                                  data: tailorController.popularTailors[index],
+                                );
+                              },
+                            ),
                           ),
                         ),
 

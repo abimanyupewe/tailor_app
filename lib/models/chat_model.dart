@@ -119,7 +119,8 @@ class ChatMessage {
       timestamp:
           DateTime.tryParse(json['timestamp']?.toString() ?? '') ??
           DateTime.now(),
-      isMe: senderStr == myUserId,
+      // Prioritize backend 'is_me' logic, fallback to manual check
+      isMe: json['is_me'] is bool ? json['is_me'] : (senderStr == myUserId),
     );
   }
 }
