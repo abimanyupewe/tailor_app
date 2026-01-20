@@ -96,11 +96,25 @@ class TailorDetailScreen extends StatelessWidget {
                               children: [
                                 const Icon(Icons.star, color: Colors.amber),
                                 const SizedBox(width: 4),
-                                Text(
-                                  "${currentTailor.rating} (${currentTailor.reviewCount})",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                Builder(
+                                  builder: (context) {
+                                    final reviews = controller.reviews;
+                                    final count = reviews.length;
+                                    double average = 0.0;
+                                    if (count > 0) {
+                                      average =
+                                          reviews
+                                              .map((r) => r.rating)
+                                              .reduce((a, b) => a + b) /
+                                          count;
+                                    }
+                                    return Text(
+                                      "${average.toStringAsFixed(1)} ($count)",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  },
                                 ),
                               ],
                             ),

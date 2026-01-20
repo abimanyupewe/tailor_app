@@ -198,9 +198,34 @@ class ReviewTab extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            review.userName,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 16,
+                                backgroundColor: Colors.grey.shade200,
+                                backgroundImage: review.userAvatar != null
+                                    ? NetworkImage(
+                                        Get.find<ApiService>().getImageUrl(
+                                          review.userAvatar!,
+                                        ),
+                                      )
+                                    : null,
+                                child: review.userAvatar == null
+                                    ? const Icon(
+                                        Icons.person,
+                                        size: 16,
+                                        color: Colors.grey,
+                                      )
+                                    : null,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                review.userName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                           Row(
                             children: [

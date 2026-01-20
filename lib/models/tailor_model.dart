@@ -106,12 +106,16 @@ class Service {
 
 class Review {
   final String userName;
+  final String? userAvatar;
+  final String serviceName;
   final double rating;
   final String comment;
   final DateTime date;
 
   Review({
     required this.userName,
+    this.userAvatar,
+    required this.serviceName,
     required this.rating,
     required this.comment,
     required this.date,
@@ -122,6 +126,8 @@ class Review {
       userName: json['user'] != null && json['user']['username'] != null
           ? json['user']['username'].toString()
           : 'Anonymous',
+      userAvatar: json['user']?['avatar'],
+      serviceName: json['service_name'] ?? 'Tailor Service',
       rating: double.tryParse(json['rating']?.toString() ?? '0.0') ?? 0.0,
       comment: json['comment'] ?? '',
       date: json['created_at'] != null

@@ -28,18 +28,24 @@ class TailorDetailController extends GetxController {
       try {
         final reviewsData = await _apiService.getReviews(tailor.value.id);
         if (reviewsData is List) {
-          final reviewList = reviewsData
-              .map((r) => Review.fromJson(r))
-              .toList();
+          final reviewList = <Review>[];
+          for (var r in reviewsData) {
+            try {
+              reviewList.add(Review.fromJson(r));
+            } catch (e) {
+              print("Error parsing individual review: $e");
+            }
+          }
           reviews.assignAll(reviewList);
-          // Update the tailor object's reviews as well to keep consistency if accessed elsewhere
-          // tailor.update((val) {
-          //   val?.reviews = reviewList; // Tailor is immutable, so we can't do this easily without copyWith
-          // });
         } else if (reviewsData is Map && reviewsData.containsKey('results')) {
-          final reviewList = (reviewsData['results'] as List)
-              .map((r) => Review.fromJson(r))
-              .toList();
+          final reviewList = <Review>[];
+          for (var r in reviewsData['results'] as List) {
+            try {
+              reviewList.add(Review.fromJson(r));
+            } catch (e) {
+              print("Error parsing individual review: $e");
+            }
+          }
           reviews.assignAll(reviewList);
         }
       } catch (e) {
