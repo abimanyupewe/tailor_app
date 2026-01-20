@@ -8,6 +8,7 @@ class Order {
   final String? shopName;
   final List<OrderItem> items;
   final DateTime createdAt;
+  final bool hasReview;
   // potentially tailor info if backend provides it, otherwise we might just show ID
   // Assuming backend might send tailor name or we just show items.
   // Based on current JSON in OrderListScreen, we only saw id, items, total_price, status.
@@ -20,6 +21,7 @@ class Order {
     this.shopName,
     required this.items,
     required this.createdAt,
+    this.hasReview = false,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {

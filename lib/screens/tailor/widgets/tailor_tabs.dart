@@ -10,7 +10,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:tailor_app/screens/post/post_detail_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class ServiceTab extends StatelessWidget {
   final Tailor tailor;
   const ServiceTab({super.key, required this.tailor});
@@ -93,6 +92,12 @@ class PostTab extends StatelessWidget {
       itemCount: tailor.posts.length,
       itemBuilder: (context, index) {
         final post = tailor.posts[index];
+        final imageUrl = Get.find<ApiService>().getImageUrl(post.image);
+        // Basic validation
+        bool isValidUrl =
+            imageUrl.isNotEmpty &&
+            (imageUrl.startsWith('http') || imageUrl.startsWith('https'));
+
         return GestureDetector(
           onTap: () {
             Get.to(
@@ -103,14 +108,22 @@ class PostTab extends StatelessWidget {
               ),
             );
           },
-          child: Image.network(
-            Get.find<ApiService>().getImageUrl(post.image),
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: Colors.grey.shade200,
-              child: const Icon(Icons.error, color: Colors.grey),
-            ),
-          ),
+          child: isValidUrl
+              ? Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: Colors.grey.shade200,
+                    child: const Icon(Icons.error, color: Colors.grey),
+                  ),
+                )
+              : Container(
+                  color: Colors.grey.shade200,
+                  child: const Icon(
+                    Icons.image_not_supported,
+                    color: Colors.grey,
+                  ),
+                ),
         );
       },
     );
@@ -119,86 +132,25 @@ class PostTab extends StatelessWidget {
 
 class ReviewTab extends StatelessWidget {
   final Tailor tailor;
-  const ReviewTab({super.key, required this.tailor});
+  final List<Review>? reviews;
+  final VoidCallback? onReviewSuccess;
 
-  Future<void> _handleWriteReview(BuildContext context) async {
-    final apiService = Get.find<ApiService>();
-    try {
-      // 1. Fetch my orders
-      final response = await apiService.getOrders();
-      // Assuming response is List or Map with results.
-      // ApiService.getOrders returns _handleResponse which usually returns List<dynamic> for list endpoints or Map if paginated.
-      // Given ApiService structure, getOrders returns direct JSON.
-      // Let's assume it returns a list of orders.
-      List<dynamic> orders = [];
-      if (response is List) {
-        orders = response;
-      } else if (response is Map && response.containsKey('results')) {
-        orders = response['results'];
-      }
-      // Criteria: tailor.id match, status COMPLETED, has_review == false
-      final eligibleOrder = orders.firstWhereOrNull((order) {
-        // Handle both int and string IDs safely
-        final orderTailorId = order['tailor'] is Map
-            ? order['tailor']['id'].toString()
-            : order['tailor'].toString();
-        final currentTailorId = tailor.id.toString();
-
-        return orderTailorId == currentTailorId &&
-            order['status'] == 'COMPLETED' &&
-            order['has_review'] == false;
-      });
-
-      if (eligibleOrder != null) {
-        // 3. Show Dialog
-        final result = await Get.dialog(
-          ReviewDialog(orderId: eligibleOrder['id']),
-        );
-
-        if (result == true) {
-          // Refresh tailor details to show new review
-          // Ideally we should call a method in TailorController to reload current tailor
-          // For now we can trigger a rebuild or reload if possible.
-          // Simple way: Get.find<TailorController>().loadInitial(); (might be too broad)
-          // Or just let user know.
-        }
-      } else {
-        Get.snackbar(
-          "Cannot Write Review",
-          "You must have a completed order with this tailor that hasn't been reviewed yet.",
-          backgroundColor: Colors.orange.shade100,
-          colorText: Colors.orange.shade900,
-        );
-      }
-    } catch (e) {
-      Get.snackbar("Error", "Failed to check orders: $e");
-    }
-  }
+  const ReviewTab({
+    super.key,
+    required this.tailor,
+    this.reviews,
+    this.onReviewSuccess,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final reviewList = reviews ?? tailor.reviews;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ElevatedButton.icon(
-            onPressed: () => _handleWriteReview(context),
-            icon: const Icon(Iconsax.edit, size: 18),
-            label: const Text("Write a Review"),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: AppColors.primary,
-              elevation: 0,
-              side: const BorderSide(color: AppColors.primary),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 12),
-            ),
-          ),
-          const SizedBox(height: 16),
-          if (tailor.reviews.isEmpty)
+          if (reviewList.isEmpty)
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 40),
@@ -223,10 +175,10 @@ class ReviewTab extends StatelessWidget {
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: tailor.reviews.length,
+              itemCount: reviewList.length,
               separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
-                final review = tailor.reviews[index];
+                final review = reviewList[index];
                 return Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(

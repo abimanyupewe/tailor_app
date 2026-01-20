@@ -4,6 +4,7 @@ import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/order_model.dart';
 import 'package:tailor_app/screens/order/order_detail_screen.dart';
 import 'package:tailor_app/screens/order/widgets/order_card.dart';
+import 'package:tailor_app/screens/tailor/widgets/review_dialog.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key});
@@ -15,6 +16,7 @@ class OrderListScreen extends StatefulWidget {
 class _OrderListScreenState extends State<OrderListScreen> {
   late Future<dynamic> _ordersFuture;
   final apiService = Get.find<ApiService>();
+  final Set<int> _reviewedOrderIds = {};
 
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
     final newFuture = apiService.getOrders();
     // Wait for it to finish so RefreshIndicator spinner spins correctly
     await newFuture;
+    print("DEBUG: Orders refreshed");
     setState(() {
       _ordersFuture = newFuture;
     });
@@ -82,11 +85,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 if (snapshot.data is Map) {
                   final results =
                       (snapshot.data as Map)['results'] as List<dynamic>? ?? [];
-                  allOrders = results
-                      .map(
-                        (json) => Order.fromJson(json as Map<String, dynamic>),
-                      )
-                      .toList();
+                  allOrders = results.map((json) {
+                    final o = Order.fromJson(json as Map<String, dynamic>);
+                    print(
+                      "DEBUG: Order #${o.id} status=${o.status}, hasReview=${o.hasReview}, jsonHasReview=${json['has_review']}",
+                    );
+                    return o;
+                  }).toList();
                 } else if (snapshot.data is List) {
                   allOrders = (snapshot.data as List)
                       .map(
@@ -167,6 +172,34 @@ class _OrderListScreenState extends State<OrderListScreen> {
           onTap: () {
             Get.to(() => OrderDetailScreen(order: order));
           },
+          onReview:
+              (order.status.toUpperCase() == 'COMPLETED' &&
+                  !order.hasReview &&
+                  !_reviewedOrderIds.contains(order.id))
+              ? () async {
+                  final result = await Get.dialog(
+                    ReviewDialog(orderId: order.id),
+                  );
+
+                  if (result == 'success') {
+                    setState(() {
+                      _reviewedOrderIds.add(order.id);
+                    });
+                    Get.snackbar(
+                      "Success",
+                      "Review submitted successfully!",
+                      backgroundColor: Colors.green.shade100,
+                      colorText: Colors.green.shade900,
+                    );
+                    _refreshOrders();
+                  } else if (result == 'refresh') {
+                    setState(() {
+                      _reviewedOrderIds.add(order.id);
+                    });
+                    _refreshOrders();
+                  }
+                }
+              : null,
         );
       },
     );

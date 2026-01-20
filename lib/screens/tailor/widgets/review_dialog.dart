@@ -28,19 +28,31 @@ class _ReviewDialogState extends State<ReviewDialog> {
         'rating': _rating,
         'comment': _commentController.text,
       });
-      Get.back(result: true); // Return true to indicate success
-      Get.snackbar("Success", "Review submitted successfully!");
+      Get.back(result: 'success'); // Return 'success' string
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        e.toString(),
-        backgroundColor: Colors.red.shade100,
-        colorText: Colors.red,
-      );
+      if (e.toString().contains("review with this order already exists")) {
+        // If review already exists, we should probably just close and refresh
+        Get.back(result: 'refresh');
+        Get.snackbar(
+          "Review Exists",
+          "You have already reviewed this order.",
+          backgroundColor: Colors.orange.shade100,
+          colorText: Colors.orange.shade900,
+        );
+      } else {
+        Get.snackbar(
+          "Error",
+          e.toString(),
+          backgroundColor: Colors.red.shade100,
+          colorText: Colors.red,
+        );
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

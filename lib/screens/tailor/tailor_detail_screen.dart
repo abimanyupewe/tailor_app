@@ -7,92 +7,125 @@ import 'package:tailor_app/controllers/chat_controller.dart';
 import 'package:tailor_app/screens/order/order_screen.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/screens/tailor/widgets/tailor_tabs.dart';
+import 'package:tailor_app/controllers/tailor_detail_controller.dart';
 
 class TailorDetailScreen extends StatelessWidget {
   final Tailor tailor;
   const TailorDetailScreen({super.key, required this.tailor});
 
+  String _getValidImageUrl(String? url) {
+    final fullUrl = Get.find<ApiService>().getImageUrl(url);
+    if (fullUrl.isEmpty) return '';
+    try {
+      final uri = Uri.parse(fullUrl);
+      if (uri.scheme != 'http' && uri.scheme != 'https') {
+        return '';
+      }
+    } catch (_) {
+      return '';
+    }
+    return fullUrl;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(TailorDetailController(tailor), tag: tailor.id);
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
-              SliverAppBar(
-                expandedHeight: 250,
-                pinned: true,
-                leading: IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                    shadows: [Shadow(color: Colors.black, blurRadius: 10)],
-                  ),
-                  onPressed: () => Get.back(),
-                ),
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Image.network(
-                    Get.find<ApiService>().getImageUrl(tailor.imageUrl),
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: Colors.grey,
-                      child: const Center(child: Icon(Icons.error)),
+              Obx(() {
+                final currentTailor = controller.tailor.value;
+                final imageUrl = _getValidImageUrl(currentTailor.imageUrl);
+
+                return SliverAppBar(
+                  expandedHeight: 250,
+                  pinned: true,
+                  leading: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      shadows: [Shadow(color: Colors.black, blurRadius: 10)],
                     ),
+                    onPressed: () => Get.back(),
                   ),
-                ),
-              ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: imageUrl.isNotEmpty
+                        ? Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                                  color: Colors.grey,
+                                  child: const Center(child: Icon(Icons.error)),
+                                ),
+                          )
+                        : Container(
+                            color: Colors.grey,
+                            child: const Center(
+                              child: Icon(Icons.image_not_supported),
+                            ),
+                          ),
+                  ),
+                );
+              }),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              tailor.name,
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.star, color: Colors.amber),
-                              const SizedBox(width: 4),
-                              Text(
-                                "${tailor.rating} (${tailor.reviewCount})",
+                  child: Obx(() {
+                    final currentTailor = controller.tailor.value;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                currentTailor.name,
                                 style: const TextStyle(
+                                  fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(
-                            Iconsax.location,
-                            size: 16,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              tailor.address,
-                              style: const TextStyle(color: Colors.grey),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                            Row(
+                              children: [
+                                const Icon(Icons.star, color: Colors.amber),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "${currentTailor.rating} (${currentTailor.reviewCount})",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            const Icon(
+                              Iconsax.location,
+                              size: 16,
+                              color: Colors.grey,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                currentTailor.address,
+                                style: const TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
                 ),
               ),
               SliverPersistentHeader(
@@ -115,14 +148,21 @@ class TailorDetailScreen extends StatelessWidget {
               ),
             ];
           },
-          body: TabBarView(
-            children: [
-              ServiceTab(tailor: tailor),
-              PostTab(tailor: tailor),
-              ReviewTab(tailor: tailor),
-              ContactTab(tailor: tailor),
-            ],
-          ),
+          body: Obx(() {
+            final currentTailor = controller.tailor.value;
+            return TabBarView(
+              children: [
+                ServiceTab(tailor: currentTailor),
+                PostTab(tailor: currentTailor),
+                ReviewTab(
+                  tailor: currentTailor,
+                  reviews: controller.reviews,
+                  onReviewSuccess: () => controller.refreshTailor(),
+                ),
+                ContactTab(tailor: currentTailor),
+              ],
+            );
+          }),
         ),
         bottomNavigationBar: Container(
           padding: const EdgeInsets.all(20),
@@ -149,15 +189,10 @@ class TailorDetailScreen extends StatelessWidget {
                 child: IconButton(
                   onPressed: () {
                     final chatController = Get.put(ChatController());
-                    // Reverting to use userId because 'id' (Tailor ID) was rejected by backend.
-                    // The initial 404 was due to missing endpoint, not wrong ID.
                     final targetId =
                         (tailor.userId != null && tailor.userId!.isNotEmpty)
                         ? tailor.userId!
                         : tailor.id;
-                    print(
-                      "Starting chat with TargetID: $targetId (TailorID: ${tailor.id}, UserID: ${tailor.userId})",
-                    );
                     chatController.startChatWithTailor(targetId);
                   },
                   icon: const Icon(Iconsax.message, color: AppColors.primary),

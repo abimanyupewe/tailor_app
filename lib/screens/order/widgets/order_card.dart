@@ -6,7 +6,8 @@ import 'package:intl/intl.dart';
 class OrderCard extends StatelessWidget {
   final Order order;
   final VoidCallback? onTap;
-  const OrderCard({super.key, required this.order, this.onTap});
+  final VoidCallback? onReview;
+  const OrderCard({super.key, required this.order, this.onTap, this.onReview});
 
   Color _getStatusColor(String status) {
     switch (status.toUpperCase()) {
@@ -199,12 +200,44 @@ class OrderCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Spacer(),
-                    Icon(
-                      Iconsax.arrow_right_3,
-                      size: 16,
-                      color: Colors.grey.shade400,
+                  const Spacer(),
+                  if (onReview != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: SizedBox(
+                        height: 28,
+                        child: OutlinedButton(
+                          onPressed: onReview,
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            side: const BorderSide(color: Colors.amber),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.star, size: 12, color: Colors.amber),
+                              SizedBox(width: 4),
+                              Text(
+                                "Rate",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.amber,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
+                  Icon(
+                    Iconsax.arrow_right_3,
+                    size: 16,
+                    color: Colors.grey.shade400,
+                  ),
                   ],
                 ),
               ],
