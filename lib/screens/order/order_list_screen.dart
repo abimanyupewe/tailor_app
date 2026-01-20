@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/order_model.dart';
+import 'package:tailor_app/screens/order/order_detail_screen.dart';
 import 'package:tailor_app/screens/order/widgets/order_card.dart';
 
 class OrderListScreen extends StatefulWidget {
@@ -161,7 +162,12 @@ class _OrderListScreenState extends State<OrderListScreen> {
       padding: const EdgeInsets.all(20),
       itemBuilder: (context, index) {
         final order = orders[index];
-        return OrderCard(order: order);
+        return OrderCard(
+          order: order,
+          onTap: () {
+            Get.to(() => OrderDetailScreen(order: order));
+          },
+        );
       },
     );
   }

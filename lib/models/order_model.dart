@@ -5,6 +5,7 @@ class Order {
   final String status;
   final String paymentStatus;
   final double totalPrice;
+  final String? shopName;
   final List<OrderItem> items;
   final DateTime createdAt;
   // potentially tailor info if backend provides it, otherwise we might just show ID
@@ -16,6 +17,7 @@ class Order {
     required this.status,
     required this.paymentStatus,
     required this.totalPrice,
+    this.shopName,
     required this.items,
     required this.createdAt,
   });
@@ -27,6 +29,10 @@ class Order {
           : int.tryParse(json['id']?.toString() ?? '0') ?? 0,
       status: json['status'] ?? 'UNKNOWN',
       paymentStatus: json['payment_status'] ?? 'Unpaid',
+      shopName:
+          json['tailor_detail']?['shop_name'] ??
+          json['tailor_detail']?['user']?['username'] ??
+          'Tailor Shop',
       totalPrice:
           double.tryParse(json['total_price']?.toString() ?? '0') ?? 0.0,
       items:
@@ -61,12 +67,20 @@ class OrderItem {
       id: json['id'] ?? 0,
       quantity: json['quantity'] ?? 1,
       notes: json['notes'],
-      // Adapt based on actual API response structure for service
-      // If service is just an ID, we might not get full details unless expanded
-      service: json['service_details'] != null
+      // Backend uses 'service_detail' (singular)
+      service: json['service_detail'] != null
+          ? Service.fromJson(json['service_detail'])
+          : json['service_details'] != null
           ? Service.fromJson(json['service_details'])
           : null,
-      price: double.tryParse(json['price']?.toString() ?? '0') ?? 0.0,
+      // Backend uses 'price_at_order', fallback to 'price'
+      price:
+          double.tryParse(
+            json['price_at_order']?.toString() ??
+                json['price']?.toString() ??
+                '0',
+          ) ??
+          0.0,
     );
   }
 }
