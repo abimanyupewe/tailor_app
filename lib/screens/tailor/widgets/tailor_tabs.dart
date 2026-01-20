@@ -7,7 +7,9 @@ import 'package:tailor_app/screens/tailor/widgets/review_dialog.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:tailor_app/screens/post/post_detail_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 class ServiceTab extends StatelessWidget {
   final Tailor tailor;
@@ -91,12 +93,23 @@ class PostTab extends StatelessWidget {
       itemCount: tailor.posts.length,
       itemBuilder: (context, index) {
         final post = tailor.posts[index];
-        return Image.network(
-          Get.find<ApiService>().getImageUrl(post.image),
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Container(
-            color: Colors.grey.shade200,
-            child: const Icon(Icons.error, color: Colors.grey),
+        return GestureDetector(
+          onTap: () {
+            Get.to(
+              () => PostDetailScreen(
+                post: post,
+                tailorName: tailor.name,
+                tailorImage: tailor.imageUrl,
+              ),
+            );
+          },
+          child: Image.network(
+            Get.find<ApiService>().getImageUrl(post.image),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Container(
+              color: Colors.grey.shade200,
+              child: const Icon(Icons.error, color: Colors.grey),
+            ),
           ),
         );
       },
