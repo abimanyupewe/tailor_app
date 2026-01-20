@@ -16,8 +16,7 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final ProfileController controller = Get.find<ProfileController>();
 
-  late TextEditingController _firstNameController;
-  late TextEditingController _lastNameController;
+  late TextEditingController _fullNameController;
   late TextEditingController _phoneController;
   late TextEditingController _addressController;
   late TextEditingController _emailController;
@@ -33,10 +32,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final phone = userData['phone_number'] ?? user['phone_number'] ?? '';
     final email = user['email'] ?? '';
 
-    _firstNameController = TextEditingController(
-      text: user['first_name'] ?? '',
+    final String firstName = user['first_name'] ?? '';
+    final String lastName = user['last_name'] ?? '';
+    _fullNameController = TextEditingController(
+      text: '$firstName $lastName'.trim(),
     );
-    _lastNameController = TextEditingController(text: user['last_name'] ?? '');
     _phoneController = TextEditingController(text: phone);
     _addressController = TextEditingController(text: address);
     _emailController = TextEditingController(text: email);
@@ -44,8 +44,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
+    _fullNameController.dispose();
     _phoneController.dispose();
     _addressController.dispose();
     _emailController.dispose();
@@ -89,9 +88,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   )
                 : TextButton(
                     onPressed: () {
+                      final fullName = _fullNameController.text.trim();
+                      final nameParts = fullName.split(' ');
+                      final firstName = nameParts.isNotEmpty
+                          ? nameParts.first
+                          : '';
+                      final lastName = nameParts.length > 1
+                          ? nameParts.sublist(1).join(' ')
+                          : '';
+
                       controller.updateUserProfile(
-                        firstName: _firstNameController.text,
-                        lastName: _lastNameController.text,
+                        firstName: firstName,
+                        lastName: lastName,
                         phoneNumber: _phoneController.text,
                         address: _addressController.text,
                         email: _emailController.text,
@@ -180,24 +188,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             const SizedBox(height: 32),
 
             // --- Form Fields ---
-            Row(
-              children: [
-                Expanded(
-                  child: _buildTextField(
-                    label: "First Name",
-                    controller: _firstNameController,
-                    icon: Iconsax.user,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildTextField(
-                    label: "Last Name",
-                    controller: _lastNameController,
-                    icon: Iconsax.user,
-                  ),
-                ),
-              ],
+            _buildTextField(
+              label: "Full Name",
+              controller: _fullNameController,
+              icon: Iconsax.user,
             ),
             const SizedBox(height: 20),
             _buildTextField(

@@ -38,11 +38,12 @@ class PersonalInfoScreen extends GetView<ProfileController> {
         final username = userObj['username'];
 
         // Full Name Logic
-        final firstName = userObj['first_name'];
-        final lastName = userObj['last_name'];
-        String fullName = '-';
-        if (firstName != null && firstName.toString().isNotEmpty) {
-          fullName = '$firstName ${lastName ?? ''}'.trim();
+        final firstName = userObj['first_name']?.toString() ?? '';
+        final lastName = userObj['last_name']?.toString() ?? '';
+        String fullName = '$firstName $lastName'.trim();
+
+        if (fullName.isEmpty) {
+          fullName = '-';
         }
 
         // Robust extraction for Address and Phone
