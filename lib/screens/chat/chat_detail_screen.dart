@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/chat_controller.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/models/chat_model.dart';
 
 class ChatDetailScreen extends StatefulWidget {
@@ -50,6 +51,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       );
     }
   }
+
+  final List<String> _quickReplies = [
+    "Apakah pesanan saya sudah siap?",
+    "Berapa lama estimasi pengerjaan?",
+    "Saya ingin request perubahan ukuran.",
+    "Terima kasih!",
+    "Bisa dikirim kapan?",
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -109,8 +118,45 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               );
             }),
           ),
+          _buildQuickReplies(),
           _buildInputArea(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildQuickReplies() {
+    return Container(
+      height: 50,
+      color: Colors.white,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        scrollDirection: Axis.horizontal,
+        itemCount: _quickReplies.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          return ActionChip(
+            label: Text(
+              _quickReplies[index],
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                color: AppColors.primary,
+              ),
+            ),
+            backgroundColor: AppColors.primary.withOpacity(0.05),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(color: AppColors.primary.withOpacity(0.2)),
+            ),
+            onPressed: () {
+              _textController.text = _quickReplies[index];
+              // Optional: Move cursor to end
+              _textController.selection = TextSelection.fromPosition(
+                TextPosition(offset: _textController.text.length),
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -122,7 +168,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         constraints: BoxConstraints(maxWidth: Get.width * 0.75),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: msg.isMe ? Colors.blue : Colors.grey[200], // Adjust colors
+          color: msg.isMe
+              ? AppColors.primary
+              : Colors.grey[200], // Adjust colors
           borderRadius: BorderRadius.only(
             topLeft: const Radius.circular(16),
             topRight: const Radius.circular(16),
@@ -203,7 +251,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       height: 24,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Iconsax.send_1, color: Colors.blue),
+                  : const Icon(Iconsax.send_1, color: AppColors.primary),
             ),
           ),
         ],
