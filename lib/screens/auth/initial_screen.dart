@@ -60,9 +60,7 @@ class _InitialScreenState extends State<InitialScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-          ],
+          children: [CircularProgressIndicator()],
         ),
       ),
     );
