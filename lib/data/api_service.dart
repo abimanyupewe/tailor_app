@@ -369,4 +369,15 @@ class ApiService extends GetxService {
     );
     return _handleResponse(response);
   }
+
+  // --- Maintenance ---
+  /// Manually triggers the cleanup of pending/unpaid orders older than 24 hours.
+  /// Intended for scheduler or admin usage.
+  Future<dynamic> cleanupPendingOrders() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/orders/cleanup/'),
+      headers: _headers,
+    );
+    return _handleResponse(response);
+  }
 }
