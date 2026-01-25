@@ -21,41 +21,64 @@ class ServiceTab extends StatelessWidget {
     }
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       itemCount: tailor.services.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
       itemBuilder: (context, index) {
         final service = tailor.services[index];
         return Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.grey.shade50),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
               ),
             ],
           ),
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(16),
-            title: Text(
-              service.name,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-              service.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.grey.shade600),
-            ),
-            trailing: Text(
-              'Rp ${service.price.toStringAsFixed(0)}',
-              style: const TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              title: Text(
+                service.name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  service.description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+                ),
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Text(
+                  'Rp ${service.price.toStringAsFixed(0)}',
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
               ),
             ),
           ),
@@ -85,17 +108,17 @@ class PostTab extends StatelessWidget {
     }
     return GridView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(2),
+      padding: const EdgeInsets.all(20),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 1.0,
       ),
       itemCount: tailor.posts.length,
       itemBuilder: (context, index) {
         final post = tailor.posts[index];
         final imageUrl = Get.find<ApiService>().getImageUrl(post.image);
-        // Basic validation
         bool isValidUrl =
             imageUrl.isNotEmpty &&
             (imageUrl.startsWith('http') || imageUrl.startsWith('https'));
@@ -110,22 +133,43 @@ class PostTab extends StatelessWidget {
               ),
             );
           },
-          child: isValidUrl
-              ? Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey.shade200,
-                    child: const Icon(Icons.error, color: Colors.grey),
+          child: Hero(
+            tag: 'post_${post.id}',
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
-                )
-              : Container(
-                  color: Colors.grey.shade200,
-                  child: const Icon(
-                    Icons.image_not_supported,
-                    color: Colors.grey,
-                  ),
-                ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: isValidUrl
+                    ? Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey.shade100,
+                          child: Icon(
+                            Icons.error_outline,
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        color: Colors.grey.shade100,
+                        child: Icon(
+                          Icons.image_not_supported_outlined,
+                          color: Colors.grey.shade400,
+                        ),
+                      ),
+              ),
+            ),
+          ),
         );
       },
     );
@@ -147,28 +191,39 @@ class ReviewTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reviewList = reviews ?? tailor.reviews;
+
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (reviewList.isEmpty)
             Center(
               child: Padding(
-                padding: const EdgeInsets.only(top: 40),
+                padding: const EdgeInsets.only(top: 60),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Iconsax.message_text,
-                      size: 48,
-                      color: Colors.grey.shade300,
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Iconsax.message_text,
+                        size: 40,
+                        color: Colors.grey.shade300,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       "No reviews yet",
-                      style: TextStyle(color: Colors.grey.shade500),
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -183,15 +238,16 @@ class ReviewTab extends StatelessWidget {
               itemBuilder: (context, index) {
                 final review = reviewList[index];
                 return Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey.shade50),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 20,
+                        offset: const Offset(0, 8),
                       ),
                     ],
                   ),
@@ -204,8 +260,8 @@ class ReviewTab extends StatelessWidget {
                           Row(
                             children: [
                               CircleAvatar(
-                                radius: 16,
-                                backgroundColor: Colors.grey.shade200,
+                                radius: 20,
+                                backgroundColor: Colors.grey.shade100,
                                 backgroundImage: review.userAvatar != null
                                     ? NetworkImage(
                                         Get.find<ApiService>().getImageUrl(
@@ -216,49 +272,68 @@ class ReviewTab extends StatelessWidget {
                                 child: review.userAvatar == null
                                     ? const Icon(
                                         Icons.person,
-                                        size: 16,
+                                        size: 20,
                                         color: Colors.grey,
                                       )
                                     : null,
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                review.userName,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    review.userName,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${review.date.day} ${_getMonth(review.date.month)} ${review.date.year}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade400,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                                size: 16,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                review.rating.toString(),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Colors.amber,
+                                  size: 16,
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 4),
+                                Text(
+                                  review.rating.toString(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.amber,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 12),
                       Text(
                         review.comment,
-                        style: TextStyle(color: Colors.grey.shade700),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '${review.date.day}/${review.date.month}/${review.date.year}',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade400,
+                          color: Colors.grey.shade600,
+                          height: 1.5,
                         ),
                       ),
                     ],
@@ -269,6 +344,24 @@ class ReviewTab extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getMonth(int month) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return months[month - 1];
   }
 }
 
@@ -287,53 +380,64 @@ class ContactTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Address Card
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.grey.shade50),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
                 ),
               ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Address",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(
-                      Iconsax.location,
-                      color: AppColors.primary,
-                      size: 20,
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Iconsax.location,
+                        color: AppColors.primary,
+                      ),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        tailor.address,
-                        style: TextStyle(color: Colors.grey.shade700),
+                    const SizedBox(width: 12),
+                    const Text(
+                      "Location Address",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
+                Text(
+                  tailor.address,
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    height: 1.5,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(16),
                   child: SizedBox(
-                    height: 150,
+                    height: 180,
                     width: double.infinity,
                     child: FlutterMap(
                       options: MapOptions(
@@ -358,7 +462,7 @@ class ContactTab extends StatelessWidget {
                               point: LatLng(tailor.latitude, tailor.longitude),
                               child: const Icon(
                                 Icons.location_on,
-                                color: Colors.red,
+                                color: AppColors.primary,
                                 size: 40,
                               ),
                             ),
@@ -371,20 +475,28 @@ class ContactTab extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
-
-          // Contact Button
+          const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
+            height: 56,
             child: ElevatedButton.icon(
               onPressed: () => _makePhoneCall(tailor.phoneNumber),
-              icon: const Icon(Iconsax.call),
-              label: Text("Call ${tailor.phoneNumber}"),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              icon: const Icon(Iconsax.call, color: Colors.white),
+              label: Text(
+                "Call ${tailor.phoneNumber}",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 4,
+                shadowColor: AppColors.primary.withOpacity(0.4),
               ),
             ),
           ),
