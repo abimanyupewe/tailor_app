@@ -54,305 +54,318 @@ class HomeScreen extends StatelessWidget {
         return sliderController.isLoading.value ||
                 tailorController.isLoading.value
             ? const Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                color: Colors.white,
-                backgroundColor: AppColors.primary,
-                onRefresh: () async {
-                  await Future.wait([
-                    profileController.getUserProfile(),
-                    sliderController.getSliders(),
-                    tailorController.getAllTailors(),
-                  ]);
-                },
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(20),
-                  children: [
-                    Wrap(
-                      runSpacing: 15,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 25,
-                                  backgroundColor: Colors.grey.shade300,
-                                  backgroundImage:
-                                      (avatarUrl != null &&
-                                          avatarUrl.toString().isNotEmpty)
-                                      ? NetworkImage(
-                                          avatarUrl.toString().startsWith(
-                                                'http',
-                                              )
-                                              ? avatarUrl
-                                              : '${apiService.baseUrl}$avatarUrl',
-                                        )
-                                      : null,
-                                  child:
-                                      (avatarUrl == null ||
-                                          avatarUrl.toString().isEmpty)
-                                      ? const Icon(
-                                          Icons.person,
-                                          color: Colors.white,
-                                        )
-                                      : null,
-                                ),
-                                const SizedBox(width: 15),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Hi, ',
-                                            style: GoogleFonts.plusJakartaSans(
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
+            : SafeArea(
+                child: RefreshIndicator(
+                  color: Colors.white,
+                  backgroundColor: AppColors.primary,
+                  onRefresh: () async {
+                    await Future.wait([
+                      profileController.getUserProfile(),
+                      sliderController.getSliders(),
+                      tailorController.getAllTailors(),
+                    ]);
+                  },
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(20),
+                    children: [
+                      Wrap(
+                        runSpacing: 15,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: Colors.grey.shade300,
+                                    backgroundImage:
+                                        (avatarUrl != null &&
+                                            avatarUrl.toString().isNotEmpty)
+                                        ? NetworkImage(
+                                            avatarUrl.toString().startsWith(
+                                                  'http',
+                                                )
+                                                ? avatarUrl
+                                                : '${apiService.baseUrl}$avatarUrl',
+                                          )
+                                        : null,
+                                    child:
+                                        (avatarUrl == null ||
+                                            avatarUrl.toString().isEmpty)
+                                        ? const Icon(
+                                            Icons.person,
+                                            color: Colors.white,
+                                          )
+                                        : null,
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Hi, ',
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    color: Colors.black,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                             ),
+                                            TextSpan(
+                                              text: username,
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    color: AppColors.primary,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Iconsax.location5,
+                                            size: 14,
+                                            color: AppColors.primary,
                                           ),
-                                          TextSpan(
-                                            text: username,
-                                            style: GoogleFonts.plusJakartaSans(
-                                              color: AppColors.primary,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
+                                          const SizedBox(width: 4),
+                                          SizedBox(
+                                            width: 200,
+                                            child: Text(
+                                              displayAddress,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                             ),
                                           ),
                                         ],
                                       ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              IconButton(
+                                icon: const Icon(Iconsax.notification),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                          GestureDetector(
+                            onTap: () => Get.to(() => const SearchScreen()),
+                            child: AbsorbPointer(
+                              child: TextField(
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(
+                                    left: 20,
+                                    top: 15,
+                                    bottom: 15,
+                                  ),
+                                  hintText: "Search for tailors or services",
+                                  hintStyle: const TextStyle(
+                                    color: AppColors.primary,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          WidgetStateProperty.all<Color>(
+                                            AppColors.primary,
+                                          ),
                                     ),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Iconsax.location5,
-                                          size: 14,
+                                    onPressed: () {}, // Empty but required
+                                    icon: const Icon(
+                                      Iconsax.search_normal,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                ),
+                              ),
+                            ),
+                          ),
+                          CarouselSlider(
+                            options: CarouselOptions(
+                              height: 150,
+                              autoPlayAnimationDuration: Duration(seconds: 2),
+                              autoPlay: true,
+                              enlargeCenterPage: true,
+                              viewportFraction: 0.9,
+                              disableCenter: true,
+                            ),
+                            items: sliderController.sliders
+                                .map((slider) => SliderCard(data: slider))
+                                .toList(),
+                          ),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  mainAxisSpacing: 8,
+                                  crossAxisSpacing: 8,
+                                  childAspectRatio: 0.65,
+                                ),
+                            itemCount: categoryData.length > 3
+                                ? 4
+                                : categoryData.length,
+                            itemBuilder: (context, index) {
+                              if (index < 3) {
+                                final category = categoryData[index];
+                                return GestureDetector(
+                                  onTap: () => Get.to(
+                                    () => SearchScreen(
+                                      initialCategory: category['name'],
+                                    ),
+                                  ),
+                                  child: CategoryHori(
+                                    category: {
+                                      'name': category['name'] ?? 'Unknown',
+                                      'iconUrl': category['iconUrl'] ?? '',
+                                      'color': category['color'] ?? Colors.grey,
+                                    },
+                                  ),
+                                );
+                              } else {
+                                // Slot ke-4 = "Lihat Semua"
+                                return GestureDetector(
+                                  onTap: () =>
+                                      Get.to(() => const AllCategoriesScreen()),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: BoxDecoration(
                                           color: AppColors.primary,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        SizedBox(
-                                          width: 200,
-                                          child: Text(
-                                            displayAddress,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: GoogleFonts.plusJakartaSans(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                            ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            IconButton(
-                              icon: const Icon(Iconsax.notification),
-                              onPressed: () {},
-                            ),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: () => Get.to(() => const SearchScreen()),
-                          child: AbsorbPointer(
-                            child: TextField(
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.only(
-                                  left: 20,
-                                  top: 15,
-                                  bottom: 15,
-                                ),
-                                hintText: "Search for tailors or services",
-                                hintStyle: const TextStyle(
-                                  color: AppColors.primary,
-                                ),
-                                suffixIcon: IconButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        WidgetStateProperty.all<Color>(
-                                          AppColors.primary,
+                                        child: Icon(
+                                          Icons.more_horiz,
+                                          size: 28,
+                                          color: Colors.white,
                                         ),
-                                  ),
-                                  onPressed: () {}, // Empty but required
-                                  icon: const Icon(
-                                    Iconsax.search_normal,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(50),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                              ),
-                            ),
-                          ),
-                        ),
-                        CarouselSlider(
-                          options: CarouselOptions(
-                            height: 150,
-                            autoPlayAnimationDuration: Duration(seconds: 2),
-                            autoPlay: true,
-                            enlargeCenterPage: true,
-                            viewportFraction: 0.9,
-                            disableCenter: true,
-                          ),
-                          items: sliderController.sliders
-                              .map((slider) => SliderCard(data: slider))
-                              .toList(),
-                        ),
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4,
-                                mainAxisSpacing: 8,
-                                crossAxisSpacing: 8,
-                                childAspectRatio: 0.65,
-                              ),
-                          itemCount: categoryData.length > 3
-                              ? 4
-                              : categoryData.length,
-                          itemBuilder: (context, index) {
-                            if (index < 3) {
-                              final category = categoryData[index];
-                              return GestureDetector(
-                                onTap: () => Get.to(
-                                  () => SearchScreen(
-                                    initialCategory: category['name'],
-                                  ),
-                                ),
-                                child: CategoryHori(
-                                  category: {
-                                    'name': category['name'] ?? 'Unknown',
-                                    'iconUrl': category['iconUrl'] ?? '',
-                                    'color': category['color'] ?? Colors.grey,
-                                  },
-                                ),
-                              );
-                            } else {
-                              // Slot ke-4 = "Lihat Semua"
-                              return GestureDetector(
-                                onTap: () =>
-                                    Get.to(() => const AllCategoriesScreen()),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primary,
-                                        borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Icon(
-                                        Icons.more_horiz,
-                                        size: 28,
-                                        color: Colors.white,
+                                      SizedBox(height: 6),
+                                      Text(
+                                        "See All",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black,
+                                          fontSize: 14,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 6),
-                                    Text(
-                                      "See All",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          },
-                        ),
-
-                        // Terdekat
-                        Text(
-                          "Closest to you",
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 120,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: tailorController.tailors
-                                .where((t) => t.distance < 5.0)
-                                .length,
-                            itemBuilder: (context, index) {
-                              final nearbyTailors = tailorController.tailors
-                                  .where((t) => t.distance < 5.0)
-                                  .toList();
-
-                              return TailorCard(data: nearbyTailors[index]);
+                                    ],
+                                  ),
+                                );
+                              }
                             },
                           ),
-                        ),
 
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
+                          // Terdekat
+                          Text(
+                            "Closest to you",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(ImageString.banner3),
-                          ),
-                        ),
-
-                        Text(
-                          "Popular Tailors",
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 120,
-                          child: Obx(
-                            () => ListView.builder(
+                          SizedBox(
+                            height: 120,
+                            child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               physics: const BouncingScrollPhysics(),
-                              itemCount: tailorController.popularTailors.length,
+                              itemCount: tailorController.tailors
+                                  .where((t) => t.distance < 5.0)
+                                  .length,
                               itemBuilder: (context, index) {
-                                return TailorCard(
-                                  data: tailorController.popularTailors[index],
-                                );
+                                final nearbyTailors = tailorController.tailors
+                                    .where((t) => t.distance < 5.0)
+                                    .toList();
+
+                                return TailorCard(data: nearbyTailors[index]);
                               },
                             ),
                           ),
-                        ),
 
-                        Text(
-                          "Recommended Tailors",
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.asset(ImageString.banner3),
+                            ),
                           ),
-                        ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
-                          itemCount: tailorController.tailors.length,
-                          itemBuilder: (context, index) {
-                            final recommendedTailors = tailorController.tailors;
-                            return TailorCard(data: recommendedTailors[index]);
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+
+                          Text(
+                            "Popular Tailors",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 120,
+                            child: Obx(
+                              () => ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                physics: const BouncingScrollPhysics(),
+                                itemCount:
+                                    tailorController.popularTailors.length,
+                                itemBuilder: (context, index) {
+                                  return TailorCard(
+                                    data:
+                                        tailorController.popularTailors[index],
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+
+                          Text(
+                            "Recommended Tailors",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: BouncingScrollPhysics(),
+                            itemCount: tailorController.tailors.length,
+                            itemBuilder: (context, index) {
+                              final recommendedTailors =
+                                  tailorController.tailors;
+                              return TailorCard(
+                                data: recommendedTailors[index],
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
       }),
