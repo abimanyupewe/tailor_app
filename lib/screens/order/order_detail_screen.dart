@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+
 import 'package:tailor_app/models/order_model.dart';
 
 class OrderDetailScreen extends StatelessWidget {
@@ -33,198 +34,250 @@ class OrderDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final statusColor = _getStatusColor(order.status);
+    final isPaid = order.paymentStatus.toUpperCase() == 'PAID';
+
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.grey[50], // Premium off-white
       appBar: AppBar(
-        title: Text(
-          "Order Detail",
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold),
+        title: const Text(
+          "Transaction Details",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Get.back(),
+        ),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            // Header Section
+            // Top Status Badge
             Container(
-              color: Colors.white,
-              padding: const EdgeInsets.all(20),
-              child: Column(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: statusColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Shop Icon/Avatar Placeholder
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Iconsax.shop,
-                      size: 30,
-                      color: AppColors.primary,
-                    ),
+                  Icon(
+                    Icons.check_circle_rounded,
+                    size: 16,
+                    color: statusColor,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(width: 8),
                   Text(
-                    order.shopName ?? "Tailor Shop",
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 18,
+                    order.status.toUpperCase(),
+                    style: TextStyle(
+                      color: statusColor,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Order #${order.id}",
-                    style: GoogleFonts.plusJakartaSans(
-                      color: Colors.grey,
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  _buildStatusBadge(),
                 ],
               ),
             ),
+            const SizedBox(height: 12),
+            Text(
+              "Order #${order.id}",
+              style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              _formatDate(order.createdAt),
+              style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
+            ),
+            const SizedBox(height: 30),
 
-            const SizedBox(height: 8),
-
-            // Item Details
+            // Receipt Card
             Container(
-              color: Colors.white,
-              padding: const EdgeInsets.all(20),
               width: double.infinity,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 24,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Order Items",
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  // Tailor Info
+                  Row(
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          shape: BoxShape.circle,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Icon(
+                            Iconsax.shop,
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            order.shopName ?? "Tailor Shop",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            "Service Provider",
+                            style: TextStyle(color: Colors.grey, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Divider(
+                      height: 1,
+                      color: Colors.grey.shade200,
+                      thickness: 1,
                     ),
                   ),
-                  const SizedBox(height: 16),
+
+                  // Item List
                   ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: order.items.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 24),
+                    separatorBuilder: (_, __) => const SizedBox(height: 20),
                     itemBuilder: (context, index) {
                       final item = order.items[index];
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 60,
-                            height: 60,
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(8),
+                              color: AppColors.primary.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Icon(
-                              Iconsax.receipt_2,
-                              color: Colors.grey,
+                              Iconsax.tag,
+                              size: 18,
+                              color: AppColors.primary,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  item.service?.name ?? "Service Item",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
+                                  item.service?.name ?? "Service",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
-                                Text(
-                                  "${item.quantity}x  •  Rp ${item.price.toStringAsFixed(0)}",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    color: Colors.grey[600],
-                                    fontSize: 12,
-                                  ),
-                                ),
                                 if (item.notes != null &&
-                                    item.notes!.isNotEmpty) ...[
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "Note: ${item.notes}",
-                                    style: GoogleFonts.plusJakartaSans(
-                                      color: Colors.grey[500],
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic,
+                                    item.notes!.isNotEmpty)
+                                  Container(
+                                    margin: const EdgeInsets.only(
+                                      top: 4,
+                                      bottom: 4,
+                                    ),
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade50,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: Colors.grey.shade100,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Iconsax.note_text,
+                                          size: 14,
+                                          color: Colors.grey.shade400,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Expanded(
+                                          child: Text(
+                                            item.notes!,
+                                            style: TextStyle(
+                                              color: Colors.grey.shade600,
+                                              fontSize: 12,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
+                                Text(
+                                  "${item.quantity} x Rp ${item.price.toStringAsFixed(0)}",
+                                  style: TextStyle(
+                                    color: Colors.grey.shade500,
+                                    fontSize: 13,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                           Text(
                             "Rp ${(item.price * item.quantity).toStringAsFixed(0)}",
-                            style: GoogleFonts.plusJakartaSans(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                              fontSize: 15,
                             ),
                           ),
                         ],
                       );
                     },
                   ),
-                ],
-              ),
-            ),
 
-            const SizedBox(height: 8),
-
-            // Order Summary
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Order Summary",
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Divider(
+                      height: 1,
+                      color: Colors.grey.shade200,
+                      thickness: 1,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  _buildSummaryRow("Status", order.status.toUpperCase()),
-                  const SizedBox(height: 8),
-                  _buildSummaryRow("Date", _formatDate(order.createdAt)),
-                  const SizedBox(height: 8),
-                  _buildSummaryRow(
-                    "Payment",
-                    order.paymentStatus.toUpperCase(),
-                    textColor: order.paymentStatus.toUpperCase() == 'PAID'
-                        ? Colors.green
-                        : Colors.orange,
-                  ),
-                  const Divider(height: 24),
+
+                  // Total
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Total Amount",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                       Text(
                         "Rp ${order.totalPrice.toStringAsFixed(0)}",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20,
                           color: AppColors.primary,
                         ),
                       ),
@@ -233,49 +286,82 @@ class OrderDetailScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 24),
+
+            // Payment Status
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isPaid
+                      ? Colors.green.withOpacity(0.2)
+                      : Colors.orange.withOpacity(0.2),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isPaid
+                          ? Colors.green.withOpacity(0.1)
+                          : Colors.orange.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      isPaid ? Iconsax.card : Iconsax.wallet,
+                      color: isPaid ? Colors.green : Colors.orange,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Payment Status",
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        isPaid ? "PAID" : "AWAITING PAYMENT",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isPaid ? Colors.green : Colors.orange,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  if (!isPaid && order.status.toUpperCase() != 'CANCELLED')
+                    ElevatedButton(
+                      onPressed: () {
+                        // Normally trigger payment, for now just show snackbar or navigate if flow exists
+                        Get.snackbar(
+                          "Info",
+                          "Check 'My Orders' to complete payment.",
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        "Pay Details",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 40),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryRow(String label, String value, {Color? textColor}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            color: Colors.grey[600],
-            fontSize: 14,
-          ),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.plusJakartaSans(
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-            color: textColor ?? Colors.black87,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatusBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: _getStatusColor(order.status).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        order.status.toUpperCase(),
-        style: GoogleFonts.plusJakartaSans(
-          color: _getStatusColor(order.status),
-          fontWeight: FontWeight.bold,
-          fontSize: 12,
         ),
       ),
     );
