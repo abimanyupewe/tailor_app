@@ -106,18 +106,22 @@ class TailorDetailScreen extends StatelessWidget {
                                   const SizedBox(width: 4),
                                   Builder(
                                     builder: (context) {
-                                      final reviews = controller.reviews;
-                                      final count = reviews.length;
-                                      double average = 0.0;
-                                      if (count > 0) {
-                                        average =
-                                            reviews
+                                      var rating = currentTailor.rating;
+                                      var count = currentTailor.reviewCount;
+
+                                      // Fallback: If model rating is 0 but we have reviews in controller, calculate it
+                                      if (rating == 0.0 &&
+                                          controller.reviews.isNotEmpty) {
+                                        count = controller.reviews.length;
+                                        rating =
+                                            controller.reviews
                                                 .map((r) => r.rating)
-                                                .reduce((a, b) => a + b) /
+                                                .fold(0.0, (a, b) => a + b) /
                                             count;
                                       }
+
                                       return Text(
-                                        "${average.toStringAsFixed(1)} ($count)",
+                                        "${rating.toStringAsFixed(1)} ($count)",
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),

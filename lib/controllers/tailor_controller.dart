@@ -46,6 +46,61 @@ class TailorController extends GetxController {
       print("Error loading tailors: $e");
     } finally {
       isLoading.value = false;
+      // Fetch missing ratings in background after list is shown
+      fetchMissingRatings();
+    }
+  }
+
+  Future<void> fetchMissingRatings() async {
+    await Future.wait([_fetchForList(tailors), _fetchForList(popularTailors)]);
+  }
+
+  Future<void> _fetchForList(RxList<Tailor> list) async {
+    for (int i = 0; i < list.length; i++) {
+      final tailor = list[i];
+      if (tailor.rating == 0.0) {
+        try {
+          final apiService = Get.find<ApiService>();
+          final reviewsData = await apiService.getReviews(tailor.id);
+          List<dynamic> reviews = [];
+          if (reviewsData is List) {
+            reviews = reviewsData;
+          } else if (reviewsData is Map && reviewsData.containsKey('results')) {
+            reviews = reviewsData['results'];
+          }
+
+          if (reviews.isNotEmpty) {
+            double total = 0.0;
+            int count = reviews.length;
+            for (var r in reviews) {
+              final reviewModel = Review.fromJson(r);
+              total += reviewModel.rating;
+            }
+            final double avg = total / count;
+
+            final updatedTailor = Tailor(
+              id: tailor.id,
+              userId: tailor.userId,
+              name: tailor.name,
+              address: tailor.address,
+              rating: avg,
+              reviewCount: count,
+              imageUrl: tailor.imageUrl,
+              latitude: tailor.latitude,
+              longitude: tailor.longitude,
+              distance: tailor.distance,
+              services: tailor.services,
+              reviews: reviews.map((r) => Review.fromJson(r)).toList(),
+              phoneNumber: tailor.phoneNumber,
+              posts: tailor.posts,
+            );
+
+            list[i] = updatedTailor;
+          }
+        } catch (e) {
+          print("Error fetching rating for tailor ${tailor.name}: $e");
+        }
+      }
     }
   }
 }

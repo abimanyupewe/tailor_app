@@ -15,13 +15,38 @@ class Tailor {
   final List<Post> posts;
 
   factory Tailor.fromJson(Map<String, dynamic> json) {
+    var reviewsList =
+        (json['reviews'] as List<dynamic>?)
+            ?.map((r) => Review.fromJson(r as Map<String, dynamic>))
+            .toList() ??
+        [];
+
+    double parsedRating =
+        double.tryParse(
+          json['rating']?.toString() ??
+              json['average_rating']?.toString() ??
+              '0.0',
+        ) ??
+        0.0;
+
+    // Calculate rating from reviews if API returns 0 but has reviews
+    if (parsedRating == 0.0 && reviewsList.isNotEmpty) {
+      double total = 0;
+      for (var r in reviewsList) {
+        total += r.rating;
+      }
+      parsedRating = total / reviewsList.length;
+    }
+
     return Tailor(
       id: json['id']?.toString() ?? json['user']?['id']?.toString() ?? '',
       userId: json['user']?['id']?.toString(), // Can be null
       name: json['shop_name'] ?? 'Unknown Shop',
       address: json['location']?['address'] ?? 'No Address',
-      rating: double.tryParse(json['rating']?.toString() ?? '0.0') ?? 0.0,
-      reviewCount: int.tryParse(json['review_count']?.toString() ?? '0') ?? 0,
+      rating: parsedRating,
+      reviewCount:
+          int.tryParse(json['review_count']?.toString() ?? '0') ??
+          reviewsList.length,
       imageUrl: json['shop_image'] ?? json['user']?['avatar'] ?? '',
       latitude: json['location']?['latitude'] != null
           ? double.tryParse(json['location']['latitude'].toString()) ?? 0.0
@@ -35,11 +60,7 @@ class Tailor {
               ?.map((s) => Service.fromJson(s as Map<String, dynamic>))
               .toList() ??
           [],
-      reviews:
-          (json['reviews'] as List<dynamic>?)
-              ?.map((r) => Review.fromJson(r as Map<String, dynamic>))
-              .toList() ??
-          [],
+      reviews: reviewsList,
       phoneNumber: json['user']?['phone_number'] ?? '-',
       posts:
           (json['posts'] as List<dynamic>?)

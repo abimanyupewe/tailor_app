@@ -21,33 +21,61 @@ class TailorDetailController extends GetxController {
 
   Future<void> refreshTailor() async {
     try {
+      print("TailorDetailController: Refreshing tailor ${tailor.value.id}");
       final data = await _apiService.getTailorDetail(tailor.value.id);
+      print("TailorDetailController: Detail data received: $data");
       tailor.value = Tailor.fromJson(data);
 
-      // Also fetch reviews specifically to ensure we have the full list
       try {
         final reviewsData = await _apiService.getReviews(tailor.value.id);
+        print("TailorDetailController: Reviews data received: $reviewsData");
+        List<Review> fetchedReviews = [];
+
         if (reviewsData is List) {
-          final reviewList = <Review>[];
           for (var r in reviewsData) {
             try {
-              reviewList.add(Review.fromJson(r));
+              fetchedReviews.add(Review.fromJson(r));
             } catch (e) {
               print("Error parsing individual review: $e");
             }
           }
-          reviews.assignAll(reviewList);
         } else if (reviewsData is Map && reviewsData.containsKey('results')) {
-          final reviewList = <Review>[];
           for (var r in reviewsData['results'] as List) {
             try {
-              reviewList.add(Review.fromJson(r));
+              fetchedReviews.add(Review.fromJson(r));
             } catch (e) {
               print("Error parsing individual review: $e");
             }
           }
-          reviews.assignAll(reviewList);
         }
+
+        // Update tailor with fetched reviews to ensure rating calculation works
+        if (fetchedReviews.isNotEmpty) {
+          final currentRating = tailor.value.rating;
+          // Calculate if current is 0
+          final newRating = currentRating == 0.0
+              ? fetchedReviews.map((r) => r.rating).fold(0.0, (a, b) => a + b) /
+                    fetchedReviews.length
+              : currentRating;
+
+          tailor.value = Tailor(
+            id: tailor.value.id,
+            userId: tailor.value.userId,
+            name: tailor.value.name,
+            address: tailor.value.address,
+            rating: newRating,
+            reviewCount: fetchedReviews.length,
+            imageUrl: tailor.value.imageUrl,
+            latitude: tailor.value.latitude,
+            longitude: tailor.value.longitude,
+            distance: tailor.value.distance,
+            services: tailor.value.services,
+            reviews: fetchedReviews,
+            phoneNumber: tailor.value.phoneNumber,
+            posts: tailor.value.posts,
+          );
+        }
+        reviews.assignAll(fetchedReviews);
       } catch (e) {
         print("Error refreshing reviews: $e");
         // Fallback to what's in the tailor object if separate fetch fails
