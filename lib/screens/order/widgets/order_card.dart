@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:tailor_app/models/order_model.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 
 class OrderCard extends StatelessWidget {
   final Order order;
   final VoidCallback? onTap;
   final VoidCallback? onReview;
+
   const OrderCard({super.key, required this.order, this.onTap, this.onReview});
 
   Color _getStatusColor(String status) {
@@ -32,83 +34,112 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final statusColor = _getStatusColor(order.status);
+    final isPaid = order.paymentStatus.toUpperCase() == 'PAID';
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.grey.shade50),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(24),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header: Order ID & Date
+                // Header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Order #${order.id}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Iconsax.receipt_1,
+                            size: 16,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          "Order #${order.id}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      _formatDate(order.createdAt),
-                      style: TextStyle(
-                        color: Colors.grey.shade500,
-                        fontSize: 12,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isPaid
+                            ? Colors.green.withOpacity(0.1)
+                            : Colors.orange.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        isPaid ? "PAID" : "UNPAID",
+                        style: TextStyle(
+                          color: isPaid ? Colors.green : Colors.orange,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const Divider(height: 24, thickness: 1), // Divider
-                // Body: Items Summary
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Divider(height: 1),
+                ),
+
+                // Content
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(Iconsax.receipt, color: Colors.blue),
-                    ),
-                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (order.items.isNotEmpty) ...[
                             Text(
-                              order.items.first.service?.name ??
-                                  "Service Item", // Fallback if service null
+                              order.items.first.service?.name ?? "Service",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                fontSize: 15,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              "${order.items.length} Items Total",
+                              "${order.items.length} Items • ${_formatDate(order.createdAt)}",
                               style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 12,
+                                color: Colors.grey.shade500,
+                                fontSize: 13,
                               ),
                             ),
                           ] else
@@ -122,17 +153,20 @@ class OrderCard extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text(
+                        Text(
                           "Total Price",
-                          style: TextStyle(color: Colors.grey, fontSize: 10),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey.shade400,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           "Rp ${order.totalPrice.toStringAsFixed(0)}",
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w800,
                             fontSize: 16,
-                            color: Colors.green, // Highlight price
+                            color: AppColors.primary,
                           ),
                         ),
                       ],
@@ -140,104 +174,67 @@ class OrderCard extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
-                // Footer: Status Badge
+                // Footer
                 Row(
                   children: [
-                    // Payment Status Badge (if Paid)
-                    if (order.paymentStatus.toUpperCase() == 'PAID')
-                      Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Text(
-                          "PAID",
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ),
-
-                    // Order Progress Status Badge
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
+                        horizontal: 12,
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(order.status).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: statusColor.withOpacity(0.2)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.circle,
-                            size: 8,
-                            color: _getStatusColor(order.status),
-                          ),
-                          const SizedBox(width: 6),
+                          Icon(Icons.circle, size: 8, color: statusColor),
+                          const SizedBox(width: 8),
                           Text(
-                            order.status.toUpperCase() == 'PENDING' &&
-                                    order.paymentStatus.toUpperCase() == 'PAID'
-                                ? "PENDING APPROVAL"
-                                : order.status.toUpperCase(),
+                            order.status.toUpperCase(),
                             style: TextStyle(
-                              color: _getStatusColor(order.status),
+                              color: statusColor,
                               fontWeight: FontWeight.bold,
-                              fontSize: 10,
+                              fontSize: 11,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  const Spacer(),
-                  if (onReview != null)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: SizedBox(
-                        height: 28,
+                    const Spacer(),
+                    if (onReview != null) ...[
+                      SizedBox(
+                        height: 32,
                         child: OutlinedButton(
                           onPressed: onReview,
                           style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
                             side: const BorderSide(color: Colors.amber),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(12),
                             ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                           ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.star, size: 12, color: Colors.amber),
-                              SizedBox(width: 4),
-                              Text(
-                                "Rate",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.amber,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                          child: const Text(
+                            "Review",
+                            style: TextStyle(
+                              color: Colors.amber,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ),
+                      const SizedBox(width: 12),
+                    ],
+                    Icon(
+                      Iconsax.arrow_right_3,
+                      size: 18,
+                      color: Colors.grey.shade300,
                     ),
-                  Icon(
-                    Iconsax.arrow_right_3,
-                    size: 16,
-                    color: Colors.grey.shade400,
-                  ),
                   ],
                 ),
               ],
