@@ -18,6 +18,9 @@ class OrderController extends GetxController {
   final RxList<OrderItem> items = <OrderItem>[].obs;
   final RxBool isLoading = false.obs;
 
+  // Scheduling Properties
+  final Rx<DateTime> selectedDate = DateTime.now().obs;
+
   OrderController(this.tailor);
 
   @override
@@ -82,11 +85,7 @@ class OrderController extends GetxController {
               duration: const Duration(seconds: 5),
               mainButton: TextButton(
                 onPressed: () {
-                  // Navigate to profile or edit profile
-                  // Assuming using nested navigation or main tab
-                  // For now just close snackbar, users know where profile is
                   Get.back();
-                  // Or if we know the route: Get.toNamed('/profile/edit');
                 },
                 child: const Text(
                   "Update Profile",
@@ -101,18 +100,29 @@ class OrderController extends GetxController {
         print("Warning: Could not validate email via ProfileController: $e");
       }
 
+      // Prepare schedule string
+      final date = selectedDate.value;
+      final dateStr = "${date.day}/${date.month}/${date.year}";
+      final scheduleInfo = " | Scheduled: $dateStr";
+
       // Construct payload
       final payload = {
         "tailor": int.tryParse(tailor.id) ?? 0,
-        "items": activeItems
-            .map(
-              (item) => {
-                "service": item.service.id,
-                "quantity": item.quantity.value,
-                "notes": item.notes.value,
-              },
-            )
-            .toList(),
+        "items": activeItems.map((item) {
+          // Append schedule to notes
+          String finalNote = item.notes.value;
+          if (finalNote.isEmpty) {
+            finalNote = "Scheduled: $dateStr";
+          } else {
+            finalNote += scheduleInfo;
+          }
+
+          return {
+            "service": item.service.id,
+            "quantity": item.quantity.value,
+            "notes": finalNote,
+          };
+        }).toList(),
       };
 
       final response = await apiService.createOrder(payload);
