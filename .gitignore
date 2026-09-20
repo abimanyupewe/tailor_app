@@ -37,6 +37,7 @@ migrate_working_dir/
 .env.example
 
 # Symbolication related
+/dev/
 app.*.symbols
 
 # Obfuscation related
