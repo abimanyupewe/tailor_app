@@ -158,14 +158,14 @@ class _PulsingLocationMarkerState extends State<PulsingLocationMarker>
             // Gradient: Soft purple to transparent edge
             gradient: RadialGradient(
               colors: [
-                AppColors.secondary.withOpacity(0.8), // Inner core
-                AppColors.secondary.withOpacity(0.1), // Outer edge
+                AppColors.secondary.withValues(alpha: 0.8), // Inner core
+                AppColors.secondary.withValues(alpha: 0.1), // Outer edge
               ],
               stops: const [0.3, 1.0],
             ),
             // Subtle Outline
             border: Border.all(
-              color: Colors.white.withOpacity(0.5),
+              color: Colors.white.withValues(alpha: 0.5),
               width: 1.5,
             ),
             // Multiple soft shadows for "Solar Scan" feel

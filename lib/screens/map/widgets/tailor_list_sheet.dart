@@ -81,7 +81,7 @@ class TailorListSheet extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+                          border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
                         ),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),

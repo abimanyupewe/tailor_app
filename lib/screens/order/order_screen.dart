@@ -134,7 +134,7 @@ class OrderScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -203,7 +203,7 @@ class OrderScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: isSelected
-                            ? AppColors.primary.withOpacity(0.5)
+                            ? AppColors.primary.withValues(alpha: 0.5)
                             : Colors.transparent,
                         width: 1.5,
                       ),
@@ -317,7 +317,7 @@ class OrderScreen extends StatelessWidget {
           color: Colors.white,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
           border: Border(
-            top: BorderSide(color: AppColors.secondary.withOpacity(0.12)),
+            top: BorderSide(color: AppColors.secondary.withValues(alpha: 0.12)),
           ),
         ),
         child: SafeArea(

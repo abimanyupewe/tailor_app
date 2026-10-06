@@ -41,7 +41,7 @@ class LoginScreen extends GetView<AuthController> {
                   'Please sign in to your account.',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                   ),
                 ),
               ],

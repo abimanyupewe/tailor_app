@@ -96,7 +96,7 @@ class SettingsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
       ),
       child: ListTile(
         onTap: hasSwitch ? null : onTap,
@@ -127,7 +127,7 @@ class SettingsScreen extends StatelessWidget {
             ? Switch(
                 value: true,
                 onChanged: (val) {},
-                activeColor: AppColors.primary,
+                activeThumbColor: AppColors.primary,
               )
             : null, // No Arrow as per strict request
       ),

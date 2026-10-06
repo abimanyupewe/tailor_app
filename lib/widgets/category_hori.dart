@@ -17,9 +17,9 @@ class CategoryHori extends StatelessWidget {
           height: 70,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.72),
+            color: color.withValues(alpha: 0.72),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: color.withOpacity(0.9)),
+            border: Border.all(color: color.withValues(alpha: 0.9)),
           ),
           child: Center(
             child: Image.asset(

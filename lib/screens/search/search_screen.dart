@@ -122,7 +122,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       side: BorderSide(
                         color: isSelected
                             ? AppColors.primary
-                            : AppColors.secondary.withOpacity(0.2),
+                            : AppColors.secondary.withValues(alpha: 0.2),
                       ),
                     ),
                     showCheckmark: false,

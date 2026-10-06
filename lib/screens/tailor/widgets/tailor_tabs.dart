@@ -30,7 +30,7 @@ class ServiceTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+            border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
           ),
           child: Padding(
             padding: const EdgeInsets.all(4),
@@ -61,7 +61,7 @@ class ServiceTab extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.08),
+                  color: AppColors.primary.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -131,7 +131,7 @@ class PostTab extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+                border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -229,7 +229,7 @@ class ReviewTab extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+                    border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,7 +285,7 @@ class ReviewTab extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.amber.withOpacity(0.1),
+                              color: Colors.amber.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -369,7 +369,7 @@ class ContactTab extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+              border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,7 +379,7 @@ class ContactTab extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(

@@ -146,8 +146,9 @@ class MapControllerX extends GetxController {
   void _checkArrival() {
     if (!isRoutingMode.value ||
         selectedTailor.value == null ||
-        currentLocation.value == null)
+        currentLocation.value == null) {
       return;
+    }
 
     final distance = const Distance().as(
       LengthUnit.Meter,

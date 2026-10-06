@@ -68,7 +68,7 @@ class ProfileScreen extends GetView<ProfileController> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: Colors.white.withOpacity(0.5), width: 1),
+                              color: Colors.white.withValues(alpha: 0.5), width: 1),
                         ),
                         child: CircleAvatar(
                           radius: 45, // Slightly smaller
@@ -98,7 +98,7 @@ class ProfileScreen extends GetView<ProfileController> {
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
                               color:
-                                  Colors.white.withOpacity(0.2), // Glass effect
+                                  Colors.white.withValues(alpha: 0.2), // Glass effect
                               shape: BoxShape.circle,
                               border: Border.all(color: Colors.white, width: 1),
                             ),
@@ -125,7 +125,7 @@ class ProfileScreen extends GetView<ProfileController> {
                         email,
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
                       ),
                     ),
@@ -191,7 +191,7 @@ class ProfileScreen extends GetView<ProfileController> {
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
       ),
       child: ListTile(
         onTap: onTap,

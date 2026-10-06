@@ -52,7 +52,7 @@ class AllCategoriesScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: (category['color'] as Color? ?? AppColors.primary)
-                          .withOpacity(0.1),
+                          .withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Image.asset(

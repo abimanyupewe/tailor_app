@@ -56,7 +56,7 @@ class TailorDetailScreen extends StatelessWidget {
                     leading: Container(
                       margin: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
@@ -87,9 +87,9 @@ class TailorDetailScreen extends StatelessWidget {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  Colors.black.withOpacity(0.3),
+                                  Colors.black.withValues(alpha: 0.3),
                                   Colors.transparent,
-                                  Colors.black.withOpacity(0.1),
+                                  Colors.black.withValues(alpha: 0.1),
                                 ],
                                 stops: const [0.0, 0.4, 1.0],
                               ),
@@ -108,7 +108,7 @@ class TailorDetailScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+                        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
                       ),
                       child: Obx(() {
                         final currentTailor = controller.tailor.value;
@@ -137,7 +137,7 @@ class TailorDetailScreen extends StatelessWidget {
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.amber.withOpacity(0.1),
+                                    color: Colors.amber.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Row(
@@ -212,7 +212,7 @@ class TailorDetailScreen extends StatelessWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.green.withOpacity(0.1),
+                                    color: Colors.green.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: const Text(
@@ -232,7 +232,7 @@ class TailorDetailScreen extends StatelessWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.blue.withOpacity(0.1),
+                                    color: Colors.blue.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
@@ -294,7 +294,7 @@ class TailorDetailScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border(
-              top: BorderSide(color: AppColors.secondary.withOpacity(0.12)),
+              top: BorderSide(color: AppColors.secondary.withValues(alpha: 0.12)),
             ),
           ),
           child: Row(

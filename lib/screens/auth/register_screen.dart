@@ -19,7 +19,7 @@ class RegisterScreen extends GetView<AuthController> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
@@ -52,7 +52,7 @@ class RegisterScreen extends GetView<AuthController> {
                   'Sign up to get started.',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                   ),
                 ),
               ],

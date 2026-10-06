@@ -37,7 +37,7 @@ class MainWrapper extends StatelessWidget {
           elevation: 0,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           backgroundColor: Colors.white,
-          indicatorColor: AppColors.primary.withOpacity(0.1),
+          indicatorColor: AppColors.primary.withValues(alpha: 0.1),
           selectedIndex: controller.selectedIndex.value,
           onDestinationSelected: (index) => controller.changeIndex(index),
           destinations: [

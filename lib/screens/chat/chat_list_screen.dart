@@ -6,7 +6,7 @@ import 'package:tailor_app/controllers/chat_controller.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 
 class ChatListScreen extends StatelessWidget {
-  const ChatListScreen({Key? key}) : super(key: key);
+  const ChatListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,7 @@ class ChatListScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+                    border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
                   ),
                   child: Row(
                     children: [

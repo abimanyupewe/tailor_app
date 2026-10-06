@@ -112,7 +112,7 @@ class PersonalInfoScreen extends GetView<ProfileController> {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: AppColors.accent.withOpacity(0.35),
+            color: AppColors.accent.withValues(alpha: 0.35),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, size: 24, color: AppColors.primary),

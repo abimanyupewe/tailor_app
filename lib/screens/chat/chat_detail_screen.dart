@@ -7,7 +7,7 @@ import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/models/chat_model.dart';
 
 class ChatDetailScreen extends StatefulWidget {
-  const ChatDetailScreen({Key? key}) : super(key: key);
+  const ChatDetailScreen({super.key});
 
   @override
   State<ChatDetailScreen> createState() => _ChatDetailScreenState();
@@ -145,10 +145,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 color: AppColors.primary,
               ),
             ),
-            backgroundColor: AppColors.primary.withOpacity(0.05),
+            backgroundColor: AppColors.primary.withValues(alpha: 0.05),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
-              side: BorderSide(color: AppColors.primary.withOpacity(0.2)),
+              side: BorderSide(color: AppColors.primary.withValues(alpha: 0.2)),
             ),
             onPressed: () {
               _textController.text = _quickReplies[index];
@@ -210,7 +210,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(
-          top: BorderSide(color: AppColors.secondary.withOpacity(0.12)),
+          top: BorderSide(color: AppColors.secondary.withValues(alpha: 0.12)),
         ),
       ),
       child: Row(
