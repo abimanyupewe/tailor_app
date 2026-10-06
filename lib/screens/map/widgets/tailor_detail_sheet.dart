@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
@@ -26,16 +27,9 @@ class TailorDetailSheet extends StatelessWidget {
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25),
-              topRight: Radius.circular(25),
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0, -2),
-              ),
-            ],
           ),
           child: Column(
             children: [
@@ -59,7 +53,7 @@ class TailorDetailSheet extends StatelessWidget {
                       onTap: () {
                         Get.to(() => TailorDetailScreen(tailor: selected));
                       },
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(12),
                       child: _buildHeaderCard(context),
                     ),
                     const SizedBox(height: 20),
@@ -88,9 +82,9 @@ class TailorDetailSheet extends StatelessWidget {
             controller.toggleRouting();
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: isRouting ? Colors.red : Colors.deepPurple,
+            backgroundColor: isRouting ? Colors.red : AppColors.primary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(10),
             ),
             elevation: 0,
           ),
@@ -116,21 +110,14 @@ class TailorDetailSheet extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey[200]!),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(10),
             child: Image.network(
               Get.find<tailor_app.ApiService>().getImageUrl(selected.imageUrl),
               width: 80,

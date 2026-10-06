@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
     final categoryData = DataCategory().data;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.background,
       body: Obx(() {
         final userData = profileController.user.value;
         final userObj = userData?['user'];
@@ -64,7 +64,9 @@ class HomeScreen extends StatelessWidget {
 
         return sliderController.isLoading.value ||
                 tailorController.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              )
             : SafeArea(
                 child: RefreshIndicator(
                   color: Colors.white,
@@ -84,9 +86,15 @@ class HomeScreen extends StatelessWidget {
                     ),
                     children: [
                       // 1. Header Section
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                           Expanded(
                             child: Row(
                               children: [
@@ -100,13 +108,6 @@ class HomeScreen extends StatelessWidget {
                                       color: Colors.white,
                                       width: 2,
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(50),
@@ -138,14 +139,14 @@ class HomeScreen extends StatelessWidget {
                                           text: '${getGreeting()}, ',
                                           style: const TextStyle(
                                             fontSize: 14,
-                                            color: Colors.grey,
+                                            color: Colors.white70,
                                           ),
                                           children: [
                                             TextSpan(
                                               text: username,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: Colors.black87,
+                                                color: Colors.white,
                                               ),
                                             ),
                                           ],
@@ -168,6 +169,7 @@ class HomeScreen extends StatelessWidget {
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
+                                                color: Colors.white,
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -181,22 +183,17 @@ class HomeScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(Iconsax.notification,
+                                  size: 20, color: Colors.white),
                             ),
-                            child: const Icon(Iconsax.notification, size: 20),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 24),
 
@@ -210,15 +207,8 @@ class HomeScreen extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.grey.shade50),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.03),
-                                blurRadius: 15,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
                           ),
                           child: Row(
                             children: [
@@ -269,6 +259,11 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       // 4. Categories Grid
+                      _buildSectionHeader(
+                        "Categories",
+                        () => Get.to(() => const AllCategoriesScreen()),
+                      ),
+                      const SizedBox(height: 12),
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -279,75 +274,27 @@ class HomeScreen extends StatelessWidget {
                               crossAxisSpacing: 10,
                               childAspectRatio: 0.62,
                             ),
-                        itemCount: categoryData.length > 3
-                            ? 4
-                            : categoryData.length,
+                        itemCount: categoryData.length > 4 ? 4 : categoryData.length,
                         itemBuilder: (context, index) {
-                          if (index < 3) {
-                            final category = categoryData[index];
-                            return GestureDetector(
-                              onTap: () => Get.to(
-                                () => SearchScreen(
-                                  initialCategory: category['name'],
-                                ),
-                              ),
-                              child: CategoryHori(
-                                category: {
-                                  'name': category['name'] ?? 'Unknown',
-                                  'iconUrl': category['iconUrl'] ?? '',
-                                  'color': category['color'] ?? Colors.grey,
-                                },
-                              ),
-                            );
-                          } else {
-                            // "See All" button
-                            return GestureDetector(
-                              onTap: () =>
-                                  Get.to(() => const AllCategoriesScreen()),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 70,
-                                    height: 70,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                        color: Colors.grey.shade100,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.03),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: const Icon(
-                                      Iconsax.category,
-                                      size: 24,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  const Text(
-                                    "See All",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
+                          final category = categoryData[index];
+                          return GestureDetector(
+                            onTap: () => Get.to(
+                              () => SearchScreen(initialCategory: category['name']),
+                            ),
+                            child: CategoryHori(
+                              category: {
+                                'name': category['name'] ?? 'Unknown',
+                                'iconUrl': category['iconUrl'] ?? '',
+                                'color': category['color'] ?? Colors.grey,
+                              },
+                            ),
+                          );
                         },
                       ),
                       const SizedBox(height: 24),
 
                       // 5. Closest Tailors
-                      _buildSectionHeader("Closest to you", () {}),
+                      _buildSectionHeader("Closest to you", null),
                       const SizedBox(height: 16),
                       SizedBox(
                         height: 140, // Height for TailorCard
@@ -369,7 +316,7 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       // 6. Popular Tailors
-                      _buildSectionHeader("Popular Tailors", () {}),
+                      _buildSectionHeader("Popular Tailors", null),
                       const SizedBox(height: 16),
                       SizedBox(
                         height: 140,
@@ -393,17 +340,10 @@ class HomeScreen extends StatelessWidget {
                         width: double.infinity,
                         height: 120, // Constrain height
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 15,
-                              offset: const Offset(0, 5),
-                            ),
-                          ],
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
                             ImageString.banner3,
                             fit: BoxFit.cover,
@@ -422,7 +362,7 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       // 8. Recommended
-                      _buildSectionHeader("Recommended", () {}),
+                      _buildSectionHeader("Recommended", null),
                       const SizedBox(height: 16),
                       ListView.builder(
                         shrinkWrap: true,
@@ -445,7 +385,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title, VoidCallback onTap) {
+  Widget _buildSectionHeader(String title, VoidCallback? onTap) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -453,17 +393,18 @@ class HomeScreen extends StatelessWidget {
           title,
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        GestureDetector(
-          onTap: onTap,
-          child: const Text(
-            "See All",
-            style: TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
+        if (onTap != null)
+          GestureDetector(
+            onTap: onTap,
+            child: const Text(
+              "See All",
+              style: TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
             ),
           ),
-        ),
       ],
     );
   }

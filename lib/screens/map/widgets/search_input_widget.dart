@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
@@ -51,13 +52,7 @@ class SearchInputWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
+                    border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
                   ),
                   constraints: const BoxConstraints(maxHeight: 250),
                   child: ListView.builder(
@@ -71,7 +66,7 @@ class SearchInputWidget extends StatelessWidget {
                       return ListTile(
                         leading: Icon(
                           isTailor ? Iconsax.shop : Iconsax.location,
-                          color: isTailor ? Colors.deepPurple : Colors.grey,
+                          color: isTailor ? AppColors.secondary : Colors.grey,
                         ),
                         title: Text(
                           result['display_name'] ?? '',

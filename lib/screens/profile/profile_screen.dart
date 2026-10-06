@@ -139,10 +139,7 @@ class ProfileScreen extends GetView<ProfileController> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-                ),
+                decoration: const BoxDecoration(color: Colors.white),
                 child: SingleChildScrollView(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
@@ -192,8 +189,9 @@ class ProfileScreen extends GetView<ProfileController> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9F9F9), // Light grey bg for items
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
       ),
       child: ListTile(
         onTap: onTap,
@@ -206,7 +204,7 @@ class ProfileScreen extends GetView<ProfileController> {
           ),
           child: Icon(
             icon,
-            color: isDestructive ? Colors.red : Colors.black87,
+            color: isDestructive ? Colors.red : AppColors.primary,
             size: 20,
           ),
         ),
@@ -215,7 +213,7 @@ class ProfileScreen extends GetView<ProfileController> {
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 14,
-            color: isDestructive ? Colors.red : Colors.black87,
+            color: isDestructive ? Colors.red : AppColors.primary,
           ),
         ),
         minLeadingWidth: 0,

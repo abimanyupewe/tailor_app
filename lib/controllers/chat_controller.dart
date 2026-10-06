@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/chat_model.dart';
+import 'package:tailor_app/core/utils/app_toast.dart';
 
 class ChatController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
@@ -158,14 +159,14 @@ class ChatController extends GetxController {
         _currentRoomId!.isEmpty ||
         text.trim().isEmpty) {
       if (_currentRoomId == null || _currentRoomId!.isEmpty) {
-        Get.snackbar('Error', 'Cannot send: Room ID is missing.');
+        AppToast.error('Cannot send: Room ID is missing.');
       }
       return;
     }
 
     try {
       isSending.value = true;
-      final response = await _apiService.sendMessage(_currentRoomId!, text);
+      await _apiService.sendMessage(_currentRoomId!, text);
 
       // Optimistic update or wait for refresh
       // 1. Refresh messages in current room
@@ -175,9 +176,9 @@ class ChatController extends GetxController {
     } catch (e) {
       print('ChatController: Error sending message: $e');
       if (e.toString().contains('404')) {
-        Get.snackbar('Error', 'Chat room not found (404). ID: $_currentRoomId');
+        AppToast.error('Chat room not found (404). ID: $_currentRoomId');
       } else {
-        Get.snackbar('Error', 'Failed to send message: ${e.toString()}');
+        AppToast.error('Failed to send message: ${e.toString()}');
       }
     } finally {
       isSending.value = false;
@@ -192,7 +193,7 @@ class ChatController extends GetxController {
   Future<void> startChatWithTailor(String tailorId) async {
     print('ChatController: Attempting to start chat with ID: $tailorId');
     if (tailorId.isEmpty) {
-      Get.snackbar('Error', 'Invalid Tailor ID (empty)');
+      AppToast.error('Invalid Tailor ID (empty)');
       return;
     }
     try {
@@ -215,8 +216,7 @@ class ChatController extends GetxController {
         );
 
         if (roomId == null || roomId.isEmpty || roomId == 'null') {
-          Get.snackbar(
-            'Error',
+          AppToast.error(
             'Invalid Room ID from backend. Keys found: ${response.keys}',
           );
           return;
@@ -243,11 +243,11 @@ class ChatController extends GetxController {
         );
       } else {
         print("ChatController: Response is null");
-        Get.snackbar('Error', 'Failed to start chat: Null response');
+        AppToast.error('Failed to start chat: Null response');
       }
     } catch (e) {
       print('Error starting chat: $e');
-      Get.snackbar('Error', 'Could not start chat: ${e.toString()}');
+      AppToast.error('Could not start chat: ${e.toString()}');
     } finally {
       isLoading.value = false;
     }

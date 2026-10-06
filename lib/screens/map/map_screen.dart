@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/screens/map/widgets/map_view.dart';
 import 'package:tailor_app/screens/map/widgets/route_timeline_widget.dart';
 import 'package:tailor_app/screens/map/widgets/search_input_widget.dart';
@@ -47,7 +48,9 @@ class MapScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: mapController.moveToCurrentLocation,
         backgroundColor: Colors.white,
-        child: const Icon(Iconsax.gps, color: Colors.black),
+        elevation: 0,
+        shape: const CircleBorder(side: BorderSide(color: AppColors.secondary)),
+        child: const Icon(Iconsax.gps, color: AppColors.primary),
       ),
     );
   }

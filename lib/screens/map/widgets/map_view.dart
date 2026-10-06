@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
 import 'package:tailor_app/controllers/tailor_controller.dart';
 import 'package:tailor_app/data/api_service.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 
 class MapView extends StatelessWidget {
   const MapView({super.key});
@@ -17,7 +18,7 @@ class MapView extends StatelessWidget {
 
     return Obx(() {
       if (mapController.currentLocation.value == null) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator(color: AppColors.primary));
       }
 
       return FlutterMap(
@@ -55,7 +56,7 @@ class MapView extends StatelessWidget {
                           ),
                         ],
                   strokeWidth: 4.0,
-                  color: Colors.deepPurple,
+                  color: AppColors.secondary,
                   pattern: mapController.routePoints.isNotEmpty
                       ? const StrokePattern.solid()
                       : const StrokePattern.dotted(),
@@ -80,16 +81,9 @@ class MapView extends StatelessWidget {
                           color: Colors.white,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Colors.deepPurple,
+                            color: AppColors.secondary,
                             width: 2,
                           ),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 6,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
                         ),
                         child: ClipOval(
                           child: Image.network(
@@ -100,14 +94,14 @@ class MapView extends StatelessWidget {
                             errorBuilder: (_, __, ___) => const Icon(
                               Icons.store,
                               size: 24,
-                              color: Colors.deepPurple,
+                              color: AppColors.secondary,
                             ),
                           ),
                         ),
                       ),
                       const Icon(
                         Icons.arrow_drop_down,
-                        color: Colors.deepPurple,
+                        color: AppColors.secondary,
                         size: 24,
                       ),
                     ],
@@ -164,8 +158,8 @@ class _PulsingLocationMarkerState extends State<PulsingLocationMarker>
             // Gradient: Soft purple to transparent edge
             gradient: RadialGradient(
               colors: [
-                Colors.deepPurple.withOpacity(0.8), // Inner core
-                Colors.deepPurple.withOpacity(0.1), // Outer edge
+                AppColors.secondary.withOpacity(0.8), // Inner core
+                AppColors.secondary.withOpacity(0.1), // Outer edge
               ],
               stops: const [0.3, 1.0],
             ),
@@ -175,20 +169,6 @@ class _PulsingLocationMarkerState extends State<PulsingLocationMarker>
               width: 1.5,
             ),
             // Multiple soft shadows for "Solar Scan" feel
-            boxShadow: [
-              // Breathing outer glow
-              BoxShadow(
-                color: Colors.deepPurple.withOpacity(0.3 * _animation.value),
-                blurRadius: 20,
-                spreadRadius: 10 * _animation.value,
-              ),
-              // Inner solid glow
-              BoxShadow(
-                color: Colors.purple.withOpacity(0.2),
-                blurRadius: 5,
-                spreadRadius: 2,
-              ),
-            ],
           ),
           child: const Center(
             child: Icon(

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/core/constants/image_string.dart';
 

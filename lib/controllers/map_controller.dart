@@ -8,6 +8,7 @@ import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/screens/map/widgets/arrival_dialog.dart';
 import 'package:tailor_app/services/map_repository.dart';
+import 'package:tailor_app/core/utils/app_toast.dart';
 
 class MapControllerX extends GetxController {
   final MapRepository _repository = MapRepository();
@@ -71,7 +72,7 @@ class MapControllerX extends GetxController {
             );
           }
         } catch (e) {
-          Get.snackbar("Error", "Failed to load route");
+          AppToast.error("Failed to load route");
           isRoutingMode.value = false;
         }
 
@@ -270,7 +271,7 @@ class MapControllerX extends GetxController {
         searchResults.assignAll(combinedResults);
         showSuggestions.value = true;
       } catch (e) {
-        Get.snackbar('Search Error', e.toString());
+        AppToast.error(e.toString(), title: 'Search Error');
         searchResults.clear();
       } finally {
         isSearching.value = false;

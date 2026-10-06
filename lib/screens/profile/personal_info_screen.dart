@@ -11,21 +11,21 @@ class PersonalInfoScreen extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text(
           'Informasi Pribadi',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            color: Colors.black87,
+            color: AppColors.primary,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
       ),
@@ -112,8 +112,8 @@ class PersonalInfoScreen extends GetView<ProfileController> {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50,
-            borderRadius: BorderRadius.circular(12),
+            color: AppColors.accent.withOpacity(0.35),
+            borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, size: 24, color: AppColors.primary),
         ),
@@ -136,7 +136,7 @@ class PersonalInfoScreen extends GetView<ProfileController> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: AppColors.primary,
                 ),
               ),
             ],

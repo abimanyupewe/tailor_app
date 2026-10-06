@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/tailor_model.dart';
-import 'package:iconsax/iconsax.dart';
 
 class PostDetailScreen extends StatelessWidget {
   final Post post;
@@ -20,9 +19,9 @@ class PostDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.primary,
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
       ),

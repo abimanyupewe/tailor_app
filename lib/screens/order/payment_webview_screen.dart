@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 
 class PaymentWebViewScreen extends StatefulWidget {
   final String snapToken;
@@ -64,6 +65,9 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 0,
         title: const Text("Payment"),
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -76,7 +80,8 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
       body: Stack(
         children: [
           WebViewWidget(controller: _controller),
-          if (isLoading) const Center(child: CircularProgressIndicator()),
+          if (isLoading)
+            const Center(child: CircularProgressIndicator(color: AppColors.primary)),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor_app/core/utils/app_toast.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
@@ -38,14 +39,14 @@ class OrderDetailScreen extends StatelessWidget {
     final isPaid = order.paymentStatus.toUpperCase() == 'PAID';
 
     return Scaffold(
-      backgroundColor: Colors.grey[50], // Premium off-white
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text(
           "Transaction Details",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        foregroundColor: AppColors.primary,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -62,7 +63,7 @@ class OrderDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: statusColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -102,14 +103,8 @@ class OrderDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
               ),
               child: Column(
                 children: [
@@ -293,7 +288,7 @@ class OrderDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: isPaid
                       ? Colors.green.withOpacity(0.2)
@@ -340,10 +335,7 @@ class OrderDetailScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         // Normally trigger payment, for now just show snackbar or navigate if flow exists
-                        Get.snackbar(
-                          "Info",
-                          "Check 'My Orders' to complete payment.",
-                        );
+                        AppToast.info("Check 'My Orders' to complete payment.");
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,

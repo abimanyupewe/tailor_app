@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -8,21 +9,21 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text(
           'Settings',
           style: TextStyle(
-            color: Colors.black87,
+            color: AppColors.primary,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
       ),
@@ -93,8 +94,9 @@ class SettingsScreen extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF9F9F9),
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
       ),
       child: ListTile(
         onTap: hasSwitch ? null : onTap,
@@ -105,14 +107,14 @@ class SettingsScreen extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, color: Colors.black87, size: 20),
+          child: Icon(icon, color: AppColors.primary, size: 20),
         ),
         title: Text(
           title,
           style: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 14,
-            color: Colors.black87,
+            color: AppColors.primary,
           ),
         ),
         subtitle: subtitle != null
@@ -125,7 +127,7 @@ class SettingsScreen extends StatelessWidget {
             ? Switch(
                 value: true,
                 onChanged: (val) {},
-                activeColor: Colors.black, // or primary color
+                activeColor: AppColors.primary,
               )
             : null, // No Arrow as per strict request
       ),

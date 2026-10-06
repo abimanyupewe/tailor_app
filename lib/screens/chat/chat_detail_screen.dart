@@ -65,9 +65,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 1,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Iconsax.arrow_left_2, color: Colors.black),
+          icon: const Icon(Iconsax.arrow_left_2, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
         title: Row(
@@ -85,7 +85,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             Text(
               name,
               style: GoogleFonts.plusJakartaSans(
-                color: Colors.black,
+                color: AppColors.primary,
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
@@ -98,7 +98,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value && controller.messages.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                );
               }
 
               // Auto scroll to bottom when messages update
@@ -145,7 +147,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             ),
             backgroundColor: AppColors.primary.withOpacity(0.05),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(10),
               side: BorderSide(color: AppColors.primary.withOpacity(0.2)),
             ),
             onPressed: () {
@@ -172,8 +174,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               ? AppColors.primary
               : Colors.grey[200], // Adjust colors
           borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(16),
-            topRight: const Radius.circular(16),
+            topLeft: const Radius.circular(12),
+            topRight: const Radius.circular(12),
             bottomLeft: Radius.circular(msg.isMe ? 16 : 4),
             bottomRight: Radius.circular(msg.isMe ? 4 : 16),
           ),
@@ -207,13 +209,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        border: Border(
+          top: BorderSide(color: AppColors.secondary.withOpacity(0.12)),
+        ),
       ),
       child: Row(
         children: [
@@ -221,8 +219,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(24),
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
                 controller: _textController,

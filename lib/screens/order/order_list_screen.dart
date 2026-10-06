@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tailor_app/core/utils/app_toast.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/order_model.dart';
@@ -39,7 +41,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           title: const Text(
             "My Orders",
@@ -47,11 +49,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
           ),
           elevation: 0,
           backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          foregroundColor: AppColors.primary,
           bottom: const TabBar(
-            labelColor: Color(0xFF6C63FF), // AppColors.primary
+            labelColor: AppColors.primary,
             unselectedLabelColor: Colors.grey,
-            indicatorColor: Color(0xFF6C63FF),
+            indicatorColor: AppColors.primary,
             tabs: [
               Tab(text: "Payment"),
               Tab(text: "In Progress"),
@@ -61,13 +63,15 @@ class _OrderListScreenState extends State<OrderListScreen> {
         ),
         body: RefreshIndicator(
           color: Colors.white,
-          backgroundColor: const Color(0xFF6C63FF),
+          backgroundColor: AppColors.primary,
           onRefresh: _refreshOrders,
           child: FutureBuilder(
             future: _ordersFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                );
               }
               if (snapshot.hasError) {
                 return ListView(
@@ -187,12 +191,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     setState(() {
                       _reviewedOrderIds.add(order.id);
                     });
-                    Get.snackbar(
-                      "Success",
-                      "Review submitted successfully!",
-                      backgroundColor: Colors.green.shade100,
-                      colorText: Colors.green.shade900,
-                    );
+                    AppToast.success("Review submitted successfully!");
                     _refreshOrders();
                   } else if (result == 'refresh') {
                     setState(() {

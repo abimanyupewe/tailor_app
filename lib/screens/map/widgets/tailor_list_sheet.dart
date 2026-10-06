@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
 import 'package:tailor_app/controllers/tailor_controller.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/data/api_service.dart' as tailor_app;
 
 class TailorListSheet extends StatelessWidget {
@@ -23,16 +24,9 @@ class TailorListSheet extends StatelessWidget {
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25),
-              topRight: Radius.circular(25),
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0, -2),
-              ),
-            ],
           ),
           child: Column(
             children: [
@@ -56,7 +50,9 @@ class TailorListSheet extends StatelessWidget {
                 child: Obx(() {
                   if (tailorController.isLoading.value &&
                       tailorController.tailors.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(color: AppColors.primary),
+                    );
                   }
 
                   return ListView.builder(
@@ -80,12 +76,13 @@ class TailorListSheet extends StatelessWidget {
                         );
                       }
                       final tailor = tailorController.tailors[index - 1];
-                      return Card(
+                      return Container(
                         margin: const EdgeInsets.only(bottom: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
                         ),
-                        elevation: 2,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
                           onTap: () {

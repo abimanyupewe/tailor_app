@@ -354,7 +354,7 @@ class ApiService extends GetxService {
       final response = await http.post(Uri.parse(url), headers: _headers);
       print('ApiService: Start chat response status: ${response.statusCode}');
       print('ApiService: Start chat response body: ${response.body}');
-      return _handleResponse(response);
+      return await _handleResponse(response);
     } catch (e) {
       print('ApiService: Error starting chat: $e');
       rethrow;

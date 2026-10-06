@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tailor_app/widgets/category_hori.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 
 class AllCategoryPage extends StatelessWidget {
   final List<Map<String, String>> categoryData;
@@ -8,7 +9,13 @@ class AllCategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Semua Kategori")),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text("Semua Kategori"),
+        backgroundColor: AppColors.background,
+        foregroundColor: AppColors.primary,
+        elevation: 0,
+      ),
       body: GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

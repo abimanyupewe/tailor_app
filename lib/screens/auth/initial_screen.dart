@@ -4,6 +4,7 @@ import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/routes/app_routes.dart';
 import 'package:tailor_app/controllers/profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 
 class InitialScreen extends StatefulWidget {
   const InitialScreen({super.key});
@@ -60,7 +61,7 @@ class _InitialScreenState extends State<InitialScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [CircularProgressIndicator()],
+          children: [CircularProgressIndicator(color: AppColors.primary)],
         ),
       ),
     );

@@ -26,9 +26,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const bodyStyle = TextStyle(fontSize: 16.0, color: Colors.grey);
+    const bodyStyle = TextStyle(fontSize: 16.0, color: AppColors.secondary);
     const pageDecoration = PageDecoration(
-      titleTextStyle: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+      titleTextStyle: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: AppColors.primary),
       bodyTextStyle: bodyStyle,
       bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
       pageColor: Colors.white,
@@ -39,7 +39,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       children: [
         IntroductionScreen(
           key: introKey,
-          globalBackgroundColor: Colors.white,
+          globalBackgroundColor: AppColors.background,
           allowImplicitScrolling: true,
           autoScrollDuration: 3000,
           infiniteAutoScroll: false,
@@ -122,7 +122,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25.0),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
                       child: const Text(
@@ -145,7 +145,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             color: Color(0xFFBDBDBD),
             activeSize: Size(22.0, 10.0),
             activeShape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              borderRadius: BorderRadius.all(Radius.circular(6.0)),
             ),
             activeColor: AppColors.primary,
           ),

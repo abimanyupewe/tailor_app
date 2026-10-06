@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tailor_app/data/api_service.dart';
+import 'package:tailor_app/core/utils/app_toast.dart';
 
 class ProfileController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
@@ -49,7 +49,7 @@ class ProfileController extends GetxController {
         selectedImage.value = File(image.path);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to pick image: $e');
+      AppToast.error('Failed to pick image: $e');
     }
   }
 
@@ -80,22 +80,12 @@ class ProfileController extends GetxController {
       await getUserProfile();
 
       Get.back(); // Close edit screen
-      Get.snackbar(
-        'Success',
-        'Profile updated successfully!',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      AppToast.success('Profile updated successfully!');
 
       // Reset image selection
       selectedImage.value = null;
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to update profile: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      AppToast.error('Failed to update profile: $e');
     } finally {
       isSaving.value = false;
     }

@@ -24,7 +24,7 @@ class OrderScreen extends StatelessWidget {
     // Let's stick to standard Put for simplicity unless issues arise.
 
     return Scaffold(
-      backgroundColor: Colors.grey[50], // Premium background
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text(
           "Book Service",
@@ -126,15 +126,8 @@ class OrderScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.grey.shade200),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
                 child: Row(
                   children: [
@@ -207,20 +200,13 @@ class OrderScreen extends StatelessWidget {
                     duration: const Duration(milliseconds: 300),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: isSelected
                             ? AppColors.primary.withOpacity(0.5)
                             : Colors.transparent,
                         width: 1.5,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
                     ),
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -329,14 +315,10 @@ class OrderScreen extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          border: Border(
+            top: BorderSide(color: AppColors.secondary.withOpacity(0.12)),
+          ),
         ),
         child: SafeArea(
           child: Column(
@@ -377,7 +359,7 @@ class OrderScreen extends StatelessWidget {
                           vertical: 16,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         elevation: 0,
                       ),

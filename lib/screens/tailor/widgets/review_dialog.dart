@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/data/api_service.dart';
+import 'package:tailor_app/core/utils/app_toast.dart';
 
 class ReviewDialog extends StatefulWidget {
   final int orderId;
@@ -33,19 +34,9 @@ class _ReviewDialogState extends State<ReviewDialog> {
       if (e.toString().contains("review with this order already exists")) {
         // If review already exists, we should probably just close and refresh
         Get.back(result: 'refresh');
-        Get.snackbar(
-          "Review Exists",
-          "You have already reviewed this order.",
-          backgroundColor: Colors.orange.shade100,
-          colorText: Colors.orange.shade900,
-        );
+        AppToast.warning("You have already reviewed this order.", title: "Review Exists");
       } else {
-        Get.snackbar(
-          "Error",
-          e.toString(),
-          backgroundColor: Colors.red.shade100,
-          colorText: Colors.red,
-        );
+        AppToast.error(e.toString());
       }
     } finally {
       if (mounted) {
@@ -59,7 +50,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(

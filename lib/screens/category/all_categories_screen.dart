@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/core/constants/app_data.dart';
 import 'package:tailor_app/screens/search/search_screen.dart';
-import 'package:tailor_app/widgets/category_hori.dart'; // Reusing or creating new item widget if needed
 
 class AllCategoriesScreen extends StatelessWidget {
   const AllCategoriesScreen({super.key});
@@ -14,17 +13,17 @@ class AllCategoriesScreen extends StatelessWidget {
     final categoryData = AppData.categories;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text(
           "All Categories",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.background,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
       ),
@@ -54,7 +53,7 @@ class AllCategoriesScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: (category['color'] as Color? ?? AppColors.primary)
                           .withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Image.asset(
                       category['iconUrl'], // Assuming asset based on CategoryHori

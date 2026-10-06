@@ -46,17 +46,17 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text(
           "Explore Tailors",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Get.back(),
         ),
       ),
@@ -75,11 +75,11 @@ class _SearchScreenState extends State<SearchScreen> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(
                   Iconsax.search_normal,
-                  color: Colors.grey,
+                  color: AppColors.secondary,
                 ),
                 hintText: "Search by name...",
                 filled: true,
-                fillColor: Colors.grey.shade100,
+                fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -118,11 +118,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     selectedColor: AppColors.primary,
                     checkmarkColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(10),
                       side: BorderSide(
                         color: isSelected
                             ? AppColors.primary
-                            : Colors.grey.shade300,
+                            : AppColors.secondary.withOpacity(0.2),
                       ),
                     ),
                     showCheckmark: false,
@@ -138,7 +138,9 @@ class _SearchScreenState extends State<SearchScreen> {
           Expanded(
             child: Obx(() {
               if (tailorController.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary),
+                );
               }
 
               // Filter Logic

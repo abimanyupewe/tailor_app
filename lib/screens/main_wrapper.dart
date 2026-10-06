@@ -42,17 +42,17 @@ class MainWrapper extends StatelessWidget {
           onDestinationSelected: (index) => controller.changeIndex(index),
           destinations: [
             NavigationDestination(
-              icon: Icon(Iconsax.home),
+              icon: const Icon(Iconsax.home, color: Colors.grey),
               selectedIcon: Icon(Iconsax.home, color: AppColors.primary),
               label: 'Home',
             ),
             NavigationDestination(
-              icon: Icon(Iconsax.map),
+              icon: const Icon(Iconsax.map, color: Colors.grey),
               selectedIcon: Icon(Iconsax.map, color: AppColors.primary),
               label: 'Map',
             ),
             NavigationDestination(
-              icon: Icon(Iconsax.bag),
+              icon: const Icon(Iconsax.bag, color: Colors.grey),
               selectedIcon: Icon(Iconsax.bag, color: AppColors.primary),
               label: 'Orders',
             ),
@@ -78,7 +78,7 @@ class MainWrapper extends StatelessWidget {
               label: 'Chat',
             ),
             NavigationDestination(
-              icon: Icon(Iconsax.user),
+              icon: const Icon(Iconsax.user, color: Colors.grey),
               selectedIcon: Icon(Iconsax.user, color: AppColors.primary),
               label: 'Profile',
             ),

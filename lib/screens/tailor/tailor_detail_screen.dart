@@ -34,7 +34,7 @@ class TailorDetailScreen extends StatelessWidget {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        backgroundColor: Colors.grey[50], // Premium off-white background
+        backgroundColor: AppColors.background,
         body: RefreshIndicator(
           onRefresh: () async {
             await controller.refreshTailor();
@@ -107,14 +107,8 @@ class TailorDetailScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.06),
-                            blurRadius: 24,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
                       ),
                       child: Obx(() {
                         final currentTailor = controller.tailor.value;
@@ -299,13 +293,9 @@ class TailorDetailScreen extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, -5),
-              ),
-            ],
+            border: Border(
+              top: BorderSide(color: AppColors.secondary.withOpacity(0.12)),
+            ),
           ),
           child: Row(
             children: [

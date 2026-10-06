@@ -4,6 +4,7 @@ import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/routes/app_routes.dart';
 import 'package:tailor_app/screens/main_wrapper.dart';
 import 'package:tailor_app/controllers/profile_controller.dart';
+import 'package:tailor_app/core/utils/app_toast.dart';
 
 class AuthController extends GetxController {
   final ApiService _apiService = Get.find<ApiService>();
@@ -23,7 +24,7 @@ class AuthController extends GetxController {
 
   Future<void> login() async {
     if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
-      Get.snackbar('Error', 'Please fill all fields');
+      AppToast.error('Please fill all fields');
       return;
     }
 
@@ -31,7 +32,7 @@ class AuthController extends GetxController {
       isLoading.value = true;
       await _apiService.login(usernameController.text, passwordController.text);
 
-      Get.snackbar('Success', 'Login successful');
+      AppToast.success('Login successful');
 
       // Refresh to load profile with new token
       try {
@@ -41,7 +42,7 @@ class AuthController extends GetxController {
 
       Get.offAll(() => const MainWrapper());
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      AppToast.error(e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -49,12 +50,12 @@ class AuthController extends GetxController {
 
   Future<void> register() async {
     if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
-      Get.snackbar('Error', 'Please fill all fields');
+      AppToast.error('Please fill all fields');
       return;
     }
 
     if (passwordController.text != confirmPasswordController.text) {
-      Get.snackbar('Error', 'Passwords do not match');
+      AppToast.error('Passwords do not match');
       return;
     }
 
@@ -67,16 +68,7 @@ class AuthController extends GetxController {
         're_password': confirmPasswordController.text,
       });
 
-      Get.snackbar(
-        'Success',
-        'Registration successful. Please login.',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-        margin: const EdgeInsets.all(10),
-        borderRadius: 10,
-        duration: const Duration(seconds: 3),
-      );
+      AppToast.success('Registration successful. Please login.');
 
       // Wait for snackbar to be seen
       await Future.delayed(const Duration(seconds: 2));
@@ -85,7 +77,7 @@ class AuthController extends GetxController {
         AppRoutes.login,
       ); // Explicitly go to Login, clearing stack
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      AppToast.error(e.toString());
     } finally {
       isLoading.value = false;
     }

@@ -3,7 +3,7 @@ import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/screens/order/payment_webview_screen.dart';
 import 'package:tailor_app/controllers/profile_controller.dart';
-import 'package:flutter/material.dart';
+import 'package:tailor_app/core/utils/app_toast.dart';
 
 class OrderItem {
   final Service service;
@@ -54,7 +54,7 @@ class OrderController extends GetxController {
   Future<void> createOrder() async {
     final activeItems = items.where((i) => i.quantity.value > 0).toList();
     if (activeItems.isEmpty) {
-      Get.snackbar("Error", "Please select at least one service");
+      AppToast.error("Please select at least one service");
       return;
     }
 
@@ -77,21 +77,11 @@ class OrderController extends GetxController {
 
           if (email.isEmpty || !emailValid) {
             isLoading.value = false;
-            Get.snackbar(
+            AppToast.action(
               "Email Tidak Valid",
               "Midtrans memerlukan email yang valid untuk pembayaran. Mohon update profil Anda.",
-              backgroundColor: Get.theme.colorScheme.error,
-              colorText: Get.theme.colorScheme.onError,
-              duration: const Duration(seconds: 5),
-              mainButton: TextButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: const Text(
-                  "Update Profile",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              actionLabel: "Update Profile",
+              onAction: Get.back,
             );
             return;
           }
@@ -146,19 +136,19 @@ class OrderController extends GetxController {
             print("Failed to auto-update status: $e");
           }
 
-          Get.snackbar("Success", "Payment Successful!");
+          AppToast.success("Payment Successful!");
           Get.offNamedUntil('/', (route) => false);
         } else {
           // Payment cancelled or failed, but order created.
-          Get.snackbar("Order Placed", "Payment pending. Check My Orders.");
+          AppToast.info("Payment pending. Check My Orders.", title: "Order Placed");
           Get.back();
         }
       } else {
-        Get.snackbar("Success", "Order placed successfully!");
+        AppToast.success("Order placed successfully!");
         Get.back();
       }
     } catch (e) {
-      Get.snackbar("Error", "Failed to create order: $e");
+      AppToast.error("Failed to create order: $e");
     } finally {
       isLoading.value = false;
     }

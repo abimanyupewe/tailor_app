@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 
 class CategoryHori extends StatelessWidget {
   const CategoryHori({super.key, required this.category});
@@ -6,6 +7,8 @@ class CategoryHori extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = category['color'] as Color? ?? AppColors.pastelGreen;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -14,8 +17,9 @@ class CategoryHori extends StatelessWidget {
           height: 70,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(12),
+            color: color.withOpacity(0.72),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: color.withOpacity(0.9)),
           ),
           child: Center(
             child: Image.asset(
@@ -32,7 +36,11 @@ class CategoryHori extends StatelessWidget {
           child: Text(
             category['name']!,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+              color: AppColors.primary,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             softWrap: true,
