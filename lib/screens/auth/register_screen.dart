@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/controllers/auth_controller.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class RegisterScreen extends GetView<AuthController> {
   const RegisterScreen({super.key});
@@ -9,6 +10,7 @@ class RegisterScreen extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     const Color darkGreen = Color(0xFF173834);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: darkGreen,
@@ -39,7 +41,7 @@ class RegisterScreen extends GetView<AuthController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Create Account.',
+                  l10n.createAccount,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -49,7 +51,7 @@ class RegisterScreen extends GetView<AuthController> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Sign up to get started.',
+                  l10n.signUpSubtitle,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     color: Colors.white.withValues(alpha: 0.7),
@@ -75,7 +77,7 @@ class RegisterScreen extends GetView<AuthController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Username',
+                      l10n.usernameLabel,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -89,7 +91,7 @@ class RegisterScreen extends GetView<AuthController> {
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey.shade50,
-                        hintText: 'Choose a username',
+                        hintText: l10n.usernameHintRegister,
                         hintStyle: GoogleFonts.plusJakartaSans(
                           color: Colors.grey.shade400,
                           fontSize: 14,
@@ -117,7 +119,7 @@ class RegisterScreen extends GetView<AuthController> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Password',
+                      l10n.passwordLabel,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -133,7 +135,7 @@ class RegisterScreen extends GetView<AuthController> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey.shade50,
-                          hintText: 'Create a password',
+                          hintText: l10n.passwordHintRegister,
                           hintStyle: GoogleFonts.plusJakartaSans(
                             color: Colors.grey.shade400,
                             fontSize: 14,
@@ -173,7 +175,7 @@ class RegisterScreen extends GetView<AuthController> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Confirm Password',
+                      l10n.confirmPassword,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -189,7 +191,7 @@ class RegisterScreen extends GetView<AuthController> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey.shade50,
-                          hintText: 'Re-enter your password',
+                          hintText: l10n.confirmPasswordHint,
                           hintStyle: GoogleFonts.plusJakartaSans(
                             color: Colors.grey.shade400,
                             fontSize: 14,
@@ -254,7 +256,7 @@ class RegisterScreen extends GetView<AuthController> {
                                   ),
                                 )
                               : Text(
-                                  'Register',
+                                  l10n.registerButton,
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -268,7 +270,7 @@ class RegisterScreen extends GetView<AuthController> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Already have an account? ",
+                          l10n.haveAccount,
                           style: GoogleFonts.plusJakartaSans(
                             color: Colors.grey.shade600,
                             fontSize: 14,
@@ -280,7 +282,7 @@ class RegisterScreen extends GetView<AuthController> {
                             Get.back();
                           },
                           child: Text(
-                            'Sign In',
+                            l10n.signIn,
                             style: GoogleFonts.plusJakartaSans(
                               color: darkGreen,
                               fontWeight: FontWeight.bold,

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class ArrivalDialog extends StatelessWidget {
   final String tailorName;
@@ -16,6 +17,7 @@ class ArrivalDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
@@ -37,7 +39,7 @@ class ArrivalDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              "You have arrived!",
+              l10n.arrivedTitle,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -45,7 +47,7 @@ class ArrivalDialog extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              "You have reached $tailorName location.",
+              l10n.arrivedBody(tailorName),
               textAlign: TextAlign.center,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
@@ -68,7 +70,7 @@ class ArrivalDialog extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  "Give Rating & Review",
+                  l10n.giveRating,
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -79,7 +81,7 @@ class ArrivalDialog extends StatelessWidget {
             TextButton(
               onPressed: () => Get.back(),
               child: Text(
-                "Close",
+                l10n.close,
                 style: GoogleFonts.plusJakartaSans(color: Colors.grey),
               ),
             ),

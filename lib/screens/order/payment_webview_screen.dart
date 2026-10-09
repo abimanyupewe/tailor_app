@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class PaymentWebViewScreen extends StatefulWidget {
   final String snapToken;
@@ -68,7 +69,7 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: const Text("Payment"),
+        title: Text(AppLocalizations.of(context).tabPayment),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {

@@ -5,6 +5,8 @@ import 'package:tailor_app/controllers/profile_controller.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
+import 'package:tailor_app/widgets/skeleton.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -56,18 +58,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     // Ensuring user data is available
     if (controller.user.value == null) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        backgroundColor: AppColors.background,
+        body: SafeArea(child: FormLoadingSkeleton()),
       );
     }
 
     final avatarUrl = controller.user.value?['user']?['avatar'];
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          'Edit Profile',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          AppLocalizations.of(context).editProfileTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -107,11 +111,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         email: _emailController.text,
                       );
                     },
-                    child: const Text(
-                      'Save',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                    child: Builder(
+                      builder: (context) => Text(
+                        AppLocalizations.of(context).save,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
@@ -191,27 +197,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             // --- Form Fields ---
             _buildTextField(
-              label: "Full Name",
+              label: l10n.fullName,
               controller: _fullNameController,
               icon: Iconsax.user,
             ),
             const SizedBox(height: 20),
             _buildTextField(
-              label: "Phone Number",
+              label: l10n.phoneNumber,
               controller: _phoneController,
               icon: Iconsax.mobile,
               keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 20),
             _buildTextField(
-              label: "Email",
+              label: l10n.emailLabel,
               controller: _emailController,
               icon: Iconsax.sms,
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 20),
             _buildTextField(
-              label: "Address",
+              label: l10n.addressLabel,
               controller: _addressController,
               icon: Iconsax.location,
               maxLines: 3,
@@ -235,7 +241,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from Gallery'),
+              title: Text(AppLocalizations.of(context).chooseGallery),
               onTap: () {
                 Get.back();
                 controller.pickImage(ImageSource.gallery);
@@ -243,7 +249,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text('Take a Photo'),
+              title: Text(AppLocalizations.of(context).takePhoto),
               onTap: () {
                 Get.back();
                 controller.pickImage(ImageSource.camera);

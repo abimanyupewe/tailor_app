@@ -5,6 +5,8 @@ import 'package:tailor_app/controllers/tailor_controller.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/core/constants/app_data.dart';
 import 'package:tailor_app/widgets/tailor_card.dart';
+import 'package:tailor_app/widgets/skeleton.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class SearchScreen extends StatefulWidget {
   final String? initialCategory;
@@ -45,11 +47,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          "Explore Tailors",
+        title: Text(
+          l10n.exploreTailors,
           style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
@@ -77,7 +80,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   Iconsax.search_normal,
                   color: AppColors.secondary,
                 ),
-                hintText: "Search by name...",
+                hintText: l10n.searchNameHint,
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -100,7 +103,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   padding: const EdgeInsets.only(right: 10),
                   child: FilterChip(
                     label: Text(
-                      cat,
+                      cat == 'All' ? l10n.all : cat,
                       style: TextStyle(
                         color: isSelected ? Colors.white : Colors.black87,
                         fontWeight: isSelected
@@ -138,9 +141,7 @@ class _SearchScreenState extends State<SearchScreen> {
           Expanded(
             child: Obx(() {
               if (tailorController.isLoading.value) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
-                );
+                return const CardListSkeleton();
               }
 
               // Filter Logic
@@ -180,9 +181,11 @@ class _SearchScreenState extends State<SearchScreen> {
                         color: Colors.grey.shade300,
                       ),
                       const SizedBox(height: 16),
-                      Text(
-                        "No tailors found",
-                        style: TextStyle(color: Colors.grey.shade500),
+                      Builder(
+                        builder: (context) => Text(
+                          AppLocalizations.of(context).noTailorsFound,
+                          style: TextStyle(color: Colors.grey.shade500),
+                        ),
                       ),
                     ],
                   ),

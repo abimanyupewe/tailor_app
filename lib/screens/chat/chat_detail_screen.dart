@@ -5,6 +5,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/chat_controller.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/models/chat_model.dart';
+import 'package:tailor_app/widgets/skeleton.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   const ChatDetailScreen({super.key});
@@ -52,16 +54,17 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     }
   }
 
-  final List<String> _quickReplies = [
-    "Apakah pesanan saya sudah siap?",
-    "Berapa lama estimasi pengerjaan?",
-    "Saya ingin request perubahan ukuran.",
-    "Terima kasih!",
-    "Bisa dikirim kapan?",
+  List<String> _quickReplies(AppLocalizations l10n) => [
+    l10n.qrOrderReady,
+    l10n.qrEstimate,
+    l10n.qrResize,
+    l10n.qrThanks,
+    l10n.qrDelivery,
   ];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -98,9 +101,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value && controller.messages.isEmpty) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
-                );
+                return const ChatBubbleSkeleton();
               }
 
               // Auto scroll to bottom when messages update
@@ -120,26 +121,26 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               );
             }),
           ),
-          _buildQuickReplies(),
-          _buildInputArea(),
+          _buildQuickReplies(_quickReplies(l10n)),
+          _buildInputArea(l10n.typeMessage),
         ],
       ),
     );
   }
 
-  Widget _buildQuickReplies() {
+  Widget _buildQuickReplies(List<String> quickReplies) {
     return Container(
       height: 50,
       color: Colors.white,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         scrollDirection: Axis.horizontal,
-        itemCount: _quickReplies.length,
+        itemCount: quickReplies.length,
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           return ActionChip(
             label: Text(
-              _quickReplies[index],
+              quickReplies[index],
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 12,
                 color: AppColors.primary,
@@ -151,7 +152,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               side: BorderSide(color: AppColors.primary.withValues(alpha: 0.2)),
             ),
             onPressed: () {
-              _textController.text = _quickReplies[index];
+              _textController.text = quickReplies[index];
               // Optional: Move cursor to end
               _textController.selection = TextSelection.fromPosition(
                 TextPosition(offset: _textController.text.length),
@@ -204,7 +205,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 
-  Widget _buildInputArea() {
+  Widget _buildInputArea(String hintText) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -225,7 +226,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
               child: TextField(
                 controller: _textController,
                 decoration: InputDecoration(
-                  hintText: 'Type a message...',
+                  hintText: hintText,
                   border: InputBorder.none,
                   hintStyle: GoogleFonts.plusJakartaSans(color: Colors.grey),
                 ),

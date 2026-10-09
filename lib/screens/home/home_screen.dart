@@ -12,7 +12,11 @@ import 'package:tailor_app/widgets/category_hori.dart';
 import 'package:tailor_app/widgets/slider_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
+import 'package:tailor_app/models/tailor_model.dart';
+import 'package:tailor_app/controllers/locale_controller.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 import 'package:tailor_app/widgets/tailor_card.dart';
+import 'package:tailor_app/widgets/skeleton.dart';
 import 'package:tailor_app/screens/category/all_categories_screen.dart';
 import 'package:tailor_app/screens/search/search_screen.dart';
 
@@ -31,14 +35,18 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Obx(() {
+      body: Builder(
+        builder: (context) => Obx(() {
+        final l10n = AppLocalizations.of(context);
+        // Resubscribe so this Obx rebuilds (fresh strings) on language switch.
+        Get.find<LocaleController>().locale.value;
         final userData = profileController.user.value;
         final userObj = userData?['user'];
         final avatarUrl = userObj?['avatar'];
         final username = userObj?['username'] ?? 'User';
 
         // Priority: 1. Realtime GPS Address (Home should reflect current loc), 2. Fallback
-        String displayAddress = 'Finding location...';
+        String displayAddress = l10n.findingLocation;
 
         // Use Obx observation of mapController
         if (mapController.currentAddress.value.isNotEmpty &&
@@ -54,19 +62,17 @@ class HomeScreen extends StatelessWidget {
         String getGreeting() {
           var hour = DateTime.now().hour;
           if (hour < 12) {
-            return 'Good Morning';
+            return l10n.greetingMorning;
           }
           if (hour < 17) {
-            return 'Good Afternoon';
+            return l10n.greetingAfternoon;
           }
-          return 'Good Evening';
+          return l10n.greetingEvening;
         }
 
         return sliderController.isLoading.value ||
                 tailorController.isLoading.value
-            ? const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              )
+            ? const SafeArea(child: HomeLoadingSkeleton())
             : SafeArea(
                 child: RefreshIndicator(
                   color: Colors.white,
@@ -85,115 +91,113 @@ class HomeScreen extends StatelessWidget {
                       vertical: 20,
                     ),
                     children: [
-                      // 1. Header Section
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child:
-                                        (avatarUrl != null &&
-                                            avatarUrl.toString().isNotEmpty)
-                                        ? Image.network(
-                                            avatarUrl.toString().startsWith(
-                                                  'http',
-                                                )
-                                                ? avatarUrl
-                                                : '${apiService.baseUrl}$avatarUrl',
-                                            fit: BoxFit.cover,
-                                          )
-                                        : const Icon(
+                      // 1. Header Section — clean flat
+                      Row(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.15),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: ClipOval(
+                              child:
+                                  (avatarUrl != null &&
+                                      avatarUrl.toString().isNotEmpty)
+                                  ? Image.network(
+                                      avatarUrl.toString().startsWith('http')
+                                          ? avatarUrl
+                                          : '${apiService.baseUrl}$avatarUrl',
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) =>
+                                          const Icon(
                                             Icons.person,
                                             color: Colors.grey,
                                           ),
+                                    )
+                                  : Container(
+                                      color: AppColors.primary.withValues(
+                                        alpha: 0.08,
+                                      ),
+                                      child: const Icon(
+                                        Icons.person,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  getGreeting(),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey.shade500,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      RichText(
-                                        text: TextSpan(
-                                          text: '${getGreeting()}, ',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.white70,
-                                          ),
-                                          children: [
-                                            TextSpan(
-                                              text: username,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
+                                Text(
+                                  username,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.primary,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 2),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Iconsax.location5,
+                                      size: 12,
+                                      color: AppColors.secondary,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        displayAddress,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey.shade600,
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                      const SizedBox(height: 2),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Iconsax.location5,
-                                            size: 14,
-                                            color: AppColors.primary,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Expanded(
-                                            child: Text(
-                                              displayAddress,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14,
-                                                color: Colors.white,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(10),
+                          const SizedBox(width: 12),
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.1),
                               ),
-                              child: const Icon(Iconsax.notification,
-                                  size: 20, color: Colors.white),
                             ),
-                          ],
-                        ),
+                            child: const Icon(
+                              Iconsax.notification,
+                              size: 20,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 24),
 
@@ -218,10 +222,10 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.grey,
                               ),
                               const SizedBox(width: 12),
-                              const Expanded(
+                              Expanded(
                                 child: Text(
-                                  "Find your perfect tailor...",
-                                  style: TextStyle(color: Colors.grey),
+                                  l10n.searchHint,
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                               ),
                               Container(
@@ -260,7 +264,7 @@ class HomeScreen extends StatelessWidget {
 
                       // 4. Categories Grid
                       _buildSectionHeader(
-                        "Categories",
+                        l10n.categories,
                         () => Get.to(() => const AllCategoriesScreen()),
                       ),
                       const SizedBox(height: 12),
@@ -294,7 +298,7 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       // 5. Closest Tailors
-                      _buildSectionHeader("Closest to you", null),
+                      _buildSectionHeader(l10n.closestToYou, null),
                       const SizedBox(height: 16),
                       SizedBox(
                         height: 140, // Height for TailorCard
@@ -302,11 +306,11 @@ class HomeScreen extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(),
                           itemCount: tailorController.tailors
-                              .where((t) => t.distance < 5.0)
+                              .where((t) => t.distance < 1.0 && _hasAddress(t))
                               .length,
                           itemBuilder: (context, index) {
                             final nearbyTailors = tailorController.tailors
-                                .where((t) => t.distance < 5.0)
+                                .where((t) => t.distance < 1.0 && _hasAddress(t))
                                 .toList();
 
                             return TailorCard(data: nearbyTailors[index]);
@@ -316,21 +320,24 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       // 6. Popular Tailors
-                      _buildSectionHeader("Popular Tailors", null),
+                      _buildSectionHeader(l10n.popularTailors, null),
                       const SizedBox(height: 16),
                       SizedBox(
                         height: 140,
                         child: Obx(
-                          () => ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: tailorController.popularTailors.length,
-                            itemBuilder: (context, index) {
-                              return TailorCard(
-                                data: tailorController.popularTailors[index],
-                              );
-                            },
-                          ),
+                          () {
+                            final popular = tailorController.popularTailors
+                                .where(_hasAddress)
+                                .toList();
+                            return ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: popular.length,
+                              itemBuilder: (context, index) {
+                                return TailorCard(data: popular[index]);
+                              },
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -362,17 +369,21 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       // 8. Recommended
-                      _buildSectionHeader("Recommended", null),
+                      _buildSectionHeader(l10n.recommended, null),
                       const SizedBox(height: 16),
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: tailorController.tailors.length,
+                        itemCount: tailorController.tailors
+                            .where(_hasAddress)
+                            .length,
                         itemBuilder: (context, index) {
                           // TODO: Switch to Vertical variation if needed,
                           // but reuse TailorCard which is styled nicely.
                           // Just verify margin bottom.
-                          final recommendedTailors = tailorController.tailors;
+                          final recommendedTailors = tailorController.tailors
+                              .where(_hasAddress)
+                              .toList();
                           return TailorCard(data: recommendedTailors[index]);
                         },
                       ),
@@ -381,31 +392,41 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               );
-      }),
+        }),
+      ),
     );
   }
 
+  /// Tailors without a usable address are hidden from home lists.
+  /// The API falls back to 'No Address' when the address is missing.
+  bool _hasAddress(Tailor t) {
+    final address = t.address.trim();
+    return address.isNotEmpty && address != 'No Address';
+  }
+
   Widget _buildSectionHeader(String title, VoidCallback? onTap) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        if (onTap != null)
-          GestureDetector(
-            onTap: onTap,
-            child: const Text(
-              "See All",
-              style: TextStyle(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
+    return Builder(
+      builder: (context) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          if (onTap != null)
+            GestureDetector(
+              onTap: onTap,
+              child: Text(
+                AppLocalizations.of(context).seeAll,
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/screens/map/widgets/arrival_dialog.dart';
 import 'package:tailor_app/services/map_repository.dart';
 import 'package:tailor_app/core/utils/app_toast.dart';
+import 'package:tailor_app/controllers/tailor_controller.dart';
 
 class MapControllerX extends GetxController {
   final MapRepository _repository = MapRepository();
@@ -192,6 +193,9 @@ class MapControllerX extends GetxController {
 
       currentLocation.value = LatLng(lat, lon);
       await updateAddress(lat, lon);
+      if (Get.isRegistered<TailorController>()) {
+        Get.find<TailorController>().getAllTailors();
+      }
 
       // mapController.move(currentLocation.value!, 15); // Optional: Auto-center
     } catch (e) {

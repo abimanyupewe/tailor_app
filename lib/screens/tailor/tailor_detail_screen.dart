@@ -8,6 +8,7 @@ import 'package:tailor_app/screens/order/order_screen.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/screens/tailor/widgets/tailor_tabs.dart';
 import 'package:tailor_app/controllers/tailor_detail_controller.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class TailorDetailScreen extends StatelessWidget {
   final Tailor tailor;
@@ -30,6 +31,7 @@ class TailorDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(TailorDetailController(tailor), tag: tailor.id);
+    final l10n = AppLocalizations.of(context);
 
     return DefaultTabController(
       length: 4,
@@ -215,12 +217,14 @@ class TailorDetailScreen extends StatelessWidget {
                                     color: Colors.green.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: const Text(
-                                    "Open Now",
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
+                                  child: Builder(
+                                    builder: (context) => Text(
+                                      AppLocalizations.of(context).openNow,
+                                      style: const TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -235,12 +239,16 @@ class TailorDetailScreen extends StatelessWidget {
                                     color: Colors.blue.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: Text(
-                                    "${currentTailor.distance.toStringAsFixed(1)} km away",
-                                    style: const TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
+                                  child: Builder(
+                                    builder: (context) => Text(
+                                      AppLocalizations.of(context).kmAway(
+                                        currentTailor.distance.toStringAsFixed(1),
+                                      ),
+                                      style: const TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -254,17 +262,17 @@ class TailorDetailScreen extends StatelessWidget {
                 ),
                 SliverPersistentHeader(
                   delegate: _SliverAppBarDelegate(
-                    const TabBar(
+                    TabBar(
                       labelColor: AppColors.primary,
                       unselectedLabelColor: Colors.grey,
                       indicatorColor: AppColors.primary,
                       indicatorWeight: 3,
-                      labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                      labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                       tabs: [
-                        Tab(text: "Service"),
-                        Tab(text: "Post"),
-                        Tab(text: "Rating"),
-                        Tab(text: "Contact"),
+                        Tab(text: l10n.tabService),
+                        Tab(text: l10n.tabPosts),
+                        Tab(text: l10n.tabRating),
+                        Tab(text: l10n.tabContact),
                       ],
                     ),
                   ),
@@ -332,8 +340,8 @@ class TailorDetailScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
-                      "Book Now",
+                    child: Text(
+                      l10n.bookNow,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -373,6 +381,6 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }

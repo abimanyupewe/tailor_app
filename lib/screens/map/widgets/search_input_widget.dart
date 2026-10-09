@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
 import 'package:tailor_app/models/tailor_model.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class SearchInputWidget extends StatelessWidget {
   const SearchInputWidget({super.key});
@@ -11,6 +12,7 @@ class SearchInputWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mapController = Get.find<MapControllerX>();
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       children: [
@@ -18,7 +20,7 @@ class SearchInputWidget extends StatelessWidget {
           controller: mapController.searchController,
           onChanged: mapController.onSearchChanged,
           decoration: InputDecoration(
-            hintText: 'Search location...',
+            hintText: l10n.searchLocationHint,
             filled: true,
             fillColor: Colors.white,
             prefixIcon: const Icon(Iconsax.search_normal),
@@ -74,11 +76,13 @@ class SearchInputWidget extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         subtitle: isTailor
-                            ? const Text(
-                                "Tailor Shop",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
+                            ? Builder(
+                                builder: (context) => Text(
+                                  AppLocalizations.of(context).tailorShop,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               )
                             : null,

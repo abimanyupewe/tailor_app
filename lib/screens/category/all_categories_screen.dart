@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/core/constants/app_data.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 import 'package:tailor_app/screens/search/search_screen.dart';
 
 class AllCategoriesScreen extends StatelessWidget {
@@ -15,8 +16,8 @@ class AllCategoriesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          "All Categories",
+        title: Text(
+          AppLocalizations.of(context).allCategories,
           style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         ),
         backgroundColor: AppColors.background,

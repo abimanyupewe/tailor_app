@@ -7,7 +7,7 @@ class Tailor {
   final String imageUrl;
   final double latitude;
   final double longitude;
-  final double distance; // Mock distance in km
+  final double distance; // Distance from the user's location in km
   final List<Service> services;
   final List<Review> reviews;
   final String? userId;

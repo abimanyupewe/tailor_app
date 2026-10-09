@@ -6,6 +6,7 @@ import 'package:tailor_app/controllers/map_controller.dart';
 import 'package:tailor_app/data/api_service.dart' as tailor_app;
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/screens/tailor/tailor_detail_screen.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class TailorDetailSheet extends StatelessWidget {
   final Tailor selected;
@@ -92,13 +93,18 @@ class TailorDetailSheet extends StatelessWidget {
             isRouting ? Iconsax.close_circle : Iconsax.direct_right,
             color: Colors.white,
           ),
-          label: Text(
-            isRouting ? "Stop Routing" : "Lihat Rute",
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+          label: Builder(
+            builder: (context) {
+              final l10n = AppLocalizations.of(context);
+              return Text(
+                isRouting ? l10n.stopRouting : l10n.viewRoute,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              );
+            },
           ),
         );
       }),
@@ -136,8 +142,8 @@ class TailorDetailSheet extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Tailor Service",
+                Text(
+                  AppLocalizations.of(context).tailorService,
                   style: TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(height: 4),

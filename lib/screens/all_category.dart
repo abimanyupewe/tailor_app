@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tailor_app/widgets/category_hori.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class AllCategoryPage extends StatelessWidget {
   final List<Map<String, String>> categoryData;
@@ -11,7 +12,7 @@ class AllCategoryPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text("Semua Kategori"),
+        title: Text(AppLocalizations.of(context).allCategories),
         backgroundColor: AppColors.background,
         foregroundColor: AppColors.primary,
         elevation: 0,

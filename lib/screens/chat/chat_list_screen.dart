@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/chat_controller.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
+import 'package:tailor_app/widgets/skeleton.dart';
 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
@@ -12,6 +14,7 @@ class ChatListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Instantiate or find controller
     final controller = Get.put(ChatController());
+    final l10n = AppLocalizations.of(context);
 
     // Refresh rooms on load
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -21,7 +24,7 @@ class ChatListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Messages',
+          l10n.messagesTitle,
           style: GoogleFonts.plusJakartaSans(
             fontWeight: FontWeight.bold,
             color: AppColors.primary,
@@ -36,9 +39,7 @@ class ChatListScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value && controller.chatRooms.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.primary),
-          );
+          return const ChatListSkeleton();
         }
 
         if (controller.chatRooms.isEmpty) {
@@ -48,11 +49,13 @@ class ChatListScreen extends StatelessWidget {
               children: [
                 const Icon(Iconsax.message_text, size: 64, color: Colors.grey),
                 const SizedBox(height: 16),
-                Text(
-                  'No messages yet',
-                  style: GoogleFonts.plusJakartaSans(
-                    color: Colors.grey,
-                    fontSize: 16,
+                Builder(
+                  builder: (context) => Text(
+                    AppLocalizations.of(context).noMessages,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Colors.grey,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ],

@@ -3,6 +3,7 @@ import 'package:tailor_app/models/order_model.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class OrderCard extends StatelessWidget {
   final Order order;
@@ -28,12 +29,14 @@ class OrderCard extends StatelessWidget {
     }
   }
 
-  String _formatDate(DateTime date) {
-    return DateFormat('dd MMM yyyy, HH:mm').format(date);
+  String _formatDate(DateTime date, String localeCode) {
+    return DateFormat('dd MMM yyyy, HH:mm', localeCode).format(date);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final localeCode = Localizations.localeOf(context).languageCode;
     final statusColor = _getStatusColor(order.status);
     final isPaid = order.paymentStatus.toUpperCase() == 'PAID';
 
@@ -74,7 +77,7 @@ class OrderCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          "Order #${order.id}",
+                          l10n.orderNumber(order.id),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -94,7 +97,7 @@ class OrderCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        isPaid ? "PAID" : "UNPAID",
+                        isPaid ? l10n.paid : l10n.unpaid,
                         style: TextStyle(
                           color: isPaid ? Colors.green : Colors.orange,
                           fontWeight: FontWeight.bold,
@@ -119,7 +122,7 @@ class OrderCard extends StatelessWidget {
                         children: [
                           if (order.items.isNotEmpty) ...[
                             Text(
-                              order.items.first.service?.name ?? "Service",
+                              order.items.first.service?.name ?? l10n.tabService,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,
@@ -129,7 +132,7 @@ class OrderCard extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              "${order.items.length} Items • ${_formatDate(order.createdAt)}",
+                              "${l10n.itemsCount(order.items.length)} • ${_formatDate(order.createdAt, localeCode)}",
                               style: TextStyle(
                                 color: Colors.grey.shade500,
                                 fontSize: 13,
@@ -137,7 +140,7 @@ class OrderCard extends StatelessWidget {
                             ),
                           ] else
                             Text(
-                              "No Items",
+                              l10n.noItems,
                               style: TextStyle(color: Colors.grey.shade500),
                             ),
                         ],
@@ -147,7 +150,7 @@ class OrderCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          "Total Price",
+                          l10n.totalPrice,
                           style: TextStyle(
                             fontSize: 11,
                             color: Colors.grey.shade400,
@@ -211,8 +214,8 @@ class OrderCard extends StatelessWidget {
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                           ),
-                          child: const Text(
-                            "Review",
+                          child: Text(
+                            l10n.reviewButton,
                             style: TextStyle(
                               color: Colors.amber,
                               fontWeight: FontWeight.bold,

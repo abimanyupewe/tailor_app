@@ -4,6 +4,7 @@ import 'package:tailor_app/controllers/order_controller.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/core/constants/app_colors.dart'; // Assume this exists or use generic
 import 'package:tailor_app/data/api_service.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class OrderScreen extends StatelessWidget {
   final Tailor tailor;
@@ -23,11 +24,13 @@ class OrderScreen extends StatelessWidget {
     // If I use unique tag, I must delete it on close.
     // Let's stick to standard Put for simplicity unless issues arise.
 
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          "Book Service",
+        title: Text(
+          l10n.bookService,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
@@ -77,7 +80,7 @@ class OrderScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "Please select date & services",
+                        l10n.selectDateServices,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey.shade500,
@@ -93,8 +96,8 @@ class OrderScreen extends StatelessWidget {
             // 2. Date Selection (Calendar Style)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: const Text(
-                "Select Date",
+              child: Text(
+                l10n.selectDate,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
@@ -146,8 +149,8 @@ class OrderScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Date of Appointment",
+                        Text(
+                          l10n.appointmentDate,
                           style: TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                         const SizedBox(height: 4),
@@ -178,8 +181,8 @@ class OrderScreen extends StatelessWidget {
             // 4. Services List
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: const Text(
-                "Select Services",
+              child: Text(
+                l10n.selectServices,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
@@ -280,10 +283,12 @@ class OrderScreen extends StatelessWidget {
                         if (quantity > 0)
                           Padding(
                             padding: const EdgeInsets.only(top: 16),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText:
-                                    "Add specific notes (e.g. Size, Color)...",
+                            child: Builder(
+                              builder: (context) => TextField(
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(
+                                    context,
+                                  ).notesHint,
                                 hintStyle: TextStyle(
                                   color: Colors.grey.shade400,
                                   fontSize: 13,
@@ -300,6 +305,7 @@ class OrderScreen extends StatelessWidget {
                                 ),
                               ),
                               onChanged: (val) => item.notes.value = val,
+                              ),
                             ),
                           ),
                       ],
@@ -330,8 +336,8 @@ class OrderScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Total Estimate",
+                      Text(
+                        l10n.totalEstimate,
                         style: TextStyle(color: Colors.grey, fontSize: 12),
                       ),
                       Obx(
@@ -372,12 +378,14 @@ class OrderScreen extends StatelessWidget {
                                 strokeWidth: 2,
                               ),
                             )
-                          : Text(
-                              "Book Now ($count)",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                          : Builder(
+                              builder: (context) => Text(
+                                AppLocalizations.of(context).bookNowCount(count),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                     );

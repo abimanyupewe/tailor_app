@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/core/utils/app_toast.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class ReviewDialog extends StatefulWidget {
   final int orderId;
@@ -18,7 +19,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
   final ApiService _apiService = Get.find<ApiService>();
   bool _isLoading = false;
 
-  Future<void> _submitReview() async {
+  Future<void> _submitReview(String alreadyReviewed, String reviewExists) async {
     setState(() {
       _isLoading = true;
     });
@@ -34,7 +35,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
       if (e.toString().contains("review with this order already exists")) {
         // If review already exists, we should probably just close and refresh
         Get.back(result: 'refresh');
-        AppToast.warning("You have already reviewed this order.", title: "Review Exists");
+        AppToast.warning(alreadyReviewed, title: reviewExists);
       } else {
         AppToast.error(e.toString());
       }
@@ -49,6 +50,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
@@ -57,8 +59,8 @@ class _ReviewDialogState extends State<ReviewDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Rate your experience",
+            Text(
+              l10n.rateExperience,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -85,7 +87,7 @@ class _ReviewDialogState extends State<ReviewDialog> {
             TextField(
               controller: _commentController,
               decoration: InputDecoration(
-                hintText: "Write a comment (optional)...",
+                hintText: l10n.commentHint,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -99,7 +101,12 @@ class _ReviewDialogState extends State<ReviewDialog> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _submitReview,
+                onPressed: _isLoading
+                    ? null
+                    : () => _submitReview(
+                          l10n.alreadyReviewed,
+                          l10n.reviewExists,
+                        ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
@@ -108,8 +115,8 @@ class _ReviewDialogState extends State<ReviewDialog> {
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                        "Submit Review",
+                    : Text(
+                        l10n.submitReview,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

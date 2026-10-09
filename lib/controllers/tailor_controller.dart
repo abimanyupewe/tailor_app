@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/data/api_service.dart';
+import 'package:tailor_app/controllers/map_controller.dart';
 
 class TailorController extends GetxController {
   final RxList<Tailor> tailors = <Tailor>[].obs;
@@ -17,7 +18,13 @@ class TailorController extends GetxController {
     isLoading.value = true;
     try {
       final apiService = Get.find<ApiService>();
-      final List<dynamic> response = await apiService.getTailors();
+      final location = Get.isRegistered<MapControllerX>()
+          ? Get.find<MapControllerX>().currentLocation.value
+          : null;
+      final List<dynamic> response = await apiService.getTailors(
+        lat: location?.latitude,
+        lon: location?.longitude,
+      );
 
       if (response.isNotEmpty) {
         final List<Tailor> data = response
@@ -31,6 +38,8 @@ class TailorController extends GetxController {
       // Fetch popular tailors (ordered by order_count desc)
       try {
         final List<dynamic> popResponse = await apiService.getTailors(
+          lat: location?.latitude,
+          lon: location?.longitude,
           ordering: '-order_count',
         );
         if (popResponse.isNotEmpty) {

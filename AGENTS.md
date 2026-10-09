@@ -1,39 +1,47 @@
-# Repository Guidelines
+# AGENTS.md
 
-## Project Structure & Module Organization
+Flutter + GetX app. Entry: `lib/main.dart` → `InitialBinding` → `AppRoutes.onGenerateRoute`.
 
-This repository is a Flutter application using Dart and GetX. Application code lives in `lib/`:
-
-- `lib/screens/` contains pages grouped by feature (`auth`, `home`, `map`, `order`, `profile`, `tailor`).
-- `lib/controllers/` contains GetX state and API orchestration.
-- `lib/models/` contains JSON-backed domain models.
-- `lib/data/` and `lib/services/` contain API clients, repositories, and static data.
-- `lib/widgets/` contains reusable UI components; shared colors and constants are in `lib/core/`.
-- `assets/` stores images, banners, category artwork, logos, and fonts. Keep existing banner assets unchanged unless a task explicitly requests replacements.
-- `test/` contains Flutter tests, with `test/widget_test.dart` as the current baseline.
-
-## Build, Test, and Development Commands
-
-Run these from the repository root:
+## Commands
 
 ```bash
-flutter pub get       # install dependencies
-flutter run           # run on a connected device or emulator
-flutter analyze       # check Dart and Flutter diagnostics
-flutter test          # run the test suite
-flutter build apk     # create an Android release artifact
+flutter pub get
+flutter analyze          # gate for every Dart change
+flutter test test/<name>_test.dart   # single file; full `flutter test` also works
+dart format .
 ```
 
-Use a configured `.env` for API settings; do not commit secrets.
+## Wiring (non-obvious)
 
-## Coding Style & Naming Conventions
+- Routing uses `onGenerateRoute` in `lib/routes/app_routes.dart` inside a `GetMaterialApp` — add routes there, not via `GetPage` list.
+- DI lives in `lib/bindings/initial_binding.dart` (`ApiService`, `AuthController`, `ProfileController`, permanent `SliderController`/`TailorController`). Register new shared controllers there with `Get.put`, don't instantiate inline in widgets.
+- Screen state is per-feature GetX controllers in `lib/controllers/`; API calls go through `lib/data/api_service.dart` (`Token` auth header, token in `SharedPreferences` under `auth_token`).
 
-Use the repository formatter (`dart format .`) and the rules in `analysis_options.yaml`. Use two-space indentation, `lower_snake_case.dart` filenames, `PascalCase` classes/widgets, and `camelCase` members. Prefer `const` constructors and values where possible. Reuse `AppColors`, `AppTheme`, and existing widgets instead of duplicating styles. The current UI direction is flat, clean, dark green, and uses restrained 10–12px corner radii without drop shadows.
+## Env / backend gotcha
 
-## Testing Guidelines
+- `main.dart` calls `dotenv.load(fileName: ".env")` and crashes if `.env` is missing. `.env` is gitignored AND listed as a flutter asset in `pubspec.yaml`. Required key: `URL_API=http://<host>:8000` (fallback `http://127.0.0.1:8000` in `ApiService.onInit`).
+- On Android emulator the API base must be reachable (LAN IP or `10.0.2.2`); only image URLs get auto-rewritten from `localhost`/`127.0.0.1` (`ApiService.getImageUrl`), the API base does not.
 
-Name tests with the behavior under test, such as `home_screen_shows_tailors`. Run `flutter test` before submitting UI or controller changes and run `flutter analyze` for every Dart change. Add focused widget or controller coverage when behavior changes; visual-only changes can rely on analyzer checks and manual device review.
+## UI conventions
 
-## Commit & Pull Request Guidelines
+- Reuse `AppColors` (`lib/core/constants/app_colors.dart`, primary dark green `0xFF173834`) and `AppTheme.light` (`lib/theme/app_theme.dart`): flat, `elevation: 0`, ~10px radii. Don't introduce new palettes or shadows.
+- Reusable widgets live in `lib/widgets/`; feature screens in `lib/screens/<auth|home|map|order|tailor|chat|profile|...>/`.
 
-Recent commits use short, imperative, lowercase summaries with a category-like prefix, for example `feat: ...`, `style: ...`, or `chore: ...`. Keep commits focused. Pull requests should explain the user-visible change, list affected pages, link the related issue when available, and include screenshots or a short recording for UI changes. Mention validation commands and any configuration or migration steps.
+## Map module
+
+- Logic centralized in `MapControllerX` (`lib/controllers/map_controller.dart`) + `lib/services/map_repository.dart`. Tuned constants: position stream `distanceFilter: 10m`, arrival threshold `50m`, search debounce `800ms`. Don't retune without cause; location permission must be granted or map shows nothing.
+
+## Testing
+
+- `test/widget_test.dart` is the stale default counter smoke test — it does not match this app (needs `.env` + Get bindings) and fails. Don't rely on it; write focused widget/controller tests for behavior changes instead.
+
+## i18n (official ARB)
+
+- Strings live in `lib/l10n/app_en.arb` (template) + `app_id.arb`; config in `l10n.yaml` (output `lib/l10n/generated/`, do NOT edit generated files).
+- `flutter gen-l10n` re-runs automatically on build; run it manually after editing ARB. Add new keys to BOTH arb files or generation fails.
+- Access via `AppLocalizations.of(context)` (non-nullable). Inside GetX `Obx` builders there is no context — wrap with `Builder` first.
+- Language state: `LocaleController` (`lib/controllers/locale_controller.dart`), persisted as `app_locale` in SharedPreferences, defaults to device locale if `en`/`id`. `changeLocale` sets BOTH the Rx and `Get.locale` — GetMaterialApp resolves `Get.locale ?? locale`, so the `locale:` param alone is ignored after startup. Never use `Get.forceAppUpdate()` (performReassemble breaks tests/release).
+
+## Commits
+
+Observed style: short lowercase imperative with prefix, e.g. `feat: ...`, `style: ...`, `chore: ...`, `refactor: ...`, `docs: ...`. Keep commits focused; UI PRs include affected pages + screenshot/recording.

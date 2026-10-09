@@ -1,0 +1,203 @@
+{
+  "@@locale": "en",
+  "appTitle": "Tailor App",
+  "navHome": "Home",
+  "navMap": "Map",
+  "navOrders": "Orders",
+  "navChat": "Chat",
+  "navProfile": "Profile",
+  "greetingMorning": "Good Morning",
+  "greetingAfternoon": "Good Afternoon",
+  "greetingEvening": "Good Evening",
+  "findingLocation": "Finding location...",
+  "searchHint": "Find your perfect tailor...",
+  "categories": "Categories",
+  "seeAll": "See All",
+  "closestToYou": "Closest to you",
+  "popularTailors": "Popular Tailors",
+  "recommended": "Recommended",
+  "account": "Account",
+  "personalInfo": "Personal Information",
+  "settings": "Settings",
+  "logout": "Logout",
+  "errorLoadingProfile": "Error loading profile",
+  "general": "General",
+  "notifications": "Notifications",
+  "language": "Language",
+  "support": "Support",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service",
+  "aboutApp": "About App",
+  "chooseLanguage": "Choose Language",
+  "languageEnglish": "English",
+  "languageIndonesian": "Bahasa Indonesia",
+  "cancel": "Cancel",
+  "personalInfoTitle": "Personal Information",
+  "editProfileTitle": "Edit Profile",
+  "versionLabel": "Version {version}",
+  "@versionLabel": {
+    "description": "App version label, e.g. Version 1.0.0",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "welcomeBack": "Welcome Back.",
+  "signInSubtitle": "Please sign in to your account.",
+  "usernameLabel": "Username",
+  "usernameHint": "Enter your username",
+  "passwordLabel": "Password",
+  "passwordHint": "Enter your password",
+  "forgotPassword": "Forgot Password?",
+  "signIn": "Sign In",
+  "noAccount": "Don't have an account? ",
+  "signUp": "Sign Up",
+  "createAccount": "Create Account.",
+  "signUpSubtitle": "Sign up to get started.",
+  "usernameHintRegister": "Choose a username",
+  "passwordHintRegister": "Create a password",
+  "confirmPassword": "Confirm Password",
+  "confirmPasswordHint": "Re-enter your password",
+  "registerButton": "Register",
+  "haveAccount": "Already have an account? ",
+  "messagesTitle": "Messages",
+  "noMessages": "No messages yet",
+  "typeMessage": "Type a message...",
+  "qrOrderReady": "Is my order ready?",
+  "qrEstimate": "How long is the estimated work?",
+  "qrResize": "I want to request a size change.",
+  "qrThanks": "Thank you!",
+  "qrDelivery": "When can it be delivered?",
+  "exploreTailors": "Explore Tailors",
+  "searchNameHint": "Search by name...",
+  "all": "All",
+  "noTailorsFound": "No tailors found",
+  "allCategories": "All Categories",
+  "nearbyTailors": "Nearby Tailors",
+  "searchLocationHint": "Search location...",
+  "tailorShop": "Tailor Shop",
+  "yourLocation": "Your Location",
+  "detectingLocation": "Detecting location...",
+  "yourDestination": "Your Destination",
+  "arrivedTitle": "You have arrived!",
+  "arrivedBody": "You have reached {name} location.",
+  "@arrivedBody": {
+    "placeholders": {
+      "name": { "type": "String", "example": "Jahit Rapi" }
+    }
+  },
+  "giveRating": "Give Rating & Review",
+  "close": "Close",
+  "stopRouting": "Stop Routing",
+  "viewRoute": "View Route",
+  "tailorService": "Tailor Service",
+  "fullName": "Full Name",
+  "phoneNumber": "Phone Number",
+  "emailLabel": "Email",
+  "addressLabel": "Address",
+  "save": "Save",
+  "chooseGallery": "Choose from Gallery",
+  "takePhoto": "Take a Photo",
+  "openNow": "Open Now",
+  "kmAway": "{distance} km away",
+  "@kmAway": {
+    "placeholders": {
+      "distance": { "type": "String", "example": "1.2" }
+    }
+  },
+  "tabService": "Service",
+  "tabPosts": "Post",
+  "tabRating": "Rating",
+  "tabContact": "Contact",
+  "bookNow": "Book Now",
+  "noServices": "No services available",
+  "noPosts": "No posts yet",
+  "noReviews": "No reviews yet",
+  "locationAddress": "Location Address",
+  "callPhone": "Call {phone}",
+  "@callPhone": {
+    "placeholders": {
+      "phone": { "type": "String", "example": "08123456789" }
+    }
+  },
+  "couldNotLaunch": "Could not launch {uri}",
+  "@couldNotLaunch": {
+    "placeholders": {
+      "uri": { "type": "String", "example": "tel:08123456789" }
+    }
+  },
+  "rateExperience": "Rate your experience",
+  "commentHint": "Write a comment (optional)...",
+  "submitReview": "Submit Review",
+  "reviewExists": "Review Exists",
+  "alreadyReviewed": "You have already reviewed this order.",
+  "reviewSubmitted": "Review submitted successfully!",
+  "myOrders": "My Orders",
+  "tabPayment": "Payment",
+  "tabInProgress": "In Progress",
+  "tabHistory": "History",
+  "noPendingPayments": "No pending payments",
+  "noOrdersProgress": "No orders in progress",
+  "noOrderHistory": "No order history",
+  "errorMessage": "Error: {error}",
+  "@errorMessage": {
+    "placeholders": {
+      "error": { "type": "String", "example": "timeout" }
+    }
+  },
+  "errorParsing": "Error parsing data: {error}",
+  "@errorParsing": {
+    "placeholders": {
+      "error": { "type": "String", "example": "type error" }
+    }
+  },
+  "checkMyOrders": "Check 'My Orders' to complete payment.",
+  "transactionDetails": "Transaction Details",
+  "serviceProvider": "Service Provider",
+  "totalAmount": "Total Amount",
+  "paymentStatus": "Payment Status",
+  "paid": "PAID",
+  "awaitingPayment": "AWAITING PAYMENT",
+  "unpaid": "UNPAID",
+  "paymentDetails": "Payment Details",
+  "bookService": "Book Service",
+  "selectDateServices": "Please select date & services",
+  "selectDate": "Select Date",
+  "appointmentDate": "Date of Appointment",
+  "selectServices": "Select Services",
+  "notesHint": "Add specific notes (e.g. Size, Color)...",
+  "totalEstimate": "Total Estimate",
+  "bookNowCount": "Book Now ({count})",
+  "@bookNowCount": {
+    "placeholders": {
+      "count": { "type": "int", "example": "2" }
+    }
+  },
+  "orderNumber": "Order #{id}",
+  "@orderNumber": {
+    "placeholders": {
+      "id": { "type": "int", "example": "12" }
+    }
+  },
+  "itemsCount": "{count} Items",
+  "@itemsCount": {
+    "placeholders": {
+      "count": { "type": "int", "example": "3" }
+    }
+  },
+  "noItems": "No Items",
+  "totalPrice": "Total Price",
+  "reviewButton": "Review",
+  "obTitle1": "Find Your Tailor",
+  "obDesc1": "Easily find the best professional tailors near you with just a few clicks.",
+  "obTitle2": "Custom Measurements",
+  "obDesc2": "Provide your exact measurements online or book an appointment for measuring.",
+  "obTitle3": "Fast Delivery",
+  "obDesc3": "Get your custom clothes delivered right to your doorstep, hassle-free.",
+  "back": "Back",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get Started"
+}

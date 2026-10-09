@@ -4,6 +4,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/routes/app_routes.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 import 'package:iconsax/iconsax.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -26,6 +27,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     const bodyStyle = TextStyle(fontSize: 16.0, color: AppColors.secondary);
     const pageDecoration = PageDecoration(
       titleTextStyle: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: AppColors.primary),
@@ -45,9 +47,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           infiniteAutoScroll: false,
           pages: [
             PageViewModel(
-              title: "Find Your Tailor",
-              body:
-                  "Easily find the best professional tailors near you with just a few clicks.",
+              title: l10n.obTitle1,
+              body: l10n.obDesc1,
               image: const Icon(
                 Iconsax.search_status,
                 size: 150,
@@ -56,9 +57,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               decoration: pageDecoration,
             ),
             PageViewModel(
-              title: "Custom Measurements",
-              body:
-                  "Provide your exact measurements online or book an appointment for measuring.",
+              title: l10n.obTitle2,
+              body: l10n.obDesc2,
               image: const Icon(
                 Iconsax.ruler,
                 size: 150,
@@ -67,9 +67,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               decoration: pageDecoration,
             ),
             PageViewModel(
-              title: "Fast Delivery",
-              body:
-                  "Get your custom clothes delivered right to your doorstep, hassle-free.",
+              title: l10n.obTitle3,
+              body: l10n.obDesc3,
               image: const Icon(
                 Iconsax.box,
                 size: 150,
@@ -88,22 +87,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           showNextButton: _currentPage != 2,
           isProgress: _currentPage != 2,
           //rtl: true, // Display as right-to-left
-          back: const Text(
-            'Back',
+          back: Text(
+            l10n.back,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: AppColors.primary,
             ),
           ),
-          skip: const Text(
-            'Skip',
+          skip: Text(
+            l10n.skip,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: AppColors.primary,
             ),
           ),
-          next: const Text(
-            'Next',
+          next: Text(
+            l10n.next,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: AppColors.primary,
@@ -125,8 +124,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      child: const Text(
-                        'Get Started',
+                      child: Text(
+                        l10n.getStarted,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -156,8 +155,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             left: 16,
             child: TextButton(
               onPressed: () => introKey.currentState?.previous(),
-              child: const Text(
-                'Back',
+              child: Text(
+                l10n.back,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: AppColors.primary,

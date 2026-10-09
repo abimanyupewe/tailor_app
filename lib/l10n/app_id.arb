@@ -1,0 +1,203 @@
+{
+  "@@locale": "id",
+  "appTitle": "Tailor App",
+  "navHome": "Beranda",
+  "navMap": "Peta",
+  "navOrders": "Pesanan",
+  "navChat": "Chat",
+  "navProfile": "Profil",
+  "greetingMorning": "Selamat Pagi",
+  "greetingAfternoon": "Selamat Siang",
+  "greetingEvening": "Selamat Malam",
+  "findingLocation": "Mencari lokasi...",
+  "searchHint": "Cari penjahit terbaik...",
+  "categories": "Kategori",
+  "seeAll": "Lihat Semua",
+  "closestToYou": "Terdekat dari Anda",
+  "popularTailors": "Penjahit Populer",
+  "recommended": "Rekomendasi",
+  "account": "Akun",
+  "personalInfo": "Informasi Pribadi",
+  "settings": "Pengaturan",
+  "logout": "Keluar",
+  "errorLoadingProfile": "Gagal memuat profil",
+  "general": "Umum",
+  "notifications": "Notifikasi",
+  "language": "Bahasa",
+  "support": "Bantuan",
+  "privacyPolicy": "Kebijakan Privasi",
+  "termsOfService": "Syarat Layanan",
+  "aboutApp": "Tentang Aplikasi",
+  "chooseLanguage": "Pilih Bahasa",
+  "languageEnglish": "English",
+  "languageIndonesian": "Bahasa Indonesia",
+  "cancel": "Batal",
+  "personalInfoTitle": "Informasi Pribadi",
+  "editProfileTitle": "Ubah Profil",
+  "versionLabel": "Versi {version}",
+  "@versionLabel": {
+    "description": "App version label, e.g. Versi 1.0.0",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "welcomeBack": "Selamat Datang Kembali.",
+  "signInSubtitle": "Silakan masuk ke akun Anda.",
+  "usernameLabel": "Nama Pengguna",
+  "usernameHint": "Masukkan nama pengguna",
+  "passwordLabel": "Kata Sandi",
+  "passwordHint": "Masukkan kata sandi",
+  "forgotPassword": "Lupa Kata Sandi?",
+  "signIn": "Masuk",
+  "noAccount": "Belum punya akun? ",
+  "signUp": "Daftar",
+  "createAccount": "Buat Akun.",
+  "signUpSubtitle": "Daftar untuk memulai.",
+  "usernameHintRegister": "Pilih nama pengguna",
+  "passwordHintRegister": "Buat kata sandi",
+  "confirmPassword": "Konfirmasi Kata Sandi",
+  "confirmPasswordHint": "Masukkan ulang kata sandi",
+  "registerButton": "Daftar",
+  "haveAccount": "Sudah punya akun? ",
+  "messagesTitle": "Pesan",
+  "noMessages": "Belum ada pesan",
+  "typeMessage": "Ketik pesan...",
+  "qrOrderReady": "Apakah pesanan saya sudah siap?",
+  "qrEstimate": "Berapa lama estimasi pengerjaan?",
+  "qrResize": "Saya ingin request perubahan ukuran.",
+  "qrThanks": "Terima kasih!",
+  "qrDelivery": "Bisa dikirim kapan?",
+  "exploreTailors": "Jelajahi Penjahit",
+  "searchNameHint": "Cari berdasarkan nama...",
+  "all": "Semua",
+  "noTailorsFound": "Penjahit tidak ditemukan",
+  "allCategories": "Semua Kategori",
+  "nearbyTailors": "Penjahit Terdekat",
+  "searchLocationHint": "Cari lokasi...",
+  "tailorShop": "Toko Jahit",
+  "yourLocation": "Lokasi Anda",
+  "detectingLocation": "Mendeteksi lokasi...",
+  "yourDestination": "Tujuan Anda",
+  "arrivedTitle": "Anda telah tiba!",
+  "arrivedBody": "Anda telah sampai di lokasi {name}.",
+  "@arrivedBody": {
+    "placeholders": {
+      "name": { "type": "String", "example": "Jahit Rapi" }
+    }
+  },
+  "giveRating": "Beri Rating & Ulasan",
+  "close": "Tutup",
+  "stopRouting": "Berhenti Navigasi",
+  "viewRoute": "Lihat Rute",
+  "tailorService": "Layanan Jahit",
+  "fullName": "Nama Lengkap",
+  "phoneNumber": "Nomor Telepon",
+  "emailLabel": "Email",
+  "addressLabel": "Alamat",
+  "save": "Simpan",
+  "chooseGallery": "Pilih dari Galeri",
+  "takePhoto": "Ambil Foto",
+  "openNow": "Buka Sekarang",
+  "kmAway": "{distance} km dari sini",
+  "@kmAway": {
+    "placeholders": {
+      "distance": { "type": "String", "example": "1.2" }
+    }
+  },
+  "tabService": "Layanan",
+  "tabPosts": "Postingan",
+  "tabRating": "Ulasan",
+  "tabContact": "Kontak",
+  "bookNow": "Pesan Sekarang",
+  "noServices": "Belum ada layanan",
+  "noPosts": "Belum ada postingan",
+  "noReviews": "Belum ada ulasan",
+  "locationAddress": "Alamat Lokasi",
+  "callPhone": "Hubungi {phone}",
+  "@callPhone": {
+    "placeholders": {
+      "phone": { "type": "String", "example": "08123456789" }
+    }
+  },
+  "couldNotLaunch": "Tidak dapat membuka {uri}",
+  "@couldNotLaunch": {
+    "placeholders": {
+      "uri": { "type": "String", "example": "tel:08123456789" }
+    }
+  },
+  "rateExperience": "Nilai pengalaman Anda",
+  "commentHint": "Tulis komentar (opsional)...",
+  "submitReview": "Kirim Ulasan",
+  "reviewExists": "Ulasan Sudah Ada",
+  "alreadyReviewed": "Anda sudah mengulas pesanan ini.",
+  "reviewSubmitted": "Ulasan berhasil dikirim!",
+  "myOrders": "Pesanan Saya",
+  "tabPayment": "Pembayaran",
+  "tabInProgress": "Diproses",
+  "tabHistory": "Riwayat",
+  "noPendingPayments": "Tidak ada pembayaran tertunda",
+  "noOrdersProgress": "Tidak ada pesanan yang diproses",
+  "noOrderHistory": "Tidak ada riwayat pesanan",
+  "errorMessage": "Kesalahan: {error}",
+  "@errorMessage": {
+    "placeholders": {
+      "error": { "type": "String", "example": "timeout" }
+    }
+  },
+  "errorParsing": "Gagal mengurai data: {error}",
+  "@errorParsing": {
+    "placeholders": {
+      "error": { "type": "String", "example": "type error" }
+    }
+  },
+  "checkMyOrders": "Cek 'Pesanan Saya' untuk menyelesaikan pembayaran.",
+  "transactionDetails": "Detail Transaksi",
+  "serviceProvider": "Penyedia Layanan",
+  "totalAmount": "Total Bayar",
+  "paymentStatus": "Status Pembayaran",
+  "paid": "LUNAS",
+  "awaitingPayment": "MENUNGGU PEMBAYARAN",
+  "unpaid": "BELUM BAYAR",
+  "paymentDetails": "Detail Pembayaran",
+  "bookService": "Pesan Layanan",
+  "selectDateServices": "Silakan pilih tanggal & layanan",
+  "selectDate": "Pilih Tanggal",
+  "appointmentDate": "Tanggal Janji Temu",
+  "selectServices": "Pilih Layanan",
+  "notesHint": "Tambah catatan khusus (mis. Ukuran, Warna)...",
+  "totalEstimate": "Estimasi Total",
+  "bookNowCount": "Pesan Sekarang ({count})",
+  "@bookNowCount": {
+    "placeholders": {
+      "count": { "type": "int", "example": "2" }
+    }
+  },
+  "orderNumber": "Pesanan #{id}",
+  "@orderNumber": {
+    "placeholders": {
+      "id": { "type": "int", "example": "12" }
+    }
+  },
+  "itemsCount": "{count} Item",
+  "@itemsCount": {
+    "placeholders": {
+      "count": { "type": "int", "example": "3" }
+    }
+  },
+  "noItems": "Tidak Ada Item",
+  "totalPrice": "Total Harga",
+  "reviewButton": "Ulas",
+  "obTitle1": "Temukan Penjahitmu",
+  "obDesc1": "Temukan penjahit profesional terbaik di dekatmu dengan mudah hanya dalam beberapa klik.",
+  "obTitle2": "Ukuran Sesuai Badan",
+  "obDesc2": "Masukkan ukuran badanmu secara online atau pesan jadwal pengukuran.",
+  "obTitle3": "Pengiriman Cepat",
+  "obDesc3": "Pakaian jahitanmu diantar sampai depan pintu, tanpa ribet.",
+  "back": "Kembali",
+  "skip": "Lewati",
+  "next": "Lanjut",
+  "getStarted": "Mulai"
+}

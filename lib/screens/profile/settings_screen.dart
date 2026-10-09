@@ -1,19 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:tailor_app/controllers/locale_controller.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
+  void _showLanguageDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final localeController = Get.find<LocaleController>();
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          l10n.chooseLanguage,
+          style: const TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        content: Obx(
+          () => RadioGroup<String>(
+            groupValue: localeController.locale.value.languageCode,
+            onChanged: (value) {
+              if (value == null) return;
+              localeController.changeLocale(Locale(value));
+              Get.back();
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    const Radio<String>(value: 'en'),
+                    Text(l10n.languageEnglish),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Radio<String>(value: 'id'),
+                    Text(l10n.languageIndonesian),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              l10n.cancel,
+              style: const TextStyle(color: AppColors.primary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final localeController = Get.find<LocaleController>();
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          'Settings',
-          style: TextStyle(
+        title: Text(
+          l10n.settings,
+          style: const TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -30,40 +91,42 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          _buildSectionHeader("General"),
+          _buildSectionHeader(l10n.general),
           _buildSettingTile(
             Iconsax.notification,
-            "Notifications",
+            l10n.notifications,
             hasSwitch: true,
             onTap: () {},
           ),
           const SizedBox(height: 16),
-          _buildSettingTile(
-            Iconsax.global,
-            "Language",
-            subtitle: "English",
-            onTap: () {},
+          Obx(
+            () => _buildSettingTile(
+              Iconsax.global,
+              l10n.language,
+              subtitle: localeController.languageName,
+              onTap: () => _showLanguageDialog(context),
+            ),
           ),
 
           const SizedBox(height: 32),
 
-          _buildSectionHeader("Support"),
+          _buildSectionHeader(l10n.support),
           _buildSettingTile(
             Iconsax.shield_tick,
-            "Privacy Policy",
+            l10n.privacyPolicy,
             onTap: () {},
           ),
           const SizedBox(height: 16),
           _buildSettingTile(
             Iconsax.document_text,
-            "Terms of Service",
+            l10n.termsOfService,
             onTap: () {},
           ),
           const SizedBox(height: 16),
           _buildSettingTile(
             Iconsax.info_circle,
-            "About App",
-            subtitle: "Version 1.0.0",
+            l10n.aboutApp,
+            subtitle: l10n.versionLabel('1.0.0'),
             onTap: () {},
           ),
         ],
@@ -92,11 +155,12 @@ class SettingsScreen extends StatelessWidget {
     VoidCallback? onTap,
     bool hasSwitch = false,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
+        side: BorderSide(
+            color: AppColors.secondary.withValues(alpha: 0.12)),
       ),
       child: ListTile(
         onTap: hasSwitch ? null : onTap,

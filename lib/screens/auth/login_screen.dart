@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/controllers/auth_controller.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 import 'package:tailor_app/routes/app_routes.dart';
 
 class LoginScreen extends GetView<AuthController> {
@@ -10,6 +11,7 @@ class LoginScreen extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     const Color darkGreen = Color(0xFF173834);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: darkGreen,
@@ -28,7 +30,7 @@ class LoginScreen extends GetView<AuthController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome Back.',
+                  l10n.welcomeBack,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -38,7 +40,7 @@ class LoginScreen extends GetView<AuthController> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Please sign in to your account.',
+                  l10n.signInSubtitle,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     color: Colors.white.withValues(alpha: 0.7),
@@ -64,7 +66,7 @@ class LoginScreen extends GetView<AuthController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Username',
+                      l10n.usernameLabel,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -78,7 +80,7 @@ class LoginScreen extends GetView<AuthController> {
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey.shade50,
-                        hintText: 'Enter your username',
+                        hintText: l10n.usernameHint,
                         hintStyle: GoogleFonts.plusJakartaSans(
                           color: Colors.grey.shade400,
                           fontSize: 14,
@@ -106,7 +108,7 @@ class LoginScreen extends GetView<AuthController> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Password',
+                      l10n.passwordLabel,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -122,7 +124,7 @@ class LoginScreen extends GetView<AuthController> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.grey.shade50,
-                          hintText: 'Enter your password',
+                          hintText: l10n.passwordHint,
                           hintStyle: GoogleFonts.plusJakartaSans(
                             color: Colors.grey.shade400,
                             fontSize: 14,
@@ -166,7 +168,7 @@ class LoginScreen extends GetView<AuthController> {
                       child: GestureDetector(
                         onTap: () => Get.toNamed('/forgot_password'),
                         child: Text(
-                          'Forgot Password?',
+                          l10n.forgotPassword,
                           style: GoogleFonts.plusJakartaSans(
                             color: darkGreen,
                             fontWeight: FontWeight.w600,
@@ -202,7 +204,7 @@ class LoginScreen extends GetView<AuthController> {
                                   ),
                                 )
                               : Text(
-                                  'Sign In',
+                                  l10n.signIn,
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -216,7 +218,7 @@ class LoginScreen extends GetView<AuthController> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Don't have an account? ",
+                          l10n.noAccount,
                           style: GoogleFonts.plusJakartaSans(
                             color: Colors.grey.shade600,
                             fontSize: 14,
@@ -228,7 +230,7 @@ class LoginScreen extends GetView<AuthController> {
                             Get.toNamed(AppRoutes.register);
                           },
                           child: Text(
-                            'Sign Up',
+                            l10n.signUp,
                             style: GoogleFonts.plusJakartaSans(
                               color: darkGreen,
                               fontWeight: FontWeight.bold,

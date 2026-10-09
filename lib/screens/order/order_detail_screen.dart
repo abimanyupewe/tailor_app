@@ -6,14 +6,18 @@ import 'package:intl/intl.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 
 import 'package:tailor_app/models/order_model.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class OrderDetailScreen extends StatelessWidget {
   final Order order;
 
   const OrderDetailScreen({super.key, required this.order});
 
-  String _formatDate(DateTime date) {
-    return DateFormat('dd MMM yyyy, HH:mm').format(date);
+  String _formatDate(DateTime date, String localeCode) {
+    return DateFormat(
+      'dd MMM yyyy, HH:mm',
+      localeCode,
+    ).format(date);
   }
 
   Color _getStatusColor(String status) {
@@ -35,14 +39,16 @@ class OrderDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final localeCode = Localizations.localeOf(context).languageCode;
     final statusColor = _getStatusColor(order.status);
     final isPaid = order.paymentStatus.toUpperCase() == 'PAID';
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          "Transaction Details",
+        title: Text(
+          l10n.transactionDetails,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         backgroundColor: Colors.white,
@@ -87,12 +93,12 @@ class OrderDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              "Order #${order.id}",
+              l10n.orderNumber(order.id),
               style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
             ),
             const SizedBox(height: 12),
             Text(
-              _formatDate(order.createdAt),
+              _formatDate(order.createdAt, localeCode),
               style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
             ),
             const SizedBox(height: 30),
@@ -131,15 +137,15 @@ class OrderDetailScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            order.shopName ?? "Tailor Shop",
+                            order.shopName ?? l10n.tailorShop,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
                           ),
                           const SizedBox(height: 4),
-                          const Text(
-                            "Service Provider",
+                          Text(
+                            l10n.serviceProvider,
                             style: TextStyle(color: Colors.grey, fontSize: 12),
                           ),
                         ],
@@ -184,7 +190,7 @@ class OrderDetailScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  item.service?.name ?? "Service",
+                                  item.service?.name ?? l10n.tabService,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
@@ -264,8 +270,8 @@ class OrderDetailScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Total Amount",
+                      Text(
+                        l10n.totalAmount,
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                       Text(
@@ -315,13 +321,13 @@ class OrderDetailScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Payment Status",
+                      Text(
+                        l10n.paymentStatus,
                         style: TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        isPaid ? "PAID" : "AWAITING PAYMENT",
+                        isPaid ? l10n.paid : l10n.awaitingPayment,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: isPaid ? Colors.green : Colors.orange,
@@ -335,7 +341,7 @@ class OrderDetailScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         // Normally trigger payment, for now just show snackbar or navigate if flow exists
-                        AppToast.info("Check 'My Orders' to complete payment.");
+                        AppToast.info(l10n.checkMyOrders);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
@@ -344,8 +350,8 @@ class OrderDetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
-                        "Pay Details",
+                      child: Text(
+                        l10n.paymentDetails,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

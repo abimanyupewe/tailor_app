@@ -8,6 +8,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:tailor_app/screens/post/post_detail_screen.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ServiceTab extends StatelessWidget {
@@ -17,7 +19,9 @@ class ServiceTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (tailor.services.isEmpty) {
-      return const Center(child: Text("No services available"));
+      return Center(
+        child: Text(AppLocalizations.of(context).noServices),
+      );
     }
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -94,7 +98,10 @@ class PostTab extends StatelessWidget {
           children: [
             Icon(Iconsax.gallery_slash, size: 48, color: Colors.grey.shade300),
             const SizedBox(height: 16),
-            Text("No posts yet", style: TextStyle(color: Colors.grey.shade500)),
+            Text(
+              AppLocalizations.of(context).noPosts,
+              style: TextStyle(color: Colors.grey.shade500),
+            ),
           ],
         ),
       );
@@ -206,7 +213,7 @@ class ReviewTab extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      "No reviews yet",
+                      AppLocalizations.of(context).noReviews,
                       style: TextStyle(
                         color: Colors.grey.shade500,
                         fontWeight: FontWeight.w500,
@@ -269,7 +276,11 @@ class ReviewTab extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    '${review.date.day} ${_getMonth(review.date.month)} ${review.date.year}',
+                                    DateFormat(
+                                      'd MMM y',
+                                      Localizations.localeOf(context)
+                                          .languageCode,
+                                    ).format(review.date),
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey.shade400,
@@ -325,34 +336,17 @@ class ReviewTab extends StatelessWidget {
       ),
     );
   }
-
-  String _getMonth(int month) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return months[month - 1];
-  }
 }
 
 class ContactTab extends StatelessWidget {
   final Tailor tailor;
   const ContactTab({super.key, required this.tailor});
 
-  Future<void> _makePhoneCall(String phoneNumber) async {
+  Future<void> _makePhoneCall(BuildContext context, String phoneNumber) async {
+    final l10n = AppLocalizations.of(context);
     final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
     if (!await launchUrl(launchUri)) {
-      AppToast.error('Could not launch $launchUri');
+      AppToast.error(l10n.couldNotLaunch(launchUri.toString()));
     }
   }
 
@@ -388,8 +382,8 @@ class ContactTab extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Text(
-                      "Location Address",
+                    Text(
+                      AppLocalizations.of(context).locationAddress,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -453,10 +447,10 @@ class ContactTab extends StatelessWidget {
             width: double.infinity,
             height: 56,
             child: ElevatedButton.icon(
-              onPressed: () => _makePhoneCall(tailor.phoneNumber),
+              onPressed: () => _makePhoneCall(context, tailor.phoneNumber),
               icon: const Icon(Iconsax.call, color: Colors.white),
               label: Text(
-                "Call ${tailor.phoneNumber}",
+                AppLocalizations.of(context).callPhone(tailor.phoneNumber),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

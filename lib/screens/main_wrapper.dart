@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/controllers/navigation_controller.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 import 'package:tailor_app/controllers/chat_controller.dart';
 import 'package:tailor_app/screens/home/home_screen.dart';
 import 'package:tailor_app/screens/map/map_screen.dart';
@@ -17,6 +18,7 @@ class MainWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
     Get.put(ChatController());
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       body: Obx(
@@ -44,17 +46,17 @@ class MainWrapper extends StatelessWidget {
             NavigationDestination(
               icon: const Icon(Iconsax.home, color: Colors.grey),
               selectedIcon: Icon(Iconsax.home, color: AppColors.primary),
-              label: 'Home',
+              label: l10n.navHome,
             ),
             NavigationDestination(
               icon: const Icon(Iconsax.map, color: Colors.grey),
               selectedIcon: Icon(Iconsax.map, color: AppColors.primary),
-              label: 'Map',
+              label: l10n.navMap,
             ),
             NavigationDestination(
               icon: const Icon(Iconsax.bag, color: Colors.grey),
               selectedIcon: Icon(Iconsax.bag, color: AppColors.primary),
-              label: 'Orders',
+              label: l10n.navOrders,
             ),
             NavigationDestination(
               icon: Obx(() {
@@ -75,12 +77,12 @@ class MainWrapper extends StatelessWidget {
                 Iconsax.message,
                 color: AppColors.primary,
               ),
-              label: 'Chat',
+              label: l10n.navChat,
             ),
             NavigationDestination(
               icon: const Icon(Iconsax.user, color: Colors.grey),
               selectedIcon: Icon(Iconsax.user, color: AppColors.primary),
-              label: 'Profile',
+              label: l10n.navProfile,
             ),
           ],
         ),

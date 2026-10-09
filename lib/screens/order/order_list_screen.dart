@@ -7,6 +7,8 @@ import 'package:tailor_app/models/order_model.dart';
 import 'package:tailor_app/screens/order/order_detail_screen.dart';
 import 'package:tailor_app/screens/order/widgets/order_card.dart';
 import 'package:tailor_app/screens/tailor/widgets/review_dialog.dart';
+import 'package:tailor_app/widgets/skeleton.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key});
@@ -38,26 +40,27 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
-          title: const Text(
-            "My Orders",
-            style: TextStyle(fontWeight: FontWeight.bold),
+          title: Text(
+            l10n.myOrders,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           elevation: 0,
           backgroundColor: Colors.white,
           foregroundColor: AppColors.primary,
-          bottom: const TabBar(
+          bottom: TabBar(
             labelColor: AppColors.primary,
             unselectedLabelColor: Colors.grey,
             indicatorColor: AppColors.primary,
             tabs: [
-              Tab(text: "Payment"),
-              Tab(text: "In Progress"),
-              Tab(text: "History"),
+              Tab(text: l10n.tabPayment),
+              Tab(text: l10n.tabInProgress),
+              Tab(text: l10n.tabHistory),
             ],
           ),
         ),
@@ -69,8 +72,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
             future: _ordersFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
+                return ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [CardListSkeleton()],
                 );
               }
               if (snapshot.hasError) {
@@ -79,7 +83,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   children: [
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.7,
-                      child: Center(child: Text("Error: ${snapshot.error}")),
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(
+                            context,
+                          ).errorMessage(snapshot.error.toString()),
+                        ),
+                      ),
                     ),
                   ],
                 );
@@ -107,7 +117,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 }
               } catch (e) {
                 return ListView(
-                  children: [Center(child: Text("Error parsing data: $e"))],
+                  children: [
+                    Center(
+                      child: Text(
+                        AppLocalizations.of(context).errorParsing(e.toString()),
+                      ),
+                    ),
+                  ],
                 );
               }
 
@@ -132,9 +148,18 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
               return TabBarView(
                 children: [
-                  _buildOrderList(paymentOrders, "No pending payments"),
-                  _buildOrderList(inProgressOrders, "No orders in progress"),
-                  _buildOrderList(historyOrders, "No order history"),
+                  _buildOrderList(
+                    paymentOrders,
+                    AppLocalizations.of(context).noPendingPayments,
+                  ),
+                  _buildOrderList(
+                    inProgressOrders,
+                    AppLocalizations.of(context).noOrdersProgress,
+                  ),
+                  _buildOrderList(
+                    historyOrders,
+                    AppLocalizations.of(context).noOrderHistory,
+                  ),
                 ],
               );
             },
@@ -183,6 +208,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   !order.hasReview &&
                   !_reviewedOrderIds.contains(order.id))
               ? () async {
+                  final reviewSubmitted = AppLocalizations.of(
+                    context,
+                  ).reviewSubmitted;
                   final result = await Get.dialog(
                     ReviewDialog(orderId: order.id),
                   );
@@ -191,7 +219,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     setState(() {
                       _reviewedOrderIds.add(order.id);
                     });
-                    AppToast.success("Review submitted successfully!");
+                    AppToast.success(reviewSubmitted);
                     _refreshOrders();
                   } else if (result == 'refresh') {
                     setState(() {

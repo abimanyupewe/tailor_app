@@ -5,9 +5,12 @@ import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/routes/app_routes.dart';
 import 'package:tailor_app/controllers/profile_controller.dart';
+import 'package:tailor_app/controllers/locale_controller.dart';
 import 'package:tailor_app/screens/profile/edit_profile_screen.dart';
 import 'package:tailor_app/screens/profile/personal_info_screen.dart';
 import 'package:tailor_app/screens/profile/settings_screen.dart';
+import 'package:tailor_app/widgets/skeleton.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
@@ -19,9 +22,9 @@ class ProfileScreen extends GetView<ProfileController> {
     return Scaffold(
       backgroundColor: AppColors.primary,
       appBar: AppBar(
-        title: const Text(
-          'Account',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context).account,
+          style: const TextStyle(
               fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
         ),
         centerTitle: true,
@@ -29,17 +32,20 @@ class ProfileScreen extends GetView<ProfileController> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
       ),
-      body: Obx(() {
+      body: Builder(
+        builder: (context) => Obx(() {
+        final l10n = AppLocalizations.of(context);
+        // Resubscribe so this Obx rebuilds (fresh strings) on language switch.
+        Get.find<LocaleController>().locale.value;
         if (controller.isLoading.value) {
-          return const Center(
-              child: CircularProgressIndicator(color: Colors.white));
+          return const ProfileLoadingSkeleton();
         }
 
         final userData = controller.user.value;
         if (userData == null) {
-          return const Center(
-              child: Text("Error loading profile",
-                  style: TextStyle(color: Colors.white)));
+          return Center(
+              child: Text(l10n.errorLoadingProfile,
+                  style: const TextStyle(color: Colors.white)));
         }
 
         final userObj = userData['user'] ?? {};
@@ -56,23 +62,22 @@ class ProfileScreen extends GetView<ProfileController> {
 
         return Column(
           children: [
-            const SizedBox(height: 20),
-            // HEADER SECTION (On Primary Color)
+            const SizedBox(height: 12),
+            // HEADER SECTION (on primary)
             Center(
               child: Column(
                 children: [
                   Stack(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.5), width: 1),
+                          border: Border.all(color: Colors.white, width: 2),
                         ),
                         child: CircleAvatar(
-                          radius: 45, // Slightly smaller
-                          backgroundColor: Colors.grey.shade200,
+                          radius: 44,
+                          backgroundColor: Colors.white.withValues(alpha: 0.15),
                           backgroundImage: (avatarUrl != null &&
                                   avatarUrl.toString().isNotEmpty)
                               ? NetworkImage(
@@ -83,27 +88,25 @@ class ProfileScreen extends GetView<ProfileController> {
                               : null,
                           child:
                               (avatarUrl == null || avatarUrl.toString().isEmpty)
-                                  ? Icon(Icons.person,
-                                      size: 40, color: Colors.grey.shade400)
+                                  ? const Icon(Icons.person,
+                                      size: 40, color: Colors.white70)
                                   : null,
                         ),
                       ),
-                      // Camera/Edit Icon
+                      // Edit badge
                       Positioned(
                         bottom: 0,
                         right: 0,
                         child: GestureDetector(
                           onTap: () => Get.to(() => const EditProfileScreen()),
                           child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color:
-                                  Colors.white.withValues(alpha: 0.2), // Glass effect
+                            padding: const EdgeInsets.all(7),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 1),
                             ),
                             child: const Icon(Iconsax.camera,
-                                color: Colors.white, size: 14),
+                                color: AppColors.primary, size: 14),
                           ),
                         ),
                       ),
@@ -125,7 +128,7 @@ class ProfileScreen extends GetView<ProfileController> {
                         email,
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: Colors.white.withValues(alpha: 0.75),
                         ),
                       ),
                     ),
@@ -133,39 +136,54 @@ class ProfileScreen extends GetView<ProfileController> {
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 24),
 
             // WHITE CONTENT SHEET
             Expanded(
               child: Container(
                 width: double.infinity,
-                decoration: const BoxDecoration(color: Colors.white),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                ),
                 child: SingleChildScrollView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildMenuItem(
-                        icon: Iconsax.user,
-                        title: 'Informasi Pribadi',
-                        onTap: () => Get.to(() => const PersonalInfoScreen()),
-                      ),
-                      
-                      const SizedBox(height: 8),
-                      _buildMenuItem(
-                        icon: Iconsax.setting_2,
-                        title: 'Settings',
-                        onTap: () => Get.to(() => const SettingsScreen()),
-                      ),
-                      _buildMenuItem(
-                        icon: Iconsax.logout,
-                        title: 'Logout',
-                        isDestructive: true,
-                        onTap: () async {
-                          await apiService.logout();
-                          Get.offAllNamed(AppRoutes.login);
-                        },
+                      _buildMenuGroup([
+                        _MenuEntry(
+                          icon: Iconsax.user,
+                          title: l10n.personalInfo,
+                          onTap: () => Get.to(() => const PersonalInfoScreen()),
+                        ),
+                        _MenuEntry(
+                          icon: Iconsax.setting_2,
+                          title: l10n.settings,
+                          onTap: () => Get.to(() => const SettingsScreen()),
+                        ),
+                      ]),
+                      const SizedBox(height: 16),
+                      _buildMenuGroup([
+                        _MenuEntry(
+                          icon: Iconsax.logout,
+                          title: l10n.logout,
+                          isDestructive: true,
+                          onTap: () async {
+                            await apiService.logout();
+                            Get.offAllNamed(AppRoutes.login);
+                          },
+                        ),
+                      ]),
+                      const SizedBox(height: 24),
+                      Center(
+                        child: Text(
+                          l10n.versionLabel('1.0.0'),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade400,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -174,50 +192,90 @@ class ProfileScreen extends GetView<ProfileController> {
             ),
           ],
         );
-      }),
+        }),
+      ),
     );
   }
 
 
 
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    VoidCallback? onTap,
-    bool isDestructive = false,
-  }) {
+  Widget _buildMenuGroup(List<_MenuEntry> entries) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: ListTile(
-        onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10), // Rounded icon bg
-          ),
-          child: Icon(
-            icon,
-            color: isDestructive ? Colors.red : AppColors.primary,
-            size: 20,
-          ),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: isDestructive ? Colors.red : AppColors.primary,
-          ),
-        ),
-        minLeadingWidth: 0,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (int i = 0; i < entries.length; i++) ...[
+            _buildMenuRow(entries[i]),
+            if (i < entries.length - 1)
+              Divider(
+                height: 1,
+                indent: 60,
+                endIndent: 16,
+                color: AppColors.secondary.withValues(alpha: 0.1),
+              ),
+          ],
+        ],
       ),
     );
   }
+
+  Widget _buildMenuRow(_MenuEntry entry) {
+    final color = entry.isDestructive ? Colors.red : AppColors.primary;
+    return InkWell(
+      onTap: entry.onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: entry.isDestructive
+                    ? Colors.red.withValues(alpha: 0.08)
+                    : AppColors.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(entry.icon, color: color, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                entry.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: color,
+                ),
+              ),
+            ),
+            if (!entry.isDestructive)
+              Icon(
+                Iconsax.arrow_right_3,
+                size: 16,
+                color: Colors.grey.shade400,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MenuEntry {
+  final IconData icon;
+  final String title;
+  final VoidCallback? onTap;
+  final bool isDestructive;
+
+  const _MenuEntry({
+    required this.icon,
+    required this.title,
+    this.onTap,
+    this.isDestructive = false,
+  });
 }

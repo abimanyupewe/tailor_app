@@ -3,6 +3,7 @@ import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class RouteTimelineWidget extends StatelessWidget {
   const RouteTimelineWidget({super.key});
@@ -10,6 +11,7 @@ class RouteTimelineWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mapController = Get.find<MapControllerX>();
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -58,22 +60,26 @@ class RouteTimelineWidget extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Your Location",
+                          Text(
+                            l10n.yourLocation,
                             style: TextStyle(color: Colors.grey, fontSize: 10),
                           ),
                           const SizedBox(height: 2),
                           Obx(
-                            () => Text(
-                              mapController.currentAddress.value.isNotEmpty
-                                  ? mapController.currentAddress.value
-                                  : "Detecting location...",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
+                            () => Builder(
+                              builder: (context) => Text(
+                                mapController.currentAddress.value.isNotEmpty
+                                    ? mapController.currentAddress.value
+                                    : AppLocalizations.of(
+                                        context,
+                                      ).detectingLocation,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -104,8 +110,8 @@ class RouteTimelineWidget extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Your Destination",
+                          Text(
+                            l10n.yourDestination,
                             style: TextStyle(color: Colors.grey, fontSize: 10),
                           ),
                           const SizedBox(height: 2),

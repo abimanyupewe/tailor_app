@@ -4,6 +4,8 @@ import 'package:tailor_app/controllers/map_controller.dart';
 import 'package:tailor_app/controllers/tailor_controller.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/data/api_service.dart' as tailor_app;
+import 'package:tailor_app/widgets/skeleton.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class TailorListSheet extends StatelessWidget {
   const TailorListSheet({super.key});
@@ -50,9 +52,7 @@ class TailorListSheet extends StatelessWidget {
                 child: Obx(() {
                   if (tailorController.isLoading.value &&
                       tailorController.tailors.isEmpty) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: AppColors.primary),
-                    );
+                    return const CardListSkeleton(itemCount: 3);
                   }
 
                   return ListView.builder(
@@ -61,11 +61,11 @@ class TailorListSheet extends StatelessWidget {
                     itemCount: tailorController.tailors.length + 1,
                     itemBuilder: (context, index) {
                       if (index == 0) {
-                        return const Padding(
-                          padding: EdgeInsets.only(bottom: 10),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: Center(
                             child: Text(
-                              "Nearby Tailors",
+                              AppLocalizations.of(context).nearbyTailors,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

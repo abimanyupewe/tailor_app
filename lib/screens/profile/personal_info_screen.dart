@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 import 'package:tailor_app/controllers/profile_controller.dart';
 import 'package:tailor_app/screens/profile/edit_profile_screen.dart';
 
@@ -13,9 +14,9 @@ class PersonalInfoScreen extends GetView<ProfileController> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
-          'Informasi Pribadi',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context).personalInfoTitle,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
             color: AppColors.primary,
@@ -29,7 +30,9 @@ class PersonalInfoScreen extends GetView<ProfileController> {
           onPressed: () => Get.back(),
         ),
       ),
-      body: Obx(() {
+      body: Builder(
+        builder: (context) => Obx(() {
+        final l10n = AppLocalizations.of(context);
         final userData = controller.user.value;
         if (userData == null) return const SizedBox();
 
@@ -63,15 +66,19 @@ class PersonalInfoScreen extends GetView<ProfileController> {
               vertical: 20.0,
             ),
             children: [
-              _buildInfoTile(Iconsax.user, "Username", username ?? "-"),
+              _buildInfoTile(Iconsax.user, l10n.usernameLabel, username ?? "-"),
               const Divider(height: 30),
-              _buildInfoTile(Iconsax.profile_circle, "Full Name", fullName),
+              _buildInfoTile(Iconsax.profile_circle, l10n.fullName, fullName),
               const Divider(height: 30),
-              _buildInfoTile(Iconsax.sms, "Email", email ?? "-"),
+              _buildInfoTile(Iconsax.sms, l10n.emailLabel, email ?? "-"),
               const Divider(height: 30),
-              _buildInfoTile(Iconsax.call, "Phone Number", phoneNumber ?? "-"),
+              _buildInfoTile(
+                Iconsax.call,
+                l10n.phoneNumber,
+                phoneNumber ?? "-",
+              ),
               const Divider(height: 30),
-              _buildInfoTile(Iconsax.location, "Address", address ?? "-"),
+              _buildInfoTile(Iconsax.location, l10n.addressLabel, address ?? "-"),
 
               const SizedBox(height: 40),
 
@@ -87,8 +94,8 @@ class PersonalInfoScreen extends GetView<ProfileController> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    "Edit Profile",
+                  child: Text(
+                    l10n.editProfileTitle,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -101,7 +108,8 @@ class PersonalInfoScreen extends GetView<ProfileController> {
             ],
           ),
         );
-      }),
+        }),
+      ),
     );
   }
 
