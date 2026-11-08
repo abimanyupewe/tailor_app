@@ -21,19 +21,31 @@ class MapScreen extends StatelessWidget {
         children: [
           const MapView(),
           Positioned(
-            top: 50,
+            top: 0,
             left: 0,
             right: 0,
-            child: Obx(() {
-              if (mapController.selectedTailor.value != null) {
-                return const RouteTimelineWidget();
-              } else {
-                return const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: SearchInputWidget(),
-                );
-              }
-            }),
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Obx(() {
+                  final hasSelection =
+                      mapController.selectedTailor.value != null;
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 220),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    child: hasSelection
+                        ? const RouteTimelineWidget(key: ValueKey('route'))
+                        : const Padding(
+                            key: ValueKey('search'),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: SearchInputWidget(),
+                          ),
+                  );
+                }),
+              ),
+            ),
           ),
           Obx(() {
             final selected = mapController.selectedTailor.value;

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/chat_model.dart';
@@ -41,24 +42,19 @@ class ChatController extends GetxController {
 
   Future<void> fetchMyUserId() async {
     try {
-      print("ChatController: Fetching user profile...");
       final response = await _apiService.getProfile();
-      print("ChatController: Profile response: $response");
 
       if (response != null) {
         myUserId = response['id']?.toString() ?? response['pk']?.toString();
-        print("ChatController: myUserId set to $myUserId");
 
         // Force refresh all messages/rooms with new ID if valid
         if (myUserId != null) {
           chatRooms.refresh();
           messages.refresh();
         }
-      } else {
-        print("ChatController: Profile response is null");
       }
     } catch (e) {
-      print('Error fetching profile: $e');
+      debugPrint('Error fetching profile: $e');
     }
   }
 
@@ -81,13 +77,13 @@ class ChatController extends GetxController {
         try {
           parsedRooms.add(ChatRoom.fromJson(item, myUserId));
         } catch (e) {
-          print("Error parsing chat room ID ${item['id']}: $e");
+          debugPrint("Error parsing chat room ID ${item['id']}: $e");
         }
       }
 
       chatRooms.assignAll(parsedRooms);
     } catch (e) {
-      print('Error fetching chat rooms: $e');
+      debugPrint('Error fetching chat rooms: $e');
     } finally {
       if (!background) isLoading.value = false;
     }
@@ -148,7 +144,7 @@ class ChatController extends GetxController {
         messages.assignAll(newMessages);
       }
     } catch (e) {
-      print('Error fetching messages: $e');
+      debugPrint('Error fetching messages: $e');
     } finally {
       if (!background) isLoading.value = false;
     }
@@ -174,7 +170,6 @@ class ChatController extends GetxController {
       // 2. Refresh the chat list (inbox) to show latest message snippet
       fetchChatRooms(background: true);
     } catch (e) {
-      print('ChatController: Error sending message: $e');
       if (e.toString().contains('404')) {
         AppToast.error('Chat room not found (404). ID: $_currentRoomId');
       } else {
@@ -191,16 +186,13 @@ class ChatController extends GetxController {
   }
 
   Future<void> startChatWithTailor(String tailorId) async {
-    print('ChatController: Attempting to start chat with ID: $tailorId');
     if (tailorId.isEmpty) {
       AppToast.error('Invalid Tailor ID (empty)');
       return;
     }
     try {
       isLoading.value = true;
-      print('ChatController: Calling ApiService.startChat...');
       final response = await _apiService.startChat(tailorId);
-      print('ChatController: ApiService returned: $response');
 
       // Expecting response to contain room info, minimally the ID
       if (response != null) {
@@ -210,10 +202,6 @@ class ChatController extends GetxController {
             response['room_id']?.toString() ??
             response['pk']?.toString() ??
             response['uuid']?.toString();
-
-        print(
-          "ChatController: Extracted Room ID: $roomId from response keys: ${response.keys}",
-        );
 
         if (roomId == null || roomId.isEmpty || roomId == 'null') {
           AppToast.error(
@@ -226,9 +214,6 @@ class ChatController extends GetxController {
         // Fetch rooms in background so we don't block navigation
         fetchChatRooms(background: true);
 
-        print(
-          "ChatController: Navigating to /chat/detail with args: roomId=$roomId",
-        );
         Get.toNamed(
           '/chat/detail',
           arguments: {
@@ -242,11 +227,9 @@ class ChatController extends GetxController {
           },
         );
       } else {
-        print("ChatController: Response is null");
         AppToast.error('Failed to start chat: Null response');
       }
     } catch (e) {
-      print('Error starting chat: $e');
       AppToast.error('Could not start chat: ${e.toString()}');
     } finally {
       isLoading.value = false;

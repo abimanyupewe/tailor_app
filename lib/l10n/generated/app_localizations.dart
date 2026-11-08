@@ -973,6 +973,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Get Started'**
   String get getStarted;
+
+  /// No description provided for @servicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get servicesTitle;
+
+  /// No description provided for @svcCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Made'**
+  String get svcCustom;
+
+  /// No description provided for @svcAlter.
+  ///
+  /// In en, this message translates to:
+  /// **'Alterations'**
+  String get svcAlter;
+
+  /// No description provided for @svcResize.
+  ///
+  /// In en, this message translates to:
+  /// **'Resize'**
+  String get svcResize;
+
+  /// No description provided for @svcEmbroidery.
+  ///
+  /// In en, this message translates to:
+  /// **'Embroidery'**
+  String get svcEmbroidery;
+
+  /// No description provided for @svcBeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Beading'**
+  String get svcBeading;
+
+  /// No description provided for @svcPrinting.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Printing'**
+  String get svcPrinting;
+
+  /// No description provided for @svcConsult.
+  ///
+  /// In en, this message translates to:
+  /// **'Design Consult'**
+  String get svcConsult;
+
+  /// No description provided for @svcExpress.
+  ///
+  /// In en, this message translates to:
+  /// **'Express'**
+  String get svcExpress;
+
+  /// No description provided for @verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get verified;
+
+  /// No description provided for @servicesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} services'**
+  String servicesCount(int count);
+
+  /// No description provided for @startingFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting from'**
+  String get startingFrom;
+
+  /// No description provided for @manageServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Services'**
+  String get manageServices;
+
+  /// No description provided for @addService.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Service'**
+  String get addService;
+
+  /// No description provided for @editService.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Service'**
+  String get editService;
+
+  /// No description provided for @deleteService.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Service'**
+  String get deleteService;
+
+  /// No description provided for @confirmDeleteService.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"? This can\'t be undone.'**
+  String confirmDeleteService(String name);
+
+  /// No description provided for @editAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editAction;
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAction;
+
+  /// No description provided for @serviceNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Name'**
+  String get serviceNameLabel;
+
+  /// No description provided for @serviceNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Shirt Tailoring'**
+  String get serviceNameHint;
+
+  /// No description provided for @servicePriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get servicePriceLabel;
+
+  /// No description provided for @servicePriceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 50000'**
+  String get servicePriceHint;
+
+  /// No description provided for @serviceDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated Duration (days)'**
+  String get serviceDurationLabel;
+
+  /// No description provided for @serviceDurationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 3'**
+  String get serviceDurationHint;
+
+  /// No description provided for @serviceDurationValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String serviceDurationValue(int count);
+
+  /// No description provided for @serviceDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get serviceDescriptionLabel;
+
+  /// No description provided for @serviceDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe the service details (optional)'**
+  String get serviceDescriptionHint;
+
+  /// No description provided for @serviceActiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Service'**
+  String get serviceActiveLabel;
+
+  /// No description provided for @serviceActiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Show this service to customers'**
+  String get serviceActiveHint;
+
+  /// No description provided for @serviceInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get serviceInactive;
+
+  /// No description provided for @noTailorServices.
+  ///
+  /// In en, this message translates to:
+  /// **'No services yet. Add your first service so customers can order.'**
+  String get noTailorServices;
+
+  /// No description provided for @serviceSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Service saved'**
+  String get serviceSaved;
+
+  /// No description provided for @serviceDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Service deleted'**
+  String get serviceDeleted;
+
+  /// No description provided for @requiredField.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get requiredField;
+
+  /// No description provided for @invalidPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid price'**
+  String get invalidPrice;
 }
 
 class _AppLocalizationsDelegate

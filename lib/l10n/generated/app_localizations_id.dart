@@ -469,4 +469,119 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get getStarted => 'Mulai';
+
+  @override
+  String get servicesTitle => 'Layanan';
+
+  @override
+  String get svcCustom => 'Jahit Baru';
+
+  @override
+  String get svcAlter => 'Permak';
+
+  @override
+  String get svcResize => 'Ubah Ukuran';
+
+  @override
+  String get svcEmbroidery => 'Bordir';
+
+  @override
+  String get svcBeading => 'Payet';
+
+  @override
+  String get svcPrinting => 'Sablon';
+
+  @override
+  String get svcConsult => 'Konsultasi Desain';
+
+  @override
+  String get svcExpress => 'Jahit Kilat';
+
+  @override
+  String get verified => 'Terverifikasi';
+
+  @override
+  String servicesCount(int count) {
+    return '$count layanan';
+  }
+
+  @override
+  String get startingFrom => 'Mulai dari';
+
+  @override
+  String get manageServices => 'Kelola Layanan';
+
+  @override
+  String get addService => 'Tambah Layanan';
+
+  @override
+  String get editService => 'Ubah Layanan';
+
+  @override
+  String get deleteService => 'Hapus Layanan';
+
+  @override
+  String confirmDeleteService(String name) {
+    return 'Hapus \"$name\"? Tindakan ini tidak bisa dibatalkan.';
+  }
+
+  @override
+  String get editAction => 'Ubah';
+
+  @override
+  String get deleteAction => 'Hapus';
+
+  @override
+  String get serviceNameLabel => 'Nama Layanan';
+
+  @override
+  String get serviceNameHint => 'mis. Jahit Kemeja';
+
+  @override
+  String get servicePriceLabel => 'Harga';
+
+  @override
+  String get servicePriceHint => 'mis. 50000';
+
+  @override
+  String get serviceDurationLabel => 'Estimasi Pengerjaan (hari)';
+
+  @override
+  String get serviceDurationHint => 'mis. 3';
+
+  @override
+  String serviceDurationValue(int count) {
+    return '$count hari';
+  }
+
+  @override
+  String get serviceDescriptionLabel => 'Deskripsi';
+
+  @override
+  String get serviceDescriptionHint => 'Jelaskan detail layanan (opsional)';
+
+  @override
+  String get serviceActiveLabel => 'Layanan Aktif';
+
+  @override
+  String get serviceActiveHint => 'Tampilkan layanan ini ke pelanggan';
+
+  @override
+  String get serviceInactive => 'Nonaktif';
+
+  @override
+  String get noTailorServices =>
+      'Belum ada layanan. Tambahkan layanan pertamamu agar pelanggan bisa memesan.';
+
+  @override
+  String get serviceSaved => 'Layanan tersimpan';
+
+  @override
+  String get serviceDeleted => 'Layanan dihapus';
+
+  @override
+  String get requiredField => 'Wajib diisi';
+
+  @override
+  String get invalidPrice => 'Harga tidak valid';
 }

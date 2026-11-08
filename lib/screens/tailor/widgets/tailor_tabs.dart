@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/core/utils/app_toast.dart';
+import 'package:tailor_app/core/utils/currency.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:iconsax/iconsax.dart';
@@ -18,7 +19,8 @@ class ServiceTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (tailor.services.isEmpty) {
+    final services = tailor.activeServices;
+    if (services.isEmpty) {
       return Center(
         child: Text(AppLocalizations.of(context).noServices),
       );
@@ -26,58 +28,74 @@ class ServiceTab extends StatelessWidget {
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      itemCount: tailor.services.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 16),
+      itemCount: services.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final service = tailor.services[index];
+        final service = services[index];
+        final description = service.description.trim();
         return Container(
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
+            border: Border.all(
+              color: AppColors.secondary.withValues(alpha: 0.12),
+            ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-              title: Text(
-                service.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  service.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
-                ),
-              ),
-              trailing: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 8,
-                ),
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Text(
-                  'Rp ${service.price.toStringAsFixed(0)}',
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
+                child: const Icon(
+                  Iconsax.scissor,
+                  size: 20,
+                  color: AppColors.primary,
                 ),
               ),
-            ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      service.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    if (description.isNotEmpty) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: 12,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                formatRupiah(service.price),
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 14,
+                ),
+              ),
+            ],
           ),
         );
       },

@@ -18,7 +18,7 @@ class RouteTimelineWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
       ),
       child: Row(
@@ -33,6 +33,7 @@ class RouteTimelineWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                           width: 24,
@@ -58,6 +59,7 @@ class RouteTimelineWidget extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -66,20 +68,16 @@ class RouteTimelineWidget extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Obx(
-                            () => Builder(
-                              builder: (context) => Text(
-                                mapController.currentAddress.value.isNotEmpty
-                                    ? mapController.currentAddress.value
-                                    : AppLocalizations.of(
-                                        context,
-                                      ).detectingLocation,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                            () => Text(
+                              mapController.currentAddress.value.isNotEmpty
+                                  ? mapController.currentAddress.value
+                                  : l10n.detectingLocation,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -108,6 +106,7 @@ class RouteTimelineWidget extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(

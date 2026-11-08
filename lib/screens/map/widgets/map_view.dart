@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
 import 'package:tailor_app/controllers/tailor_controller.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class MapView extends StatelessWidget {
   const MapView({super.key});
@@ -18,7 +20,31 @@ class MapView extends StatelessWidget {
 
     return Obx(() {
       if (mapController.currentLocation.value == null) {
-        return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+        return Container(
+          color: AppColors.background,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Iconsax.location, size: 44, color: AppColors.accent),
+                const SizedBox(height: 16),
+                const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.primary,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  AppLocalizations.of(context).detectingLocation,
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+        );
       }
 
       return FlutterMap(

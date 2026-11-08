@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
@@ -40,19 +39,13 @@ class ArrivalDialog extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               l10n.arrivedTitle,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.arrivedBody(tailorName),
               textAlign: TextAlign.center,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
             ),
             const SizedBox(height: 24),
             SizedBox(
@@ -71,7 +64,7 @@ class ArrivalDialog extends StatelessWidget {
                 ),
                 child: Text(
                   l10n.giveRating,
-                  style: GoogleFonts.plusJakartaSans(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -82,7 +75,7 @@ class ArrivalDialog extends StatelessWidget {
               onPressed: () => Get.back(),
               child: Text(
                 l10n.close,
-                style: GoogleFonts.plusJakartaSans(color: Colors.grey),
+                style: const TextStyle(color: Colors.grey),
               ),
             ),
           ],

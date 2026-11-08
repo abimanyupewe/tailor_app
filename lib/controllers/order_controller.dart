@@ -26,8 +26,8 @@ class OrderController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Initialize items based on tailor services
-    items.assignAll(tailor.services.map((s) => OrderItem(s)).toList());
+    // Initialize items based on the tailor's active services only
+    items.assignAll(tailor.activeServices.map((s) => OrderItem(s)).toList());
   }
 
   void increment(OrderItem item) {

@@ -106,90 +106,97 @@ class TailorDetailScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
                     child: Container(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
+                        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.10)),
                       ),
                       child: Obx(() {
                         final currentTailor = controller.tailor.value;
+
+                        var rating = currentTailor.rating;
+                        var count = currentTailor.reviewCount;
+                        if (rating == 0.0 && controller.reviews.isNotEmpty) {
+                          count = controller.reviews.length;
+                          rating =
+                              controller.reviews
+                                  .map((r) => r.rating)
+                                  .fold(0.0, (a, b) => a + b) /
+                              count;
+                        }
+
+                        final meta = <String>[
+                          rating.toStringAsFixed(1),
+                          if (count > 0) '($count)',
+                          if (currentTailor.distance > 0)
+                            currentTailor.formattedDistance,
+                          if (currentTailor.services.isNotEmpty)
+                            l10n.servicesCount(currentTailor.services.length),
+                        ];
+
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Expanded(
                                   child: Text(
                                     currentTailor.name,
                                     style: const TextStyle(
-                                      fontSize: 26,
-                                      fontWeight: FontWeight.w800,
-                                      height: 1.2,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.25,
                                       color: Colors.black87,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 6,
+                                if (currentTailor.isVerified)
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 6, top: 3),
+                                    child: Icon(
+                                      Icons.verified,
+                                      size: 20,
+                                      color: Colors.blue,
+                                    ),
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.amber.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.star_rounded,
-                                        color: Colors.amber,
-                                        size: 18,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Builder(
-                                        builder: (context) {
-                                          var rating = currentTailor.rating;
-                                          var count = currentTailor.reviewCount;
-
-                                          // Fallback: If model rating is 0 but we have reviews in controller, calculate it
-                                          if (rating == 0.0 &&
-                                              controller.reviews.isNotEmpty) {
-                                            count = controller.reviews.length;
-                                            rating =
-                                                controller.reviews
-                                                    .map((r) => r.rating)
-                                                    .fold(
-                                                      0.0,
-                                                      (a, b) => a + b,
-                                                    ) /
-                                                count;
-                                          }
-
-                                          return Text(
-                                            "${rating.toStringAsFixed(1)} ($count)",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.amber[900],
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ],
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Colors.amber,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    meta.join('  ·  '),
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 10),
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(
-                                  Iconsax.location,
-                                  size: 18,
-                                  color: AppColors.primary,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 2),
+                                  child: Icon(
+                                    Iconsax.location,
+                                    size: 15,
+                                    color: Colors.grey.shade500,
+                                  ),
                                 ),
                                 const SizedBox(width: 6),
                                 Expanded(
@@ -197,58 +204,8 @@ class TailorDetailScreen extends StatelessWidget {
                                     currentTailor.address,
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                // Open/Close Badge (Mockup)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.green.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Builder(
-                                    builder: (context) => Text(
-                                      AppLocalizations.of(context).openNow,
-                                      style: const TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                // Distance Badge
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Builder(
-                                    builder: (context) => Text(
-                                      AppLocalizations.of(context).kmAway(
-                                        currentTailor.distance.toStringAsFixed(1),
-                                      ),
-                                      style: const TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                      ),
+                                      fontSize: 13,
+                                      height: 1.4,
                                     ),
                                   ),
                                 ),
@@ -308,8 +265,8 @@ class TailorDetailScreen extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 50,
-                height: 50,
+                width: 54,
+                height: 54,
                 margin: const EdgeInsets.only(right: 16),
                 decoration: BoxDecoration(
                   border: Border.all(color: AppColors.primary),
@@ -329,7 +286,7 @@ class TailorDetailScreen extends StatelessWidget {
               ),
               Expanded(
                 child: SizedBox(
-                  height: 50,
+                  height: 54,
                   child: ElevatedButton(
                     onPressed: () {
                       Get.to(() => OrderScreen(tailor: tailor));

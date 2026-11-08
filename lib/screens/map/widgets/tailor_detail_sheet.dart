@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/core/utils/currency.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
@@ -85,7 +86,7 @@ class TailorDetailSheet extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: isRouting ? Colors.red : AppColors.primary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(12),
             ),
             elevation: 0,
           ),
@@ -159,30 +160,46 @@ class TailorDetailSheet extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.red[50],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        "Rp 50k", // Placeholder
-                        style: TextStyle(
-                          color: Colors.red[400],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
+                    Builder(
+                      builder: (context) {
+                        final active = selected.activeServices;
+                        if (active.isEmpty) return const SizedBox.shrink();
+                        final minPrice = active
+                            .map((s) => s.price)
+                            .reduce((a, b) => a < b ? a : b);
+                        if (minPrice <= 0) return const SizedBox.shrink();
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            formatRupiah(minPrice),
+                            style: const TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const Spacer(),
                     const Icon(Icons.star, size: 16, color: Colors.amber),
                     const SizedBox(width: 4),
-                    Text(
-                      selected.rating.toString(),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    Flexible(
+                      child: Text(
+                        selected.distance > 0
+                            ? '${selected.rating} • ${selected.formattedDistance}'
+                            : selected.rating.toString(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),

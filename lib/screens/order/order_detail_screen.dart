@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/core/utils/currency.dart';
 
 import 'package:tailor_app/models/order_model.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
@@ -236,7 +237,7 @@ class OrderDetailScreen extends StatelessWidget {
                                     ),
                                   ),
                                 Text(
-                                  "${item.quantity} x Rp ${item.price.toStringAsFixed(0)}",
+                                  "${item.quantity} x ${formatRupiah(item.price)}",
                                   style: TextStyle(
                                     color: Colors.grey.shade500,
                                     fontSize: 13,
@@ -246,7 +247,7 @@ class OrderDetailScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "Rp ${(item.price * item.quantity).toStringAsFixed(0)}",
+                            formatRupiah(item.price * item.quantity),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
@@ -275,7 +276,7 @@ class OrderDetailScreen extends StatelessWidget {
                         style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                       Text(
-                        "Rp ${order.totalPrice.toStringAsFixed(0)}",
+                        formatRupiah(order.totalPrice),
                         style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 20,

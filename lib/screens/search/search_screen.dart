@@ -150,6 +150,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 final query = _searchController.text.toLowerCase();
                 final nameMatch = t.name.toLowerCase().contains(query);
 
+                // Service Search (service grid passes service keywords here)
+                final serviceMatch = t.services.any(
+                  (s) =>
+                      s.name.toLowerCase().contains(query) ||
+                      s.description.toLowerCase().contains(query),
+                );
+
                 // Category Filter (Mock logic: Assuming all match 'All' or name match category if no dedicated field)
                 // TODO: Enhance filtered based on Tailor Model skills/services
                 // For now, if category is 'All', return true.
@@ -167,7 +174,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       true; // defaulting to true to not hide everything until model is verified.
                 }
 
-                return nameMatch && catMatch;
+                return (nameMatch || serviceMatch) && catMatch;
               }).toList();
 
               if (tailors.isEmpty) {

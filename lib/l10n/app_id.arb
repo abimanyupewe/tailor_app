@@ -199,5 +199,56 @@
   "back": "Kembali",
   "skip": "Lewati",
   "next": "Lanjut",
-  "getStarted": "Mulai"
+  "getStarted": "Mulai",
+  "servicesTitle": "Layanan",
+  "svcCustom": "Jahit Baru",
+  "svcAlter": "Permak",
+  "svcResize": "Ubah Ukuran",
+  "svcEmbroidery": "Bordir",
+  "svcBeading": "Payet",
+  "svcPrinting": "Sablon",
+  "svcConsult": "Konsultasi Desain",
+  "svcExpress": "Jahit Kilat",
+  "verified": "Terverifikasi",
+  "servicesCount": "{count} layanan",
+  "@servicesCount": {
+    "placeholders": {
+      "count": { "type": "int", "example": "2" }
+    }
+  },
+  "startingFrom": "Mulai dari",
+  "manageServices": "Kelola Layanan",
+  "addService": "Tambah Layanan",
+  "editService": "Ubah Layanan",
+  "deleteService": "Hapus Layanan",
+  "confirmDeleteService": "Hapus \"{name}\"? Tindakan ini tidak bisa dibatalkan.",
+  "@confirmDeleteService": {
+    "placeholders": {
+      "name": { "type": "String", "example": "Jahit Kemeja" }
+    }
+  },
+  "editAction": "Ubah",
+  "deleteAction": "Hapus",
+  "serviceNameLabel": "Nama Layanan",
+  "serviceNameHint": "mis. Jahit Kemeja",
+  "servicePriceLabel": "Harga",
+  "servicePriceHint": "mis. 50000",
+  "serviceDurationLabel": "Estimasi Pengerjaan (hari)",
+  "serviceDurationHint": "mis. 3",
+  "serviceDurationValue": "{count} hari",
+  "@serviceDurationValue": {
+    "placeholders": {
+      "count": { "type": "int", "example": "3" }
+    }
+  },
+  "serviceDescriptionLabel": "Deskripsi",
+  "serviceDescriptionHint": "Jelaskan detail layanan (opsional)",
+  "serviceActiveLabel": "Layanan Aktif",
+  "serviceActiveHint": "Tampilkan layanan ini ke pelanggan",
+  "serviceInactive": "Nonaktif",
+  "noTailorServices": "Belum ada layanan. Tambahkan layanan pertamamu agar pelanggan bisa memesan.",
+  "serviceSaved": "Layanan tersimpan",
+  "serviceDeleted": "Layanan dihapus",
+  "requiredField": "Wajib diisi",
+  "invalidPrice": "Harga tidak valid"
 }

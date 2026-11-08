@@ -468,4 +468,120 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get getStarted => 'Get Started';
+
+  @override
+  String get servicesTitle => 'Services';
+
+  @override
+  String get svcCustom => 'Custom Made';
+
+  @override
+  String get svcAlter => 'Alterations';
+
+  @override
+  String get svcResize => 'Resize';
+
+  @override
+  String get svcEmbroidery => 'Embroidery';
+
+  @override
+  String get svcBeading => 'Beading';
+
+  @override
+  String get svcPrinting => 'Screen Printing';
+
+  @override
+  String get svcConsult => 'Design Consult';
+
+  @override
+  String get svcExpress => 'Express';
+
+  @override
+  String get verified => 'Verified';
+
+  @override
+  String servicesCount(int count) {
+    return '$count services';
+  }
+
+  @override
+  String get startingFrom => 'Starting from';
+
+  @override
+  String get manageServices => 'Manage Services';
+
+  @override
+  String get addService => 'Add Service';
+
+  @override
+  String get editService => 'Edit Service';
+
+  @override
+  String get deleteService => 'Delete Service';
+
+  @override
+  String confirmDeleteService(String name) {
+    return 'Delete \"$name\"? This can\'t be undone.';
+  }
+
+  @override
+  String get editAction => 'Edit';
+
+  @override
+  String get deleteAction => 'Delete';
+
+  @override
+  String get serviceNameLabel => 'Service Name';
+
+  @override
+  String get serviceNameHint => 'e.g. Shirt Tailoring';
+
+  @override
+  String get servicePriceLabel => 'Price';
+
+  @override
+  String get servicePriceHint => 'e.g. 50000';
+
+  @override
+  String get serviceDurationLabel => 'Estimated Duration (days)';
+
+  @override
+  String get serviceDurationHint => 'e.g. 3';
+
+  @override
+  String serviceDurationValue(int count) {
+    return '$count days';
+  }
+
+  @override
+  String get serviceDescriptionLabel => 'Description';
+
+  @override
+  String get serviceDescriptionHint =>
+      'Describe the service details (optional)';
+
+  @override
+  String get serviceActiveLabel => 'Active Service';
+
+  @override
+  String get serviceActiveHint => 'Show this service to customers';
+
+  @override
+  String get serviceInactive => 'Inactive';
+
+  @override
+  String get noTailorServices =>
+      'No services yet. Add your first service so customers can order.';
+
+  @override
+  String get serviceSaved => 'Service saved';
+
+  @override
+  String get serviceDeleted => 'Service deleted';
+
+  @override
+  String get requiredField => 'Required';
+
+  @override
+  String get invalidPrice => 'Invalid price';
 }

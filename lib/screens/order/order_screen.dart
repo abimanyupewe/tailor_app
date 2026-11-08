@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/controllers/order_controller.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/core/constants/app_colors.dart'; // Assume this exists or use generic
+import 'package:tailor_app/core/utils/currency.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
@@ -69,24 +71,30 @@ class OrderScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 14),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        tailor.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          tailor.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        l10n.selectDateServices,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade500,
+                        Text(
+                          l10n.selectDateServices,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade500,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -146,27 +154,31 @@ class OrderScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.appointmentDate,
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-                        const SizedBox(height: 4),
-                        Obx(() {
-                          final d = controller.selectedDate.value;
-                          return Text(
-                            "${d.day}/${d.month}/${d.year}",
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        }),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.appointmentDate,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 4),
+                          Obx(() {
+                            final d = controller.selectedDate.value;
+                            return Text(
+                              "${d.day}/${d.month}/${d.year}",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
                     ),
-                    const Spacer(),
+                    const SizedBox(width: 8),
                     const Icon(
                       Icons.arrow_forward_ios,
                       size: 16,
@@ -216,8 +228,21 @@ class OrderScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withValues(alpha: 0.08),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Iconsax.scissor,
+                                size: 18,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,12 +251,12 @@ class OrderScreen extends StatelessWidget {
                                     item.service.name,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+                                      fontSize: 15,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    "Rp ${item.service.price.toStringAsFixed(0)}",
+                                    formatRupiah(item.service.price),
                                     style: const TextStyle(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.bold,
@@ -329,9 +354,13 @@ class OrderScreen extends StatelessWidget {
         child: SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 16,
+                runSpacing: 12,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,7 +371,7 @@ class OrderScreen extends StatelessWidget {
                       ),
                       Obx(
                         () => Text(
-                          "Rp ${controller.totalPrice.toStringAsFixed(0)}",
+                          formatRupiah(controller.totalPrice),
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w800,

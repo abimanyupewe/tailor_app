@@ -8,9 +8,9 @@ class NavigationController extends GetxController {
     selectedIndex.value = index;
     if (index == 4) {
       // Refresh profile when tapping the profile tab
-      try {
+      if (Get.isRegistered<ProfileController>()) {
         Get.find<ProfileController>().getUserProfile();
-      } catch (_) {}
+      }
     }
   }
 }

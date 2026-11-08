@@ -199,5 +199,56 @@
   "back": "Back",
   "skip": "Skip",
   "next": "Next",
-  "getStarted": "Get Started"
+  "getStarted": "Get Started",
+  "servicesTitle": "Services",
+  "svcCustom": "Custom Made",
+  "svcAlter": "Alterations",
+  "svcResize": "Resize",
+  "svcEmbroidery": "Embroidery",
+  "svcBeading": "Beading",
+  "svcPrinting": "Screen Printing",
+  "svcConsult": "Design Consult",
+  "svcExpress": "Express",
+  "verified": "Verified",
+  "servicesCount": "{count} services",
+  "@servicesCount": {
+    "placeholders": {
+      "count": { "type": "int", "example": "2" }
+    }
+  },
+  "startingFrom": "Starting from",
+  "manageServices": "Manage Services",
+  "addService": "Add Service",
+  "editService": "Edit Service",
+  "deleteService": "Delete Service",
+  "confirmDeleteService": "Delete \"{name}\"? This can't be undone.",
+  "@confirmDeleteService": {
+    "placeholders": {
+      "name": { "type": "String", "example": "Shirt Tailoring" }
+    }
+  },
+  "editAction": "Edit",
+  "deleteAction": "Delete",
+  "serviceNameLabel": "Service Name",
+  "serviceNameHint": "e.g. Shirt Tailoring",
+  "servicePriceLabel": "Price",
+  "servicePriceHint": "e.g. 50000",
+  "serviceDurationLabel": "Estimated Duration (days)",
+  "serviceDurationHint": "e.g. 3",
+  "serviceDurationValue": "{count} days",
+  "@serviceDurationValue": {
+    "placeholders": {
+      "count": { "type": "int", "example": "3" }
+    }
+  },
+  "serviceDescriptionLabel": "Description",
+  "serviceDescriptionHint": "Describe the service details (optional)",
+  "serviceActiveLabel": "Active Service",
+  "serviceActiveHint": "Show this service to customers",
+  "serviceInactive": "Inactive",
+  "noTailorServices": "No services yet. Add your first service so customers can order.",
+  "serviceSaved": "Service saved",
+  "serviceDeleted": "Service deleted",
+  "requiredField": "Required",
+  "invalidPrice": "Invalid price"
 }

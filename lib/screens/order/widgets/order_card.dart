@@ -3,6 +3,7 @@ import 'package:tailor_app/models/order_model.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
+import 'package:tailor_app/core/utils/currency.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class OrderCard extends StatelessWidget {
@@ -158,7 +159,7 @@ class OrderCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Rp ${order.totalPrice.toStringAsFixed(0)}",
+                          formatRupiah(order.totalPrice),
                           style: const TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 16,

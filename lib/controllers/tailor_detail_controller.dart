@@ -23,8 +23,20 @@ class TailorDetailController extends GetxController {
     try {
       print("TailorDetailController: Refreshing tailor ${tailor.value.id}");
       final data = await _apiService.getTailorDetail(tailor.value.id);
-      print("TailorDetailController: Detail data received: $data");
-      tailor.value = Tailor.fromJson(data);
+      final fetched = Tailor.fromJson(data);
+
+      // The detail endpoint omits `distance` and often returns a null
+      // `location`; keep the list-derived values instead of resetting to 0.
+      final hasLocation =
+          fetched.address != 'No Address' || fetched.latitude != 0;
+      tailor.value = fetched.copyWith(
+        address: hasLocation ? fetched.address : tailor.value.address,
+        latitude: hasLocation ? fetched.latitude : tailor.value.latitude,
+        longitude: hasLocation ? fetched.longitude : tailor.value.longitude,
+        distance: fetched.distance > 0
+            ? fetched.distance
+            : tailor.value.distance,
+      );
 
       try {
         final reviewsData = await _apiService.getReviews(tailor.value.id);
@@ -69,6 +81,7 @@ class TailorDetailController extends GetxController {
             latitude: tailor.value.latitude,
             longitude: tailor.value.longitude,
             distance: tailor.value.distance,
+            isVerified: tailor.value.isVerified,
             services: tailor.value.services,
             reviews: fetchedReviews,
             phoneNumber: tailor.value.phoneNumber,

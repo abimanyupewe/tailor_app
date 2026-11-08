@@ -98,6 +98,7 @@ class TailorController extends GetxController {
               latitude: tailor.latitude,
               longitude: tailor.longitude,
               distance: tailor.distance,
+              isVerified: tailor.isVerified,
               services: tailor.services,
               reviews: reviews.map((r) => Review.fromJson(r)).toList(),
               phoneNumber: tailor.phoneNumber,

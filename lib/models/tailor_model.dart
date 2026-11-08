@@ -8,6 +8,7 @@ class Tailor {
   final double latitude;
   final double longitude;
   final double distance; // Distance from the user's location in km
+  final bool isVerified;
   final List<Service> services;
   final List<Review> reviews;
   final String? userId;
@@ -55,6 +56,7 @@ class Tailor {
           ? double.tryParse(json['location']['longitude'].toString()) ?? 0.0
           : 0.0,
       distance: double.tryParse(json['distance']?.toString() ?? '0.0') ?? 0.0,
+      isVerified: json['is_verified'] == true,
       services:
           (json['services'] as List<dynamic>?)
               ?.map((s) => Service.fromJson(s as Map<String, dynamic>))
@@ -78,6 +80,46 @@ class Tailor {
     }
   }
 
+  /// Services that are enabled and can be ordered by customers.
+  List<Service> get activeServices =>
+      services.where((s) => s.isActive).toList();
+
+  Tailor copyWith({
+    String? id,
+    String? userId,
+    String? name,
+    String? address,
+    double? rating,
+    int? reviewCount,
+    String? imageUrl,
+    double? latitude,
+    double? longitude,
+    double? distance,
+    bool? isVerified,
+    List<Service>? services,
+    List<Review>? reviews,
+    String? phoneNumber,
+    List<Post>? posts,
+  }) {
+    return Tailor(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      address: address ?? this.address,
+      rating: rating ?? this.rating,
+      reviewCount: reviewCount ?? this.reviewCount,
+      imageUrl: imageUrl ?? this.imageUrl,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      distance: distance ?? this.distance,
+      isVerified: isVerified ?? this.isVerified,
+      services: services ?? this.services,
+      reviews: reviews ?? this.reviews,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      posts: posts ?? this.posts,
+    );
+  }
+
   Tailor({
     required this.id,
     this.userId,
@@ -89,6 +131,7 @@ class Tailor {
     required this.latitude,
     required this.longitude,
     required this.distance,
+    required this.isVerified,
     required this.services,
     required this.reviews,
     required this.phoneNumber,
@@ -101,12 +144,16 @@ class Service {
   final String name;
   final double price;
   final String description;
+  final int estimatedDurationDays;
+  final bool isActive;
 
   Service({
     required this.id,
     required this.name,
     required this.price,
     required this.description,
+    this.estimatedDurationDays = 0,
+    this.isActive = true,
   });
 
   factory Service.fromJson(Map<String, dynamic> json) {
@@ -121,6 +168,9 @@ class Service {
           ) ??
           0.0,
       description: json['description'] ?? '',
+      estimatedDurationDays:
+          int.tryParse(json['estimated_duration_days']?.toString() ?? '') ?? 0,
+      isActive: json['is_active'] == null ? true : json['is_active'] == true,
     );
   }
 }

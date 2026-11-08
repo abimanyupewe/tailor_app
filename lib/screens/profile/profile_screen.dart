@@ -9,6 +9,7 @@ import 'package:tailor_app/controllers/locale_controller.dart';
 import 'package:tailor_app/screens/profile/edit_profile_screen.dart';
 import 'package:tailor_app/screens/profile/personal_info_screen.dart';
 import 'package:tailor_app/screens/profile/settings_screen.dart';
+import 'package:tailor_app/screens/tailor/manage_services_screen.dart';
 import 'package:tailor_app/widgets/skeleton.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
@@ -54,6 +55,9 @@ class ProfileScreen extends GetView<ProfileController> {
         final avatarUrl = userObj['avatar'];
         final firstName = userObj['first_name'];
         final lastName = userObj['last_name'];
+        final isTailor =
+            (userObj['role'] ?? userData['role']).toString() == 'TAILOR' ||
+            userData['shop_name'] != null;
         String fullName = username;
         if (firstName != null && firstName.toString().isNotEmpty) {
           fullName = '$firstName ${lastName ?? ''}'.trim();
@@ -152,6 +156,13 @@ class ProfileScreen extends GetView<ProfileController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildMenuGroup([
+                        if (isTailor)
+                          _MenuEntry(
+                            icon: Iconsax.category,
+                            title: l10n.manageServices,
+                            onTap: () =>
+                                Get.to(() => const ManageServicesScreen()),
+                          ),
                         _MenuEntry(
                           icon: Iconsax.user,
                           title: l10n.personalInfo,

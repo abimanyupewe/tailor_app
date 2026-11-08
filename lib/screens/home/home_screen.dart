@@ -3,12 +3,10 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/core/constants/image_string.dart';
-import 'package:tailor_app/data/dummy_data.dart';
 import 'package:tailor_app/controllers/slider_controller.dart';
 import 'package:tailor_app/controllers/tailor_controller.dart';
 import 'package:tailor_app/controllers/profile_controller.dart';
 import 'package:tailor_app/data/api_service.dart';
-import 'package:tailor_app/widgets/category_hori.dart';
 import 'package:tailor_app/widgets/slider_card.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
@@ -17,7 +15,7 @@ import 'package:tailor_app/controllers/locale_controller.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
 import 'package:tailor_app/widgets/tailor_card.dart';
 import 'package:tailor_app/widgets/skeleton.dart';
-import 'package:tailor_app/screens/category/all_categories_screen.dart';
+import 'package:tailor_app/widgets/services_grid.dart';
 import 'package:tailor_app/screens/search/search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -31,7 +29,6 @@ class HomeScreen extends StatelessWidget {
     final tailorController = Get.find<TailorController>();
     // Initialize MapController to fetch realtime location
     final mapController = Get.put(MapControllerX());
-    final categoryData = DataCategory().data;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -246,7 +243,29 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 24),
 
-                      // 3. Banner Slider
+                      // 3. Services Grid (Gojek-style quick access)
+                      Text(
+                        l10n.servicesTitle,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Builder(
+                        builder: (context) {
+                          final services = _services(l10n);
+                          return ServicesGrid(
+                            services: services,
+                            onSelect: (query) => Get.to(
+                              () => SearchScreen(initialQuery: query),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 24),
+
+                      // 4. Banner Slider
                       CarouselSlider(
                         options: CarouselOptions(
                           height: 160,
@@ -262,42 +281,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 24),
 
-                      // 4. Categories Grid
-                      _buildSectionHeader(
-                        l10n.categories,
-                        () => Get.to(() => const AllCategoriesScreen()),
-                      ),
-                      const SizedBox(height: 12),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              childAspectRatio: 0.62,
-                            ),
-                        itemCount: categoryData.length > 4 ? 4 : categoryData.length,
-                        itemBuilder: (context, index) {
-                          final category = categoryData[index];
-                          return GestureDetector(
-                            onTap: () => Get.to(
-                              () => SearchScreen(initialCategory: category['name']),
-                            ),
-                            child: CategoryHori(
-                              category: {
-                                'name': category['name'] ?? 'Unknown',
-                                'iconUrl': category['iconUrl'] ?? '',
-                                'color': category['color'] ?? Colors.grey,
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 24),
-
-                      // 5. Closest Tailors
+                      // 4. Closest Tailors
                       _buildSectionHeader(l10n.closestToYou, null),
                       const SizedBox(height: 16),
                       SizedBox(
@@ -402,6 +386,70 @@ class HomeScreen extends StatelessWidget {
   bool _hasAddress(Tailor t) {
     final address = t.address.trim();
     return address.isNotEmpty && address != 'No Address';
+  }
+
+  /// Quick-access tailor services. [query] is matched against tailor names
+  /// AND their service names in SearchScreen, so it stays in the data
+  /// language (Indonesian) while [label] follows the UI locale.
+  List<ServiceEntry> _services(AppLocalizations l10n) {
+    return [
+      ServiceEntry(
+        label: l10n.svcCustom,
+        query: 'jahit',
+        icon: Iconsax.scissor,
+        background: AppColors.primary.withValues(alpha: 0.08),
+        foreground: AppColors.primary,
+      ),
+      ServiceEntry(
+        label: l10n.svcAlter,
+        query: 'permak',
+        icon: Iconsax.rulerpen,
+        background: Colors.orange.withValues(alpha: 0.12),
+        foreground: Colors.orange.shade800,
+      ),
+      ServiceEntry(
+        label: l10n.svcResize,
+        query: 'ukuran',
+        icon: Iconsax.ruler,
+        background: Colors.blue.withValues(alpha: 0.1),
+        foreground: Colors.blue.shade700,
+      ),
+      ServiceEntry(
+        label: l10n.svcEmbroidery,
+        query: 'bordir',
+        icon: Iconsax.pen_tool,
+        background: Colors.purple.withValues(alpha: 0.1),
+        foreground: Colors.purple.shade700,
+      ),
+      ServiceEntry(
+        label: l10n.svcBeading,
+        query: 'payet',
+        icon: Iconsax.brush,
+        background: Colors.pink.withValues(alpha: 0.1),
+        foreground: Colors.pink.shade700,
+      ),
+      ServiceEntry(
+        label: l10n.svcPrinting,
+        query: 'sablon',
+        icon: Iconsax.magicpen,
+        background: AppColors.secondary.withValues(alpha: 0.1),
+        foreground: AppColors.secondary,
+      ),
+      ServiceEntry(
+        label: l10n.svcConsult,
+        query: 'desain',
+        icon: Iconsax.message,
+        background: AppColors.pastelBlue,
+        foreground: AppColors.primary,
+      ),
+      ServiceEntry(
+        label: l10n.svcExpress,
+        query: 'kilat',
+        icon: Iconsax.timer,
+        background: Colors.green.withValues(alpha: 0.1),
+        foreground: Colors.green.shade700,
+      ),
+    ];
   }
 
   Widget _buildSectionHeader(String title, VoidCallback? onTap) {

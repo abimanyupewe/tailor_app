@@ -1,12 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Fails hung requests instead of freezing the UI.
+class _TimeoutClient extends http.BaseClient {
+  final http.Client _inner = http.Client();
+  static const _timeout = Duration(seconds: 20);
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) =>
+      _inner.send(request).timeout(_timeout);
+}
+
 class ApiService extends GetxService {
   late final String baseUrl;
+  final http.Client _client = _TimeoutClient();
   String? _token;
 
   bool get isAuthenticated => _token != null;
@@ -14,7 +26,12 @@ class ApiService extends GetxService {
   @override
   void onInit() {
     super.onInit();
-    baseUrl = dotenv.env['URL_API'] ?? 'http://127.0.0.1:8000';
+    // Localhost fallback is debug-only; a release build must have URL_API.
+    baseUrl =
+        dotenv.env['URL_API'] ??
+        (kDebugMode
+            ? 'http://127.0.0.1:8000'
+            : throw StateError('URL_API missing from .env'));
     _loadToken();
   }
 
@@ -61,30 +78,25 @@ class ApiService extends GetxService {
 
   Future<dynamic> _handleResponse(http.Response response) async {
     if (response.statusCode >= 200 && response.statusCode < 300) {
+      if (response.body.isEmpty) return null;
       return json.decode(response.body);
     } else {
-      String errorMessage = 'Error ${response.statusCode}';
+      String errorMessage = 'Server Error (${response.statusCode})';
       try {
         final errorBody = json.decode(response.body);
-        if (errorBody is Map) {
-          if (errorBody.containsKey('non_field_errors')) {
-            errorMessage = (errorBody['non_field_errors'] as List).join('\n');
-          } else if (errorBody.containsKey('detail')) {
-            errorMessage = errorBody['detail'];
-          } else if (errorBody.containsKey('message')) {
-            errorMessage = errorBody['message'];
-          } else {
-            // Extract first value from map if no specific key
-            errorMessage = errorBody.values.first.toString();
-          }
-        } else {
-          errorMessage = errorBody.toString();
+        if (errorBody is Map && errorBody.isNotEmpty) {
+          final value =
+              errorBody['non_field_errors'] ??
+              errorBody['detail'] ??
+              errorBody['message'] ??
+              errorBody.values.first;
+          errorMessage = value is List ? value.join('\n') : value.toString();
         }
       } catch (_) {
-        // If not JSON (e.g. HTML 404), truncate it
-        errorMessage = response.body.length > 100
-            ? 'Server Error (${response.statusCode}): ${response.body.substring(0, 100)}...'
-            : 'Server Error (${response.statusCode}): ${response.body}';
+        // Not JSON (e.g. HTML 404): keep the generic message, never show raw body.
+        if (kDebugMode) {
+          debugPrint('API ${response.statusCode}: ${response.body}');
+        }
       }
       throw Exception(errorMessage);
     }
@@ -92,7 +104,7 @@ class ApiService extends GetxService {
 
   // --- Authentication ---
   Future<dynamic> registerCustomer(Map<String, dynamic> data) async {
-    final response = await http.post(
+    final response = await _client.post(
       Uri.parse('$baseUrl/api/users/auth/register/'),
       headers: _headers,
       body: json.encode(data),
@@ -101,7 +113,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> registerTailor(Map<String, dynamic> data) async {
-    final response = await http.post(
+    final response = await _client.post(
       Uri.parse('$baseUrl/api/users/auth/register-tailor/'),
       headers: _headers,
       body: json.encode(data),
@@ -110,7 +122,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> login(String username, String password) async {
-    final response = await http.post(
+    final response = await _client.post(
       Uri.parse('$baseUrl/api/users/auth/login/'),
       headers: _headers,
       body: json.encode({'username': username, 'password': password}),
@@ -135,7 +147,7 @@ class ApiService extends GetxService {
 
   // --- User Profile ---
   Future<dynamic> getProfile() async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/users/profile/me/'),
       headers: _headers,
     );
@@ -143,7 +155,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> updateProfile(Map<String, dynamic> data) async {
-    final response = await http.put(
+    final response = await _client.put(
       Uri.parse('$baseUrl/api/users/profile/me/'),
       headers: _headers,
       body: json.encode(data),
@@ -169,7 +181,7 @@ class ApiService extends GetxService {
       );
     }
 
-    final streamedResponse = await request.send();
+    final streamedResponse = await _client.send(request);
     final response = await http.Response.fromStream(streamedResponse);
     return _handleResponse(response);
   }
@@ -179,7 +191,7 @@ class ApiService extends GetxService {
     if (role != null) {
       query = '?role=$role';
     }
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/users/list/$query'),
       headers: _headers,
     );
@@ -188,7 +200,7 @@ class ApiService extends GetxService {
 
   // --- Tailor Features ---
   Future<dynamic> getMyLocation() async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/tailor/manage/location/my_location/'),
       headers: _headers,
     );
@@ -196,7 +208,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> setMyLocation(double lat, double lon, String address) async {
-    final response = await http.put(
+    final response = await _client.put(
       Uri.parse('$baseUrl/api/tailor/manage/location/my_location/'),
       headers: _headers,
       body: json.encode({
@@ -209,7 +221,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> getMyServices() async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/tailor/manage/services/'),
       headers: _headers,
     );
@@ -217,7 +229,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> addService(Map<String, dynamic> data) async {
-    final response = await http.post(
+    final response = await _client.post(
       Uri.parse('$baseUrl/api/tailor/manage/services/'),
       headers: _headers,
       body: json.encode(data),
@@ -225,9 +237,26 @@ class ApiService extends GetxService {
     return _handleResponse(response);
   }
 
+  Future<dynamic> updateService(int id, Map<String, dynamic> data) async {
+    final response = await _client.patch(
+      Uri.parse('$baseUrl/api/tailor/manage/services/$id/'),
+      headers: _headers,
+      body: json.encode(data),
+    );
+    return _handleResponse(response);
+  }
+
+  Future<dynamic> deleteService(int id) async {
+    final response = await _client.delete(
+      Uri.parse('$baseUrl/api/tailor/manage/services/$id/'),
+      headers: _headers,
+    );
+    return _handleResponse(response);
+  }
+
   Future<dynamic> addPost(Map<String, dynamic> data) async {
     // Note: Use MultipartRequest for file uploads if needed, assuming JSON for now as per prompt "POST"
-    final response = await http.post(
+    final response = await _client.post(
       Uri.parse('$baseUrl/api/tailor/manage/posts/'),
       headers: _headers,
       body: json.encode(data),
@@ -249,7 +278,7 @@ class ApiService extends GetxService {
     if (search != null) query += 'search=$search&';
     if (ordering != null) query += 'ordering=$ordering&';
 
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/tailor/list/$query'),
       headers: _headers,
     );
@@ -261,7 +290,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> getTailorDetail(String id) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/tailor/list/$id/'),
       headers: _headers,
     );
@@ -270,7 +299,7 @@ class ApiService extends GetxService {
 
   // --- Orders ---
   Future<dynamic> getOrders() async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/orders/'),
       headers: _headers,
     );
@@ -278,7 +307,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> createOrder(Map<String, dynamic> data) async {
-    final response = await http.post(
+    final response = await _client.post(
       Uri.parse('$baseUrl/api/orders/'),
       headers: _headers,
       body: json.encode(data),
@@ -287,7 +316,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> updateOrderStatus(String id, String status) async {
-    final response = await http.post(
+    final response = await _client.post(
       Uri.parse('$baseUrl/api/orders/$id/status/'),
       headers: _headers,
       body: json.encode({'status': status}),
@@ -297,7 +326,7 @@ class ApiService extends GetxService {
 
   // --- Reviews ---
   Future<dynamic> getReviews(String tailorId) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/reviews/?tailor_id=$tailorId'),
       headers: _headers,
     );
@@ -305,7 +334,7 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> createReview(Map<String, dynamic> data) async {
-    final response = await http.post(
+    final response = await _client.post(
       Uri.parse('$baseUrl/api/reviews/'),
       headers: _headers,
       body: json.encode(data),
@@ -315,31 +344,23 @@ class ApiService extends GetxService {
 
   // --- Chat ---
   Future<dynamic> getChatRooms() async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/chat/rooms/'),
       headers: _headers,
-    );
-    // DEBUG LOG
-    print(
-      "ApiService: getChatRooms response: ${response.statusCode} - ${response.body}",
     );
     return _handleResponse(response);
   }
 
   Future<dynamic> getChatMessages(String roomId) async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/chat/rooms/$roomId/messages/'),
       headers: _headers,
-    );
-    // DEBUG LOG
-    print(
-      "ApiService: getChatMessages response: ${response.statusCode} - ${response.body}",
     );
     return _handleResponse(response);
   }
 
   Future<dynamic> sendMessage(String roomId, String message) async {
-    final response = await http.post(
+    final response = await _client.post(
       Uri.parse('$baseUrl/api/chat/rooms/$roomId/messages/'),
       headers: _headers,
       body: json.encode({'text': message}),
@@ -348,22 +369,16 @@ class ApiService extends GetxService {
   }
 
   Future<dynamic> startChat(String tailorId) async {
-    final url = '$baseUrl/api/chat/start/$tailorId/';
-    print('ApiService: Starting chat with URL: $url');
-    try {
-      final response = await http.post(Uri.parse(url), headers: _headers);
-      print('ApiService: Start chat response status: ${response.statusCode}');
-      print('ApiService: Start chat response body: ${response.body}');
-      return await _handleResponse(response);
-    } catch (e) {
-      print('ApiService: Error starting chat: $e');
-      rethrow;
-    }
+    final response = await _client.post(
+      Uri.parse('$baseUrl/api/chat/start/$tailorId/'),
+      headers: _headers,
+    );
+    return _handleResponse(response);
   }
 
   // --- Sliders ---
   Future<dynamic> getSliders() async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/sliders/'),
       headers: _headers,
     );
@@ -374,7 +389,7 @@ class ApiService extends GetxService {
   /// Manually triggers the cleanup of pending/unpaid orders older than 24 hours.
   /// Intended for scheduler or admin usage.
   Future<dynamic> cleanupPendingOrders() async {
-    final response = await http.get(
+    final response = await _client.get(
       Uri.parse('$baseUrl/api/orders/cleanup/'),
       headers: _headers,
     );
