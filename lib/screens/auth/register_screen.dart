@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tailor_app/controllers/auth_controller.dart';
+import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class RegisterScreen extends GetView<AuthController> {
@@ -9,11 +10,10 @@ class RegisterScreen extends GetView<AuthController> {
 
   @override
   Widget build(BuildContext context) {
-    const Color darkGreen = Color(0xFF173834);
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: darkGreen,
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -111,7 +111,7 @@ class RegisterScreen extends GetView<AuthController> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: darkGreen,
+                            color: AppColors.primary,
                             width: 1.5,
                           ),
                         ),
@@ -166,7 +166,7 @@ class RegisterScreen extends GetView<AuthController> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: darkGreen,
+                              color: AppColors.primary,
                               width: 1.5,
                             ),
                           ),
@@ -222,7 +222,7 @@ class RegisterScreen extends GetView<AuthController> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: darkGreen,
+                              color: AppColors.primary,
                               width: 1.5,
                             ),
                           ),
@@ -239,7 +239,7 @@ class RegisterScreen extends GetView<AuthController> {
                               ? null
                               : controller.register,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: darkGreen,
+                            backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
@@ -284,7 +284,7 @@ class RegisterScreen extends GetView<AuthController> {
                           child: Text(
                             l10n.signIn,
                             style: GoogleFonts.plusJakartaSans(
-                              color: darkGreen,
+                              color: AppColors.primary,
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
@@ -123,7 +124,7 @@ class MapRepository {
       }
       return [];
     } catch (e) {
-      print('Route Error: $e');
+      debugPrint('Route Error: $e');
       return [];
     }
   }

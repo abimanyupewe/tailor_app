@@ -62,9 +62,9 @@ class MainWrapper extends StatelessWidget {
               icon: Obx(() {
                 // Get unread count safely
                 int count = 0;
-                try {
+                if (Get.isRegistered<ChatController>()) {
                   count = Get.find<ChatController>().totalUnreadCount;
-                } catch (_) {}
+                }
 
                 return count > 0
                     ? Badge(

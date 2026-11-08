@@ -106,7 +106,6 @@ class ChatMessage {
     final senderStr = sender?.toString() ?? json['sender_id']?.toString() ?? '';
 
     // DEBUG: Print comparison (Remove later)
-    // print("MSG Debug: sender=$senderStr, myId=$myUserId, isMe=${senderStr == myUserId}");
 
     // Clean Text (Debug removed)
     final textContent = json['text'] ?? '';

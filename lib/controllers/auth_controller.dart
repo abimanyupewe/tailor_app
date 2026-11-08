@@ -38,7 +38,9 @@ class AuthController extends GetxController {
       try {
         final profileController = Get.find<ProfileController>();
         await profileController.getUserProfile();
-      } catch (_) {}
+      } catch (_) {
+        // Profile loading is best-effort after authentication.
+      }
 
       Get.offAll(() => const MainWrapper());
     } catch (e) {

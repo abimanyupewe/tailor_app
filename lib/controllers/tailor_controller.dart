@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/models/tailor_model.dart';
 import 'package:tailor_app/data/api_service.dart';
@@ -49,10 +50,10 @@ class TailorController extends GetxController {
           popularTailors.assignAll(popData);
         }
       } catch (e) {
-        print("Error loading popular tailors: $e");
+        debugPrint("Error loading popular tailors: $e");
       }
     } catch (e) {
-      print("Error loading tailors: $e");
+      debugPrint("Error loading tailors: $e");
     } finally {
       isLoading.value = false;
       // Fetch missing ratings in background after list is shown
@@ -108,7 +109,7 @@ class TailorController extends GetxController {
             list[i] = updatedTailor;
           }
         } catch (e) {
-          print("Error fetching rating for tailor ${tailor.name}: $e");
+          debugPrint("Error fetching rating for tailor ${tailor.name}: $e");
         }
       }
     }

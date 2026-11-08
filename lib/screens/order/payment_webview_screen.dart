@@ -39,7 +39,7 @@ class _PaymentWebViewScreenState extends State<PaymentWebViewScreen> {
             });
           },
           onWebResourceError: (WebResourceError error) {
-            print("Webview error: ${error.description}");
+            debugPrint('Webview error: ${error.description}');
           },
           onNavigationRequest: (NavigationRequest request) {
             // Handle redirect or callbacks from Midtrans

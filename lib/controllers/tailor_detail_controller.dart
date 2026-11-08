@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/tailor_model.dart';
@@ -21,7 +22,6 @@ class TailorDetailController extends GetxController {
 
   Future<void> refreshTailor() async {
     try {
-      print("TailorDetailController: Refreshing tailor ${tailor.value.id}");
       final data = await _apiService.getTailorDetail(tailor.value.id);
       final fetched = Tailor.fromJson(data);
 
@@ -40,7 +40,6 @@ class TailorDetailController extends GetxController {
 
       try {
         final reviewsData = await _apiService.getReviews(tailor.value.id);
-        print("TailorDetailController: Reviews data received: $reviewsData");
         List<Review> fetchedReviews = [];
 
         if (reviewsData is List) {
@@ -48,7 +47,7 @@ class TailorDetailController extends GetxController {
             try {
               fetchedReviews.add(Review.fromJson(r));
             } catch (e) {
-              print("Error parsing individual review: $e");
+              debugPrint("Error parsing individual review: $e");
             }
           }
         } else if (reviewsData is Map && reviewsData.containsKey('results')) {
@@ -56,7 +55,7 @@ class TailorDetailController extends GetxController {
             try {
               fetchedReviews.add(Review.fromJson(r));
             } catch (e) {
-              print("Error parsing individual review: $e");
+              debugPrint("Error parsing individual review: $e");
             }
           }
         }
@@ -90,12 +89,12 @@ class TailorDetailController extends GetxController {
         }
         reviews.assignAll(fetchedReviews);
       } catch (e) {
-        print("Error refreshing reviews: $e");
+        debugPrint("Error refreshing reviews: $e");
         // Fallback to what's in the tailor object if separate fetch fails
         reviews.assignAll(tailor.value.reviews);
       }
     } catch (e) {
-      print("Error refreshing tailor: $e");
+      debugPrint("Error refreshing tailor: $e");
     }
   }
 }

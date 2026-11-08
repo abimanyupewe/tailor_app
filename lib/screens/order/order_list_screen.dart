@@ -32,7 +32,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
     final newFuture = apiService.getOrders();
     // Wait for it to finish so RefreshIndicator spinner spins correctly
     await newFuture;
-    print("DEBUG: Orders refreshed");
     setState(() {
       _ordersFuture = newFuture;
     });
@@ -87,7 +86,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                         child: Text(
                           AppLocalizations.of(
                             context,
-                          ).errorMessage(snapshot.error.toString()),
+                          ).errorMessage('Please try again'),
                         ),
                       ),
                     ),
@@ -103,9 +102,6 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       (snapshot.data as Map)['results'] as List<dynamic>? ?? [];
                   allOrders = results.map((json) {
                     final o = Order.fromJson(json as Map<String, dynamic>);
-                    print(
-                      "DEBUG: Order #${o.id} status=${o.status}, hasReview=${o.hasReview}, jsonHasReview=${json['has_review']}",
-                    );
                     return o;
                   }).toList();
                 } else if (snapshot.data is List) {
@@ -120,7 +116,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   children: [
                     Center(
                       child: Text(
-                        AppLocalizations.of(context).errorParsing(e.toString()),
+                        AppLocalizations.of(
+                          context,
+                        ).errorParsing('Please try again'),
                       ),
                     ),
                   ],

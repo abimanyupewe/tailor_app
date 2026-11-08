@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/models/tailor_model.dart';
@@ -87,7 +88,9 @@ class OrderController extends GetxController {
           }
         }
       } catch (e) {
-        print("Warning: Could not validate email via ProfileController: $e");
+        debugPrint(
+          "Warning: Could not validate email via ProfileController: $e",
+        );
       }
 
       // Prepare schedule string
@@ -116,8 +119,6 @@ class OrderController extends GetxController {
       };
 
       final response = await apiService.createOrder(payload);
-      print("Order Response: $response");
-
       if (response != null && response['snap_token'] != null) {
         final snapToken = response['snap_token'];
         final orderId = response['id'].toString();
@@ -131,16 +132,19 @@ class OrderController extends GetxController {
           try {
             // Notify backend that payment is successful
             await apiService.updateOrderStatus(orderId, 'PAID');
-            print("Order status updated to PAID");
+            debugPrint("Order status updated to PAID");
           } catch (e) {
-            print("Failed to auto-update status: $e");
+            debugPrint("Failed to auto-update status: $e");
           }
 
           AppToast.success("Payment Successful!");
           Get.offNamedUntil('/', (route) => false);
         } else {
           // Payment cancelled or failed, but order created.
-          AppToast.info("Payment pending. Check My Orders.", title: "Order Placed");
+          AppToast.info(
+            "Payment pending. Check My Orders.",
+            title: "Order Placed",
+          );
           Get.back();
         }
       } else {
@@ -148,7 +152,7 @@ class OrderController extends GetxController {
         Get.back();
       }
     } catch (e) {
-      AppToast.error("Failed to create order: $e");
+      AppToast.error("Failed to create order. Please try again.");
     } finally {
       isLoading.value = false;
     }

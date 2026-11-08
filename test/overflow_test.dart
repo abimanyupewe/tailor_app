@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:tailor_app/controllers/order_controller.dart';
-import 'package:tailor_app/controllers/service_controller.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
 import 'package:tailor_app/models/tailor_model.dart';

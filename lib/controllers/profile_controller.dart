@@ -49,7 +49,7 @@ class ProfileController extends GetxController {
         selectedImage.value = File(image.path);
       }
     } catch (e) {
-      AppToast.error('Failed to pick image: $e');
+      AppToast.error('Failed to pick image. Please try again.');
     }
   }
 
@@ -85,7 +85,7 @@ class ProfileController extends GetxController {
       // Reset image selection
       selectedImage.value = null;
     } catch (e) {
-      AppToast.error('Failed to update profile: $e');
+      AppToast.error('Failed to update profile. Please try again.');
     } finally {
       isSaving.value = false;
     }

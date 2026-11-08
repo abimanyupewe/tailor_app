@@ -57,14 +57,16 @@ class MapControllerX extends GetxController {
     isRoutingMode.value = !isRoutingMode.value;
 
     if (isRoutingMode.value) {
-      if (currentLocation.value != null && selectedTailor.value != null) {
+      final origin = currentLocation.value;
+      final destination = selectedTailor.value;
+      if (origin != null && destination != null) {
         // Fetch route
         try {
           final points = await _repository.getRoute(
-            currentLocation.value!.latitude,
-            currentLocation.value!.longitude,
-            selectedTailor.value!.latitude,
-            selectedTailor.value!.longitude,
+            origin.latitude,
+            origin.longitude,
+            destination.latitude,
+            destination.longitude,
           );
 
           if (points.isNotEmpty) {
@@ -81,11 +83,8 @@ class MapControllerX extends GetxController {
         mapController.fitCamera(
           CameraFit.coordinates(
             coordinates: [
-              currentLocation.value!,
-              LatLng(
-                selectedTailor.value!.latitude,
-                selectedTailor.value!.longitude,
-              ),
+              origin,
+              LatLng(destination.latitude, destination.longitude),
             ],
             padding: const EdgeInsets.all(80),
           ),
@@ -200,7 +199,7 @@ class MapControllerX extends GetxController {
       // mapController.move(currentLocation.value!, 15); // Optional: Auto-center
     } catch (e) {
       // Don't show snackbar on init to avoid spamming if permission denied initially
-      print('Location Init Error: $e');
+      debugPrint('Location Init Error: $e');
     }
   }
 
@@ -255,7 +254,7 @@ class MapControllerX extends GetxController {
             }
           }
         } catch (e) {
-          print("Tailor search error: $e");
+          debugPrint("Tailor search error: $e");
         }
 
         // 2. Search Locations (Nominatim) - Optional fallback or mixed
@@ -270,7 +269,7 @@ class MapControllerX extends GetxController {
             combinedResults.add(mutableLoc);
           }
         } catch (e) {
-          print("Location search error: $e");
+          debugPrint("Location search error: $e");
         }
 
         searchResults.assignAll(combinedResults);

@@ -45,9 +45,9 @@ class _InitialScreenState extends State<InitialScreen> {
 
     if (apiService.isAuthenticated) {
       // Pre-load profile data
-      try {
+      if (Get.isRegistered<ProfileController>()) {
         Get.find<ProfileController>().getUserProfile();
-      } catch (_) {}
+      }
 
       Get.offAllNamed(AppRoutes.home);
     } else {

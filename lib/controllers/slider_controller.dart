@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:tailor_app/models/slider_model.dart';
 import 'package:tailor_app/data/dummy_data.dart';
@@ -51,7 +52,7 @@ class SliderController extends GetxController {
             .toList(),
       );
     } catch (e) {
-      print('Error loading sliders: $e');
+      debugPrint('Error loading sliders: $e');
       sliders.clear();
     } finally {
       isLoading.value = false;

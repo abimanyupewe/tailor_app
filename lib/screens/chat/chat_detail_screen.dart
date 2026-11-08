@@ -23,7 +23,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   final ChatController controller = Get.find<ChatController>();
 
   String get roomId {
-    print("ChatDetailScreen: Get.arguments is ${Get.arguments}");
     return Get.arguments?['roomId']?.toString() ?? '';
   }
 
