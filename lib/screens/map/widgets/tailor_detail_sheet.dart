@@ -20,10 +20,11 @@ class TailorDetailSheet extends StatelessWidget {
 
     return DraggableScrollableSheet(
       key: const ValueKey('detail_sheet'),
-      initialChildSize: 0.3,
-      minChildSize: 0.25,
-      maxChildSize: 0.3,
+      initialChildSize: 0.28,
+      minChildSize: 0.24,
+      maxChildSize: 0.56,
       snap: true,
+      snapSizes: const [0.28, 0.56],
       builder: (context, scrollController) {
         return Container(
           decoration: const BoxDecoration(

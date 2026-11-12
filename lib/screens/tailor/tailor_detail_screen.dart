@@ -255,60 +255,65 @@ class TailorDetailScreen extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: Container(
-          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border(
-              top: BorderSide(color: AppColors.secondary.withValues(alpha: 0.12)),
+              top: BorderSide(
+                color: AppColors.secondary.withValues(alpha: 0.12),
+              ),
             ),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 54,
-                height: 54,
-                margin: const EdgeInsets.only(right: 16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.primary),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    final chatController = Get.put(ChatController());
-                    final targetId =
-                        (tailor.userId != null && tailor.userId!.isNotEmpty)
-                        ? tailor.userId!
-                        : tailor.id;
-                    chatController.startChatWithTailor(targetId);
-                  },
-                  icon: const Icon(Iconsax.message, color: AppColors.primary),
-                ),
-              ),
-              Expanded(
-                child: SizedBox(
+          child: SafeArea(
+            top: false,
+            minimum: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+            child: Row(
+              children: [
+                Container(
+                  width: 54,
                   height: 54,
-                  child: ElevatedButton(
+                  margin: const EdgeInsets.only(right: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.primary),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
                     onPressed: () {
-                      Get.to(() => OrderScreen(tailor: tailor));
+                      final chatController = Get.put(ChatController());
+                      final targetId =
+                          (tailor.userId != null && tailor.userId!.isNotEmpty)
+                          ? tailor.userId!
+                          : tailor.id;
+                      chatController.startChatWithTailor(targetId);
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    icon: const Icon(Iconsax.message, color: AppColors.primary),
+                  ),
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 54,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => OrderScreen(tailor: tailor));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      l10n.bookNow,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                      child: Text(
+                        l10n.bookNow,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

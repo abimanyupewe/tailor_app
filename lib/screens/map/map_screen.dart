@@ -25,7 +25,7 @@ class MapScreen extends StatelessWidget {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(112),
+            preferredSize: const Size.fromHeight(104),
             child: Column(
               children: [
                 const Padding(
