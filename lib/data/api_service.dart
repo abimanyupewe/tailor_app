@@ -20,8 +20,10 @@ class ApiService extends GetxService {
   late final String baseUrl;
   final http.Client _client = _TimeoutClient();
   String? _token;
+  Future<void>? _tokenLoad;
 
   bool get isAuthenticated => _token != null;
+  Future<void> get ready => _tokenLoad ?? Future.value();
 
   @override
   void onInit() {
@@ -32,7 +34,7 @@ class ApiService extends GetxService {
         (kDebugMode
             ? 'http://127.0.0.1:8000'
             : throw StateError('URL_API missing from .env'));
-    _loadToken();
+    _tokenLoad = _loadToken();
   }
 
   String getImageUrl(String? path) {

@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:tailor_app/controllers/map_controller.dart';
-import 'package:tailor_app/controllers/tailor_controller.dart';
 import 'package:tailor_app/data/api_service.dart';
 import 'package:tailor_app/core/constants/app_colors.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
@@ -16,7 +15,6 @@ class MapView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mapController = Get.find<MapControllerX>();
-    final tailorController = Get.find<TailorController>();
 
     return Obx(() {
       if (mapController.currentLocation.value == null) {
@@ -59,6 +57,18 @@ class MapView extends StatelessWidget {
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.example.tailor_app',
           ),
+          CircleLayer(
+            circles: [
+              CircleMarker(
+                point: mapController.currentLocation.value!,
+                radius: MapControllerX.mapRadiusKm * 1000,
+                useRadiusInMeter: true,
+                color: AppColors.secondary.withValues(alpha: 0.08),
+                borderStrokeWidth: 2,
+                borderColor: AppColors.secondary.withValues(alpha: 0.5),
+              ),
+            ],
+          ),
           CurrentLocationLayer(
             style: LocationMarkerStyle(
               marker: const PulsingLocationMarker(),
@@ -90,7 +100,7 @@ class MapView extends StatelessWidget {
               ],
             ),
           MarkerLayer(
-            markers: tailorController.tailors.map((tailor) {
+            markers: mapController.nearbyTailors.map((tailor) {
               return Marker(
                 point: LatLng(tailor.latitude, tailor.longitude),
                 width: 80,

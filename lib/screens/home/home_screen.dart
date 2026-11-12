@@ -67,6 +67,16 @@ class HomeScreen extends StatelessWidget {
           return l10n.greetingEvening;
         }
 
+        final nearbyTailors = tailorController.tailors
+            .where((t) => t.distance < 1.0 && _hasAddress(t))
+            .toList();
+        final popularTailors = tailorController.popularTailors
+            .where(_hasAddress)
+            .toList();
+        final recommendedTailors = tailorController.tailors
+            .where(_hasAddress)
+            .toList();
+
         return sliderController.isLoading.value ||
                 tailorController.isLoading.value
             ? const SafeArea(child: HomeLoadingSkeleton())
@@ -88,16 +98,22 @@ class HomeScreen extends StatelessWidget {
                       vertical: 20,
                     ),
                     children: [
-                      // 1. Header Section — clean flat
-                      Row(
-                        children: [
+                      // 1. Header Section
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.all(Radius.circular(24)),
+                        ),
+                        child: Row(
+                          children: [
                           Container(
                             width: 48,
                             height: 48,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: AppColors.primary.withValues(alpha: 0.15),
+                                color: Colors.white.withValues(alpha: 0.35),
                                 width: 1.5,
                               ),
                             ),
@@ -117,12 +133,12 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                     )
                                   : Container(
-                                      color: AppColors.primary.withValues(
-                                        alpha: 0.08,
+                                      color: Colors.white.withValues(
+                                        alpha: 0.14,
                                       ),
                                       child: const Icon(
                                         Icons.person,
-                                        color: AppColors.primary,
+                                        color: Colors.white,
                                       ),
                                     ),
                             ),
@@ -137,7 +153,7 @@ class HomeScreen extends StatelessWidget {
                                   getGreeting(),
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey.shade500,
+                                    color: Colors.white.withValues(alpha: 0.72),
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -147,7 +163,7 @@ class HomeScreen extends StatelessWidget {
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,
-                                    color: AppColors.primary,
+                                    color: Colors.white,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -158,7 +174,7 @@ class HomeScreen extends StatelessWidget {
                                     const Icon(
                                       Iconsax.location5,
                                       size: 12,
-                                      color: AppColors.secondary,
+                                      color: AppColors.accent,
                                     ),
                                     const SizedBox(width: 4),
                                     Expanded(
@@ -166,7 +182,9 @@ class HomeScreen extends StatelessWidget {
                                         displayAddress,
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: Colors.grey.shade600,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.76,
+                                          ),
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -182,19 +200,20 @@ class HomeScreen extends StatelessWidget {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Colors.white.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: AppColors.primary.withValues(alpha: 0.1),
+                                color: Colors.white.withValues(alpha: 0.24),
                               ),
                             ),
                             child: const Icon(
                               Iconsax.notification,
                               size: 20,
-                              color: AppColors.primary,
+                              color: Colors.white,
                             ),
                           ),
-                        ],
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 24),
 
@@ -284,46 +303,39 @@ class HomeScreen extends StatelessWidget {
                       // 4. Closest Tailors
                       _buildSectionHeader(l10n.closestToYou, null),
                       const SizedBox(height: 16),
-                      SizedBox(
-                        height: 140, // Height for TailorCard
-                        child: ListView.builder(
+                      nearbyTailors.isEmpty
+                          ? _emptyTailors(l10n)
+                          : SizedBox(
+                              height: 140,
+                              child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(),
-                          itemCount: tailorController.tailors
-                              .where((t) => t.distance < 1.0 && _hasAddress(t))
-                              .length,
+                          itemCount: nearbyTailors.length,
                           itemBuilder: (context, index) {
-                            final nearbyTailors = tailorController.tailors
-                                .where((t) => t.distance < 1.0 && _hasAddress(t))
-                                .toList();
-
                             return TailorCard(data: nearbyTailors[index]);
                           },
                         ),
-                      ),
+                            ),
                       const SizedBox(height: 24),
 
                       // 6. Popular Tailors
                       _buildSectionHeader(l10n.popularTailors, null),
                       const SizedBox(height: 16),
-                      SizedBox(
-                        height: 140,
-                        child: Obx(
-                          () {
-                            final popular = tailorController.popularTailors
-                                .where(_hasAddress)
-                                .toList();
-                            return ListView.builder(
+                      popularTailors.isEmpty
+                          ? _emptyTailors(l10n)
+                          : SizedBox(
+                              height: 140,
+                              child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               physics: const BouncingScrollPhysics(),
-                              itemCount: popular.length,
+                                itemCount: popularTailors.length,
                               itemBuilder: (context, index) {
-                                return TailorCard(data: popular[index]);
+                                  return TailorCard(
+                                    data: popularTailors[index],
+                                  );
                               },
-                            );
-                          },
-                        ),
-                      ),
+                              ),
+                            ),
                       const SizedBox(height: 24),
 
                       // 7. Promo Banner Middle
@@ -355,22 +367,18 @@ class HomeScreen extends StatelessWidget {
                       // 8. Recommended
                       _buildSectionHeader(l10n.recommended, null),
                       const SizedBox(height: 16),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: tailorController.tailors
-                            .where(_hasAddress)
-                            .length,
-                        itemBuilder: (context, index) {
-                          // TODO: Switch to Vertical variation if needed,
-                          // but reuse TailorCard which is styled nicely.
-                          // Just verify margin bottom.
-                          final recommendedTailors = tailorController.tailors
-                              .where(_hasAddress)
-                              .toList();
-                          return TailorCard(data: recommendedTailors[index]);
-                        },
-                      ),
+                      recommendedTailors.isEmpty
+                          ? _emptyTailors(l10n)
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: recommendedTailors.length,
+                              itemBuilder: (context, index) {
+                                return TailorCard(
+                                  data: recommendedTailors[index],
+                                );
+                              },
+                            ),
                       const SizedBox(height: 80), // Bottom padding
                     ],
                   ),
@@ -386,6 +394,25 @@ class HomeScreen extends StatelessWidget {
   bool _hasAddress(Tailor t) {
     final address = t.address.trim();
     return address.isNotEmpty && address != 'No Address';
+  }
+
+  Widget _emptyTailors(AppLocalizations l10n) {
+    return Container(
+      height: 92,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: AppColors.pastelBlue,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        l10n.findingLocation,
+        style: const TextStyle(
+          color: AppColors.secondary,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
   }
 
   /// Quick-access tailor services. [query] is matched against tailor names

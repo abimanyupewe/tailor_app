@@ -10,7 +10,9 @@ import 'package:tailor_app/widgets/skeleton.dart';
 import 'package:tailor_app/l10n/generated/app_localizations.dart';
 
 class TailorListSheet extends StatelessWidget {
-  const TailorListSheet({super.key});
+  final bool fullScreen;
+
+  const TailorListSheet({super.key, this.fullScreen = false});
 
   @override
   Widget build(BuildContext context) {
@@ -18,102 +20,124 @@ class TailorListSheet extends StatelessWidget {
     final tailorController = Get.find<TailorController>();
     final l10n = AppLocalizations.of(context);
 
+    if (fullScreen) {
+      return _buildContent(context, mapController, tailorController, l10n, null);
+    }
+
     return DraggableScrollableSheet(
       key: const ValueKey('list_sheet'),
       initialChildSize: 0.3,
       minChildSize: 0.1,
       maxChildSize: 1.0,
       snap: true,
-      builder: (context, scrollController) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              topRight: Radius.circular(12),
-            ),
-          ),
-          child: Column(
-            children: [
-              const SizedBox(height: 12),
-              Container(
-                width: 40,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
-                ),
+      builder: (context, scrollController) => _buildContent(
+        context,
+        mapController,
+        tailorController,
+        l10n,
+        scrollController,
+      ),
+    );
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    MapControllerX mapController,
+    TailorController tailorController,
+    AppLocalizations l10n,
+    ScrollController? scrollController,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: fullScreen
+            ? BorderRadius.zero
+            : const BorderRadius.vertical(top: Radius.circular(12)),
+      ),
+      child: Column(
+        children: [
+          if (!fullScreen) ...[
+            const SizedBox(height: 12),
+            Container(
+              width: 40,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
               ),
-              const SizedBox(height: 14),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        l10n.nearbyTailors,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black87,
-                        ),
+            ),
+          ],
+          const SizedBox(height: 14),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.nearbyTailors,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+                Obx(() {
+                  final count = mapController.nearbyTailors.length;
+                  if (count == 0) return const SizedBox.shrink();
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '$count',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
                       ),
                     ),
-                    Obx(() {
-                      final count = tailorController.tailors.length;
-                      if (count == 0) return const SizedBox.shrink();
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          '$count',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: Obx(() {
-                  if (tailorController.isLoading.value &&
-                      tailorController.tailors.isEmpty) {
-                    return const CardListSkeleton(itemCount: 3);
-                  }
-                  final tailors = tailorController.tailors;
-                  if (tailors.isEmpty) {
-                    return _EmptyTailors(l10n: l10n);
-                  }
-                  return ListView.separated(
-                    controller: scrollController,
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                    itemCount: tailors.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final tailor = tailors[index];
-                      return _TailorListItem(
-                        tailor: tailor,
-                        onTap: () => mapController.selectTailor(tailor),
-                      );
-                    },
                   );
                 }),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
-      },
+          const SizedBox(height: 12),
+          Expanded(
+            child: Obx(() {
+              if (tailorController.isLoading.value &&
+                  tailorController.tailors.isEmpty) {
+                return const CardListSkeleton(itemCount: 3);
+              }
+              final tailors = mapController.nearbyTailors;
+              if (tailors.isEmpty) return _EmptyTailors(l10n: l10n);
+              return ListView.separated(
+                controller: scrollController,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                itemCount: tailors.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                itemBuilder: (context, index) {
+                  final tailor = tailors[index];
+                  return _TailorListItem(
+                    tailor: tailor,
+                        onTap: () {
+                          mapController.selectTailor(tailor);
+                          if (fullScreen) {
+                            DefaultTabController.of(context).animateTo(0);
+                          }
+                        },
+                  );
+                },
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 }

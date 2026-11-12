@@ -18,24 +18,28 @@ class AllCategoriesScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context).allCategories,
-          style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.primary,
         elevation: 0,
         centerTitle: true,
+        foregroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            childAspectRatio: 0.7,
+            crossAxisCount: 3,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 14,
+            childAspectRatio: 0.86,
           ),
           itemCount: categoryData.length,
           itemBuilder: (context, index) {
@@ -48,13 +52,16 @@ class AllCategoriesScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    width: 60,
-                    height: 60,
-                    padding: const EdgeInsets.all(12),
+                    width: double.infinity,
+                    height: 86,
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: (category['color'] as Color? ?? AppColors.primary)
-                          .withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(10),
+                          .withValues(alpha: 0.55),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: AppColors.secondary.withValues(alpha: 0.18),
+                      ),
                     ),
                     child: Image.asset(
                       category['iconUrl'], // Assuming asset based on CategoryHori
@@ -72,7 +79,7 @@ class AllCategoriesScreen extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black87,
+                      color: AppColors.primary,
                     ),
                   ),
                 ],

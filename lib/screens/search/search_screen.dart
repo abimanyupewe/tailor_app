@@ -55,11 +55,12 @@ class _SearchScreenState extends State<SearchScreen> {
           l10n.exploreTailors,
           style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
         elevation: 0,
         centerTitle: true,
+        foregroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
         ),
       ),
@@ -83,6 +84,19 @@ class _SearchScreenState extends State<SearchScreen> {
                 hintText: l10n.searchNameHint,
                 filled: true,
                 fillColor: Colors.white,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: AppColors.accent.withValues(alpha: 0.65),
+                  ),
+                ),
+                focusedBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                  borderSide: BorderSide(
+                    color: AppColors.primary,
+                    width: 1.5,
+                  ),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -179,22 +193,33 @@ class _SearchScreenState extends State<SearchScreen> {
 
               if (tailors.isEmpty) {
                 return Center(
-                  child: Column(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 32),
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: AppColors.pastelBlue,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Iconsax.search_status,
                         size: 64,
-                        color: Colors.grey.shade300,
+                        color: AppColors.secondary.withValues(alpha: 0.45),
                       ),
                       const SizedBox(height: 16),
                       Builder(
                         builder: (context) => Text(
                           AppLocalizations.of(context).noTailorsFound,
-                          style: TextStyle(color: Colors.grey.shade500),
+                          style: const TextStyle(
+                            color: AppColors.secondary,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
+                    ),
                   ),
                 );
               }

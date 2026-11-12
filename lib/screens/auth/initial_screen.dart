@@ -21,37 +21,42 @@ class _InitialScreenState extends State<InitialScreen> {
   }
 
   Future<void> _checkAuth() async {
-    // Wait for services to be ready
-    await Future.delayed(const Duration(seconds: 2));
-    final apiService = Get.find<ApiService>();
+    try {
+      final apiService = Get.find<ApiService>();
+      await apiService.ready;
 
-    // Check if token exists (logic in apiService already loads token onInit,
-    // but onInit is async in valid dart so we might need to wait or rely on memory)
-    // Actually ApiService.onInit triggers _loadToken, but it's async so it might not be done instantly.
-    // Better way: let ApiService expose a "isReady" future or just check sharedprefs here directly
-    // OR, trust that by the time this splash runs (2 sec), it's loaded.
+      // Check if token exists (logic in apiService already loads token onInit,
+      // but onInit is async in valid dart so we might need to wait or rely on memory)
+      // Actually ApiService.onInit triggers _loadToken, but it's async so it might not be done instantly.
+      // Better way: let ApiService expose a "isReady" future or just check sharedprefs here directly
+      // OR, trust that by the time this splash runs (2 sec), it's loaded.
 
-    // To be safe, let's wait a bit more or check apiService state.
-    // For now, simple check:
+      // To be safe, let's wait a bit more or check apiService state.
+      // For now, simple check:
 
-    // Check First Time User
-    final prefs = await SharedPreferences.getInstance();
-    final isFirstTime = prefs.getBool('is_first_time') ?? true;
+      final prefs = await SharedPreferences.getInstance();
+      final isFirstTime = prefs.getBool('is_first_time') ?? true;
 
-    if (isFirstTime) {
-      Get.offAllNamed(AppRoutes.onboarding);
-      return;
-    }
-
-    if (apiService.isAuthenticated) {
-      // Pre-load profile data
-      if (Get.isRegistered<ProfileController>()) {
-        Get.find<ProfileController>().getUserProfile();
+      if (!mounted) return;
+      if (isFirstTime) {
+        Get.offAllNamed(AppRoutes.onboarding);
+        return;
       }
 
-      Get.offAllNamed(AppRoutes.home);
-    } else {
-      Get.offAllNamed(AppRoutes.login);
+      if (apiService.isAuthenticated) {
+        // Pre-load profile data
+        if (Get.isRegistered<ProfileController>()) {
+          Get.find<ProfileController>().getUserProfile();
+        }
+
+        Get.offAllNamed(AppRoutes.home);
+      } else {
+        Get.offAllNamed(AppRoutes.login);
+      }
+    } catch (error, stackTrace) {
+      debugPrint('Startup auth check failed: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      if (mounted) Get.offAllNamed(AppRoutes.login);
     }
   }
 

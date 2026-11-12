@@ -12,11 +12,11 @@ import 'package:tailor_app/core/utils/app_toast.dart';
 import 'package:tailor_app/controllers/tailor_controller.dart';
 
 class MapControllerX extends GetxController {
+  static const double mapRadiusKm = 2.0;
+
   final MapRepository _repository = MapRepository();
   final mapController = MapController();
   final searchController = TextEditingController();
-  final DraggableScrollableController sheetController =
-      DraggableScrollableController();
 
   final Rx<Tailor?> selectedTailor = Rx<Tailor?>(null);
   final RxBool isRoutingMode = false.obs;
@@ -28,14 +28,6 @@ class MapControllerX extends GetxController {
     selectedTailor.value = tailor;
     isRoutingMode.value = false;
     routePoints.clear();
-    // Animate sheet to open state if needed, or just let UI react
-    if (sheetController.isAttached) {
-      sheetController.animateTo(
-        0.45, // Open to 30% or desired height
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
     // Center map on tailor
     mapController.move(LatLng(tailor.latitude, tailor.longitude), 15);
   }
@@ -44,13 +36,6 @@ class MapControllerX extends GetxController {
     selectedTailor.value = null;
     isRoutingMode.value = false;
     routePoints.clear();
-    if (sheetController.isAttached) {
-      sheetController.animateTo(
-        0.3, // Collapse to min size
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
   }
 
   Future<void> toggleRouting() async {
@@ -113,6 +98,21 @@ class MapControllerX extends GetxController {
   Timer? _debounceTimer;
 
   final RxString currentAddress = ''.obs;
+
+  List<Tailor> get nearbyTailors {
+    final origin = currentLocation.value;
+    if (origin == null) return const [];
+
+    return Get.find<TailorController>().tailors.where((tailor) {
+      if (tailor.latitude == 0 || tailor.longitude == 0) return false;
+      final distanceKm = const Distance().as(
+        LengthUnit.Kilometer,
+        origin,
+        LatLng(tailor.latitude, tailor.longitude),
+      );
+      return distanceKm <= mapRadiusKm;
+    }).toList();
+  }
 
   @override
   void onInit() {
